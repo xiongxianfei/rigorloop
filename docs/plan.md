@@ -11,6 +11,8 @@ An unavailable record or a compatibility heading does not establish current life
 
 ## Active
 
+- [Remove the project-map skill](plans/2026-10-18-remove-project-map.md) — Change `2026-10-18-remove-project-map`.
+
 - [One system test design](plans/2026-10-18-system-test-design.md) — Change `2026-10-18-system-test-design`.
 
 - [Minimal repository tests](plans/2026-10-18-minimal-tests.md) — Change `2026-10-18-minimal-tests`.

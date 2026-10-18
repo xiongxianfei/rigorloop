@@ -11,7 +11,6 @@ These documents retain detailed clauses and proof under this Module; they are no
 - [Discovery Design](discovery.md)
 - [Explore Design](explore.md)
 - [Project Foundations Design](project-foundations.md)
-- [Project Map Design](project-map.md)
 - [Request and proposal intake](requirement-analysis.md)
 - [Research Design](research.md)
 - [Vision Design](vision.md)

@@ -6,7 +6,7 @@ This file owns repository authority, operating rules and cleanup policy. [VISION
 Use [Architecture composition](design/architecture/composition.md) and [ownership](design/support/ownership.md) to find the responsible Module or Interface; read only the models and retained contracts needed for the task.
 For test design or script changes, use the single [system test design](design/support/test-design/system-test-design.md) and [shared test-quality rules](design/support/test-design/rules.md). Update central scenarios only for changed behavior, risks or expected observations. Keep executable mappings and current gaps in Validation; do not create separate model test designs.
 Before implementation, read the governing contract, applicable architecture decisions, owning plan and verification allocation, then the files to change.
-Use [docs/project-map.md](docs/project-map.md) only when current for the area; otherwise inspect the sources directly and state the map limitation or refresh it.
+Inspect the relevant source directly. Use README and the architecture overview for navigation; no map creation, refresh or absence rationale is required.
 
 ## Authority and ownership
 

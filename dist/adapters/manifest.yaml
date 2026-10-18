@@ -33,9 +33,6 @@ skills:
   pr:
     portable: true
     adapters: [codex, claude]
-  project-map:
-    portable: true
-    adapters: [codex, claude]
   requirement-analysis:
     portable: true
     adapters: [codex, claude]

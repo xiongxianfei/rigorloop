@@ -27,7 +27,7 @@ This upstream skill does not hand off automatically. Use it at project genesis o
 
 ## Inputs To Read
 
-Start with compact project inputs: `AGENTS.md`, root `VISION.md`, README content between `<!-- vision:start -->` and `<!-- vision:end -->`, relevant proposals, and useful project-map evidence. Retired root `vision.md` is an ordinary file only when explicitly requested.
+Start with compact project inputs: `AGENTS.md`, root `VISION.md`, README content between `<!-- vision:start -->` and `<!-- vision:end -->`, relevant proposals, and relevant repository source and configuration. Retired root `vision.md` is an ordinary file only when explicitly requested.
 
 Use summary and stable-ID first reasoning with check IDs, requirement IDs, proposal IDs, section names, file paths, counts, and line citations. Expand only for insufficient or conflicting evidence.
 

@@ -15,7 +15,7 @@ from lib.validation.model_layout import PROJECT_MODEL_PATHS
 PRIMARY_GUIDE_LINKS = (
     "VISION.md",
     "AGENTS.md",
-    "docs/project-map.md",
+    "design/architecture/README.md#implementation-entry-points",
     "docs/plan.md",
     "skills/",
 )
@@ -99,7 +99,7 @@ def validate(repo: Path) -> ValidationResult:
     current_surfaces = (
         repo / "AGENTS.md",
         repo / "README.md",
-        repo / "docs" / "project-map.md",
+        repo / "design" / "architecture" / "README.md",
         *(repo / relative for relative in PROJECT_MODEL_PATHS.values()),
     )
     for path in current_surfaces:
@@ -108,15 +108,6 @@ def validate(repo: Path) -> ValidationResult:
             messages.append(
                 f"ROUTE-GUIDE-006: current surface retains retired authority: {path.relative_to(repo)}"
             )
-
-    project_map = _read(repo / "docs" / "project-map.md").lower()
-    required_map_terms = (
-        "does not own workflow stage order",
-        "cli owns deterministic change-context",
-        "route",
-    )
-    if any(term not in project_map for term in required_map_terms):
-        messages.append("ROUTE-GUIDE-007: project map must preserve orientation and route/CLI authority boundaries")
 
     plan_index = _read(repo / "docs" / "plan.md").lower()
     if not all(term in plan_index for term in ("navigation index", "owning change", "change.json")):

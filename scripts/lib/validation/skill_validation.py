@@ -370,55 +370,6 @@ PLAN_ASSET_SECTIONS_PATTERN = re.compile(
     r"\bSections:\s*(?P<sections>.*?)(?:\s+Do not emit|\s+Fill:|\s*$)",
     re.IGNORECASE,
 )
-PROJECT_MAP_SKELETON = "assets/project-map-skeleton.md"
-PROJECT_MAP_REQUIRED_OPERATIONS = ("create", "refresh", "audit")
-PROJECT_MAP_REQUIRED_METADATA_FIELDS = (
-    "Map status",
-    "Scope",
-    "Baseline",
-    "Last reviewed",
-    "Coverage",
-    "Exclusions",
-    "Parent map",
-    "Known gaps",
-)
-PROJECT_MAP_REQUIRED_EVIDENCE_CLASSES = ("observed", "inferred", "unknown")
-PROJECT_MAP_REQUIRED_OUTPUT_SECTIONS = (
-    "Map metadata",
-    "Purpose and scope",
-    "System overview",
-    "Repository layout",
-    "Runtime flow",
-    "Data flow",
-    "External boundaries",
-    "Test map",
-    "CI and release map",
-    "Architecture rules observed",
-    "Risk areas",
-    "Open questions",
-)
-PROJECT_MAP_AREA_REGISTRATION_COLUMNS = (
-    "Area",
-    "Map",
-    "Scope",
-    "Baseline",
-    "Freshness",
-    "Known gaps",
-)
-PROJECT_MAP_SKELETON_FORBIDDEN_POLICY_PATTERNS = {
-    "evidence-ranking or source-rank policy": re.compile(
-        r"\b(?:source-rank|source rank|evidence-ranking|evidence ranking)\b",
-        re.IGNORECASE,
-    ),
-    "inference policy": re.compile(r"\binference policy\b", re.IGNORECASE),
-    "refresh triggers": re.compile(r"\brefresh triggers?\b", re.IGNORECASE),
-    "future-design prohibitions": re.compile(
-        r"\bfuture-design prohibitions?\b|\bfuture design prohibitions?\b",
-        re.IGNORECASE,
-    ),
-    "handoff rules": re.compile(r"\bhandoff rules?\b", re.IGNORECASE),
-    "claim boundaries": re.compile(r"\bclaim boundaries?\b", re.IGNORECASE),
-}
 SHARED_ASSET_REQUIRED_METADATA_FIELDS = {
     "Template",
     "Skill",
@@ -481,20 +432,6 @@ ASSET_ROLLOUT_APPROVED_ASSETS = {
     **PROPOSAL_FAMILY_ASSET_APPROVED_ASSETS,
     **REVIEW_FAMILY_ASSET_APPROVED_ASSETS,
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 @dataclass(frozen=True)
@@ -695,18 +632,6 @@ def _extract_markdown_section(body: str, heading: str) -> str | None:
 
 def _normalized_prose(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip().lower()
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def _parse_colon_fields(section: str) -> dict[str, str]:
@@ -1009,170 +934,6 @@ def _asset_body_without_metadata(text: str) -> str:
     return "\n".join(lines)
 
 
-
-
-
-
-def validate_project_map_contract_fixture(
-    path: Path,
-    metadata: dict[str, str],
-    body: str,
-    *,
-    diagnostic_subject: str = "contract fixture",
-) -> list[str]:
-    """Validate controlled and canonical project-map contract surfaces."""
-
-    errors: list[str] = []
-
-    for field in ("version", "schema-version", "description", "argument-hint"):
-        if field not in metadata:
-            errors.append(
-                f"{path}: project-map {diagnostic_subject} missing frontmatter field '{field}'"
-            )
-
-    workflow_role = _extract_markdown_section(body, "Workflow role")
-    if workflow_role is None:
-        errors.append(f"{path}: project-map {diagnostic_subject} missing Workflow role")
-    else:
-        fields = _parse_colon_fields(workflow_role)
-        missing_role_fields = sorted(READABILITY_REQUIRED_ROLE_FIELDS - fields.keys())
-        for field in missing_role_fields:
-            errors.append(
-                f"{path}: project-map workflow role missing required field '{field}'"
-            )
-
-    for operation in PROJECT_MAP_REQUIRED_OPERATIONS:
-        if f"`{operation}`" not in body and f"- {operation}" not in body:
-            errors.append(f"{path}: project-map contract missing operation '{operation}'")
-    for scope in ("repository", "area:<slug>"):
-        if f"`{scope}`" not in body:
-            errors.append(f"{path}: project-map contract missing map scope '{scope}'")
-
-    metadata_section = _extract_markdown_section(body, "Map metadata and freshness")
-    if metadata_section is None:
-        errors.append(
-            f"{path}: project-map contract missing Map metadata and freshness section"
-        )
-        metadata_section = ""
-    for field in PROJECT_MAP_REQUIRED_METADATA_FIELDS:
-        if field not in metadata_section:
-            errors.append(
-                f"{path}: project-map contract missing map metadata field '{field}'"
-            )
-
-    evidence_section = _extract_markdown_section(body, "Evidence and confidence")
-    if evidence_section is None:
-        errors.append(f"{path}: project-map contract missing Evidence and confidence section")
-        evidence_section = ""
-    for evidence_class in PROJECT_MAP_REQUIRED_EVIDENCE_CLASSES:
-        if evidence_class not in evidence_section.lower():
-            errors.append(
-                f"{path}: project-map contract missing evidence class '{evidence_class}'"
-            )
-    if "Material claim example" not in evidence_section:
-        errors.append(f"{path}: project-map contract missing material claim example")
-    if "Incidental statement example" not in evidence_section:
-        errors.append(f"{path}: project-map contract missing incidental statement example")
-
-    root_area_section = _extract_markdown_section(body, "Root and area maps")
-    if root_area_section is None:
-        errors.append(f"{path}: project-map contract missing Root and area maps section")
-        root_area_section = ""
-    structure_section = _extract_markdown_section(body, "Required output structure")
-    if structure_section is None:
-        errors.append(f"{path}: project-map contract missing Required output structure section")
-        structure_section = ""
-    if "sole owner" not in structure_section.lower():
-        errors.append(f"{path}: project-map contract must identify the skeleton as structural owner")
-
-    output_skeleton = _extract_markdown_section(body, "Output skeleton") or ""
-    if "- Operation:" not in output_skeleton:
-        errors.append(f"{path}: project-map result must emit Operation")
-    if "- Map scope:" not in output_skeleton:
-        errors.append(f"{path}: project-map result must emit Map scope")
-    if "- Mode:" in output_skeleton:
-        errors.append(f"{path}: project-map result must not emit legacy Mode")
-
-    resource_map = _extract_markdown_section(body, "Resource map")
-    if resource_map is None:
-        errors.append(f"{path}: project-map contract missing Resource map")
-        resource_map = ""
-    skeleton_entry = _resource_entry_text(resource_map, PROJECT_MAP_SKELETON)
-    if skeleton_entry is None:
-        errors.append(
-            f"{path}: Resource map must name packaged resource '{PROJECT_MAP_SKELETON}'"
-        )
-    else:
-        expected_prefix = f"- COPY `{PROJECT_MAP_SKELETON}`"
-        if not skeleton_entry.startswith(expected_prefix):
-            errors.append(
-                f"{path}: Resource map entry for '{PROJECT_MAP_SKELETON}' must use literal COPY"
-            )
-        if not RESOURCE_LOAD_CONDITION_PATTERN.search(skeleton_entry):
-            errors.append(
-                f"{path}: Resource map entry for '{PROJECT_MAP_SKELETON}' must include a load condition"
-            )
-        if not PLAN_ASSET_FIELDS_TO_FILL_PATTERN.search(skeleton_entry):
-            errors.append(
-                f"{path}: Resource map entry for '{PROJECT_MAP_SKELETON}' must name fields or structures to fill"
-            )
-        if "Do not emit unfilled placeholders" not in skeleton_entry:
-            errors.append(
-                f"{path}: Resource map entry for '{PROJECT_MAP_SKELETON}' must instruct agents not to emit unfilled placeholders"
-            )
-
-    skeleton_path = path.parent / PROJECT_MAP_SKELETON
-    if not skeleton_path.is_file():
-        errors.append(
-            f"{path}: mapped project-map skeleton asset '{PROJECT_MAP_SKELETON}' must exist"
-        )
-        return errors
-
-    skeleton = skeleton_path.read_text(encoding="utf-8")
-    for heading in PROJECT_MAP_REQUIRED_OUTPUT_SECTIONS:
-        if f"## {heading}" not in skeleton:
-            errors.append(
-                f"{skeleton_path}: project-map skeleton missing section '{heading}'"
-            )
-    for column in PROJECT_MAP_AREA_REGISTRATION_COLUMNS:
-        if column not in skeleton:
-            errors.append(
-                f"{skeleton_path}: project-map skeleton area table missing column '{column}'"
-            )
-    for label, pattern in PROJECT_MAP_SKELETON_FORBIDDEN_POLICY_PATTERNS.items():
-        if pattern.search(skeleton):
-            errors.append(f"{skeleton_path}: project-map skeleton must not own {label}")
-
-    return errors
-
-
-def validate_project_map_canonical_contract(
-    path: Path,
-    metadata: dict[str, str],
-    body: str,
-) -> list[str]:
-    """Validate canonical project-map source after M2 opt-in."""
-
-    if metadata.get("name") != "project-map":
-        return []
-    if not _is_relative_to(path.resolve(), CANONICAL_SKILLS_DIR.resolve()):
-        return []
-    return validate_project_map_contract_fixture(
-        path,
-        metadata,
-        body,
-        diagnostic_subject="contract",
-    )
-
-
-
-
-
-
-
-
-
-
 def _asset_field_labels(asset_body: str) -> list[str]:
     labels: list[str] = []
     for line in asset_body.splitlines():
@@ -1192,12 +953,6 @@ def _review_family_material_finding_field_block(asset_body: str) -> str:
         if label in REVIEW_FAMILY_MATERIAL_FINDING_ALLOWED_LABELS:
             block_lines.append(line.strip())
     return "\n".join(block_lines)
-
-
-
-
-
-
 
 
 def mapped_asset_paths_for_skill(skill_dir: Path) -> list[str]:
@@ -1253,10 +1008,6 @@ def validate_generated_asset_presence(
             )
 
     return errors
-
-
-
-
 
 
 def _references_packaged_resource(line: str, skill_dir: Path) -> bool:
@@ -1779,10 +1530,6 @@ def validate_metadata_against_schema(metadata: dict[str, str], schema: dict, pat
     return errors
 
 
-
-
-
-
 def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None]:
     errors: list[str] = []
     full_text = path.read_text(encoding="utf-8")
@@ -1818,7 +1565,6 @@ def validate_skill_file(path: Path, schema: dict) -> tuple[list[str], str | None
     errors.extend(validate_ci_maintenance_contract(path, metadata, body))
     errors.extend(_validate_published_self_containment(path, metadata, body))
     errors.extend(validate_readability_contract(path, metadata, body))
-    errors.extend(validate_project_map_canonical_contract(path, metadata, body))
     if skill_name and _is_relative_to(path.resolve(), CANONICAL_SKILLS_DIR.resolve()):
         errors.extend(validate_requirement_delivery_model_copy(path, skill_name))
         if skill_name in TEST_QUALITY_CONSUMERS:
