@@ -1,17 +1,15 @@
 ---
 name: design-review
-description: Independently assess System Design and Architecture Design together against the accepted requirement basis, including Functions, allocation, Interfaces, ARs and realization.
+description: Optionally assess affected logical and architectural design together against the selected requirement basis.
 ---
 
 # Design Review
 
-Review the complete affected design composition: accepted obligations, required logical behavior, accountable Modules, Interfaces, derived ARs, state/data authority and material realization. Supporting views reveal interactions and gaps; they are projections of the owning design, not separate approval targets that must each receive a gate.
+Assess the combined affected design: governing obligations, logical behavior, accountable Modules, Interfaces, ARs, state/data authority, material realization, failures, compatibility and intended proof. Reuse applicable existing definitions. Views expose interactions; they are not separate approval targets.
 
-Check that the combined design can satisfy the accepted IR/SRs and relevant constraints. Inspect scope, feasibility, boundary behavior, failures, compatibility, supporting rationale and acceptance intent. Reuse existing applicable definitions where sufficient. Distinguish a reviewed target design from current implementation observations.
+Integrated Design Review is optional, not a prerequisite for authorized planning or implementation with a usable design. When requested or useful, use advisory scope for advice and formal scope for a specifically requested independent judgment. Record actual scope, inspected subjects, contributors, findings and limits; do not author a repair and independently approve it.
 
-Return need/scope/obligation defects to requirement-analysis, Function/behavior defects to system-design, and responsibility/Interface/AR/realization defects to architecture-design. Delivery sequencing and concrete proof allocation belong to plan; do not take them over to fill a design gap.
-
-Record the exact reviewed subjects, accepted governing basis, actual independent reviewer, findings and judgment under the design purpose. Do not edit the authors' definitions and approve the repaired result. Assess corrections in proportion to their effects while retaining adequate integrated coverage. One integrated design-review covers the two authoring responsibilities.
+Return obligation defects to requirement-analysis, behavior defects to system-design and responsibility/allocation defects to architecture-design. Delivery sequencing remains with plan. Assess corrections proportionately while covering the current affected composition and preserving explicitly relied-on review support. Final whole-change review and distinct Verify remain mandatory.
 
 ## Recording boundary
 

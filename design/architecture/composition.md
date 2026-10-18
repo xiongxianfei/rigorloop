@@ -116,10 +116,10 @@ An interface change identifies all actual producers and consumers. Unknown owner
 
 | Handoff | Producer supplies | Receiving owner decides |
 | --- | --- | --- |
-| RR → requirements | User need, project authority, constraints and supporting analysis | Requirement Analysis proposes IR/SR reuse or changes; Requirement Review assesses the requirement basis. |
-| Requirements → design | Accepted IR/SR basis or authorized correction | System Design defines logical behavior; Architecture Design allocates responsibility, Interfaces and ARs; integrated Design Review judges the combined design. |
-| Design → delivery | Stable requirements, technical boundaries and local/integrated outcomes | Plan allocates work, checks and recovery; Delivery Review judges sequencing and proof adequacy. |
-| Delivery → implementation | Reviewed allocation and authorized scope | Implementation produces the work and evidence; Code Review judges the actual contribution. |
+| RR → requirements | User need, project authority, constraints and supporting analysis | Requirement Analysis selects a usable IR/SR basis or justified reuse; optional Requirement Review assesses it when invoked. |
+| Requirements → design | Accepted IR/SR basis or authorized correction | System Design defines logical behavior; Architecture Design allocates responsibility, Interfaces and ARs; optional integrated Design Review assesses the combined design when invoked. |
+| Design → delivery | Stable requirements, technical boundaries and local/integrated outcomes | Plan allocates work, checks and recovery without mandatory delivery approval; optional review assesses adequacy. |
+| Delivery → implementation | Selected allocation and authorized scope | Implementation produces the work and evidence; final independent whole-change Code Review judges the complete delivered change. |
 | Reviewed work → closeout | Complete delivered change, current judgments, proof and concern dispositions | Verify judges final coherence and records the success-only explanation. Workflow records completion separately. |
 
 Workflow coordinates these handoffs under Assessment's reliance rules. Records represents each actor's explicit decision; CLI persists it safely. Neither recording nor System's composition view supplies approval. Individual scoped invocations use their applicable boundaries without requiring an unrelated full lifecycle.
@@ -130,7 +130,7 @@ Workflow coordinates these handoffs under Assessment's reliance rules. Records r
 
 ```mermaid
 flowchart LR
-  Basis["Accepted requirements and reviewed design"] --> Work["Authorized implementation and required checks"]
+  Basis["Selected requirements and usable design"] --> Work["Authorized implementation and required checks"]
   Guidance["MOD-012 Skill procedures"] -. guidance .-> Work
   Control["MOD-006 Change control"] -. bounded coordination .-> Work
   Work --> Candidate["MOD-013 Package production"]
@@ -145,7 +145,7 @@ flowchart LR
 
 This is a design cooperation view, not an automation engine or publication permission. Check and assessment findings return to their responsible author; the authoritative workflow defines the required gates and correction behavior.
 
-Accepted requirements guide logical and architectural design, reviewed delivery allocation and implementation. Skill procedures provide guidance; Change control coordinates authorized handoffs; Review and verification owns independent judgments. Repository validation produces observations. Package production supplies identified candidates, Skill installation verifies bounded destination effects, and Release coordination separately qualifies and publishes authorized candidates.
+Accepted requirements guide logical and architectural design, proportionate delivery allocation and implementation. Skill procedures provide guidance; Change control coordinates authorized handoffs; Review and verification owns independent judgments. Repository validation produces observations. Package production supplies identified candidates, Skill installation verifies bounded destination effects, and Release coordination separately qualifies and publishes authorized candidates.
 
 Source/resource validity cannot establish semantic instruction adequacy, installation safety or observed public availability. Exercise actual producer/consumer boundaries where their agreement is claimed. A contract gap returns to its design owner; an implementation defect returns to implementation. One whole-change independent Code Review precedes distinct final Verify. Publication requires separate authority even after successful verification.
 
@@ -239,7 +239,7 @@ The [shared navigation](../support/test-design/README.md) indexes model coverage
 
 The [focused testing direction](../../docs/proposals/2026-09-17-model-test-design.md) establishes shared rules and applies separate catalogs to Release, Skill and Authoring. [Design](modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/design-authoring.md#proportionate-design-and-proof) owns the authoring method and System owns the [shared quality, organization and maintenance rules](../support/test-design/rules.md#start-from-supported-outcomes). Every model describes local behavior groups, targets, scenarios, observations, fixture strategy and existing/proposed realization. Each parent owns additional cross-child observations and references local coverage; a child section need not become a separate model/file or test suite.
 
-System's integrated intent is that an installed Design skill can author a model with meaningful coverage and hand it through Design Review into Plan/Delivery Review, while all required current resources remain available. Skill owns instructions and semantic method assessment; Packaging/Installation own real artifact and destination observations; CLI owns factual recording/location behavior; Engineering owns implementation and proof. A local heading check or source-resource inventory cannot establish this combined outcome.
+System's integrated intent is that an installed Design skill can author a model with meaningful coverage and hand it into proportionate planning with optional specialist reviews, while all required current resources remain available. Skill owns instructions and semantic method assessment; Packaging/Installation own real artifact and destination observations; CLI owns factual recording/location behavior; Engineering owns implementation and proof. A local heading check or source-resource inventory cannot establish this combined outcome.
 
 The focused application reconciled its selected catalogs, executable groups and guidance consumers. The [complete-model direction](../../docs/proposals/2026-09-17-complete-model-test-coverage.md) now selects every current model and section-owned responsibility for coverage reconciliation. The [navigation](../support/test-design/README.md#model-test-designs) links each owner's durable account; it carries no duplicate scenarios or completion state. Adequate existing coverage remains usable, and known implementation or semantic-assessment gaps remain explicit until the responsible proof and judgment exist. Scope does not depend on a separate JSON package, permanent per-method ledger or numerical test quota.
 

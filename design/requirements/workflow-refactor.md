@@ -1,14 +1,16 @@
 # Requirement-first workflow refactor analysis
 
+The [2026-10-18 workflow refinement](sources.md#src-simplified-design-workflow) removes mandatory requirement, design and delivery approvals while retaining final independent whole-change review and Verify. Current owner-selected bases are distinct from approval; earlier assessment accounts below keep their original scope.
+
 This package analyzes the requested whole-system refactor before detailed skill, CLI, or persistence implementation. It is RR analysis and navigation to the draft engineering model, not another proposal approval gate. The [source register](sources.md#src-workflow-requirement-review) identifies the author-assessed requirement basis for downstream design under the explicit project exception. It is not independent approval or workflow activation.
 
 The user subsequently authorized document-based review of this refactor without governed recording and removed the Constitution's mandatory author/reviewer separation rule. The [Constitution exception](../../CONSTITUTION.md#workflow-and-review) governs this work. An author assessment must be identified as such; it does not constitute independent review or change the proposed product workflow's independent-review requirements.
 
-## Request and selected rule
+## Original request and selected rule
 
 The incoming request replaces Proposal approval with review of the proposed requirement basis, separates Requirement Analysis, System Design and Architecture Design, and preserves one integrated Design Review. The user's explicit clarification selects **one mandatory whole-change Code Review gate after implementation, with optional interim advice**. This supersedes the conflicting per-milestone review clause in the earlier pasted specification. A gate can contain several correction and reassessment attempts.
 
-The proposed dependency order is:
+The original dependency order below is retained to explain the earlier analysis; its mandatory intermediate approvals are superseded by the 2026-10-18 refinement:
 
 ```text
 RR → Requirement Analysis → Requirement Review

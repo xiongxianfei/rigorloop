@@ -72,7 +72,6 @@ export function validateSnapshot(snapshot) {
     }
     if(kind==='review') {
       unique(value.findings,f=>f.id,'finding');value.findings.forEach(validateIssue);
-      if(value.scope==='advisory'&&value.purpose!=='code')fail('invalid-request','Advisory review is code-only.');
       if(value.assessment) {
         if((value.scope==='advisory')!==(value.assessment.judgment===null))fail('invalid-request','Review judgment does not match its scope.');
         validateSupport(value.assessment.support);
@@ -82,9 +81,9 @@ export function validateSnapshot(snapshot) {
     }
     if(kind==='evidence')value.attachments.forEach(attachment);
     if(kind==='verification')validateSupport(value.support);
-    if(kind==='basis'&&value.decision==='accepted') {
+    if(kind==='basis'&&value.decision==='accepted'&&value.review!==null) {
       const r=ref(value.review,['review']);
-      if(!r||r.scope!=='formal'||r.purpose!==(value.kind==='requirements'?'requirements':'design'))fail('invalid-request','Accepted Basis must retain its compatible formal Review reference.');
+      if(!r||r.scope!=='formal'||r.purpose!==value.kind)fail('invalid-request','A linked Basis Review must be compatible and formal.');
     }
   }
   const rb=ref(c.requirement_basis,['basis']),db=ref(c.design_basis,['basis']);
@@ -103,8 +102,12 @@ export function validateSnapshot(snapshot) {
 }
 
 export function basisSupported(snapshot,basis) {
+  // Selection by the responsible author is not independent approval. An
+  // explicitly linked review still carries its original reliance obligation.
+  if(basis.decision!=='accepted')return false;
+  if(basis.review===null)return true;
   const review=snapshot.accounts.review.find(r=>r.id===basis.review?.id);
-  return basis.decision==='accepted'&&review?.scope==='formal'&&review.purpose===basis.kind&&review.assessment?.judgment==='approved'&&review.applicability.value==='current'&&basis.subjects.every(s=>review.prepared.subjects.some(a=>canonical(a)===canonical(s))&&review.assessment.assessed_subjects.some(a=>a.path===s.path&&a.state===s.state));
+  return review?.scope==='formal'&&review.purpose===basis.kind&&review.assessment?.judgment==='approved'&&review.applicability.value==='current'&&basis.subjects.every(s=>review.prepared.subjects.some(a=>canonical(a)===canonical(s))&&review.assessment.assessed_subjects.some(a=>a.path===s.path&&a.state===s.state));
 }
 
 export function handoff(snapshot,token) {

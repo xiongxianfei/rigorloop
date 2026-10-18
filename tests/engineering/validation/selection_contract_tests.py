@@ -1052,6 +1052,22 @@ class SelectionContractChecks:
         )
 
 
+    def test_exploration_artifact_selects_document_checks_and_rejects_unknown_neighbors(self) -> None:
+        path = "docs/explorations/2026-10-18-simplify-rigorloop.md"
+        result = self.select([path])
+        payload = result.to_json_dict()
+        self.assertEqual(result.status, "ok")
+        self.assertIn({"path": path, "category": "exploration-artifact"}, payload["classified_paths"])
+        self.assertEqual(
+            {"documentation_prose.audit", "markdown_readability.validate"}, selected_ids(payload),
+        )
+        for neighbor in ("docs/explorations/run.py", "docs/explorations/options.json"):
+            with self.subTest(neighbor=neighbor):
+                mixed = self.select([path, neighbor]).to_json_dict()
+                self.assertEqual(mixed["status"], "blocked")
+                self.assertIn(neighbor, mixed["unclassified_paths"])
+
+
     def test_follow_up_register_path_selects_static_validation(self) -> None:
         path = "docs/follow-ups.md"
 

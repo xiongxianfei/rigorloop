@@ -33,6 +33,11 @@
       "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
       "locator": "SR-054",
       "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-SIMPLIFIED-DESIGN-WORKFLOW",
+      "locator": "User selection, 2026-10-18",
+      "basis": "Remove intermediate approvals; keep final independent whole-change review and verification. Preserve authoring responsibilities, evidence, applicable authority and original historical judgments."
     }
   ],
   "statement": "The system shall identify the appropriate next engineering activity and receiving owner from the requested outcome, applicable workflow policy, work state, and assessment basis, preserving prerequisite, independence, correction, and authority boundaries before any dependent continuation.",
@@ -75,8 +80,8 @@
     "A local implementation result remains distinguishable from independent review, successful verification, and authorized external handoff.",
     "An isolated invocation can report its local handoff without automatically starting it; already authorized broader progression follows the applicable prerequisites and authority rather than seeking redundant permission.",
     "A correction follows its responsible owner and required reassessment; persisting a result or changing explanatory text does not renew approval or stale evidence.",
-    "For a requirement-affecting request, route prepares RR intake and Requirement Analysis, then Requirement Review, System/Architecture Design and integrated Design Review, Plan and Delivery Review, authorized implementation, one whole-change Code Review gate and distinct Verify. Optional PR retains separate authority; feasibility and design iteration do not silently bypass these reliance dependencies.",
-    "A requirement/scope defect returns to Requirement Analysis; a logical behavior defect to System Design; a Module/Interface/allocation or AR defect to Architecture Design; a sequencing/proof-allocation defect to Plan; and an implementation or fixture defect to Implement. The affected independent review basis is reconsidered before renewed reliance.",
+    "For a requirement-affecting request, coordinate Requirement Analysis, iterative System/Architecture Design, proportionate planning, authorized implementation, one independent whole-change Code Review and distinct Verify. Requirement, Design and Delivery Reviews are optional specialist assessments, not mandatory intermediate approvals. PR retains separate authority.",
+    "Route defects to the responsible requirement, logical behavior, architecture, planning or implementation owner. Reconcile affected decisions and evidence before renewed reliance; obtain independent reassessment of the final whole-change approval when its scope is affected.",
     "Milestone progress is distinct from gate approval. Satisfying authorized implementation dependencies permits the next milestone without a milestone-review handoff; after complete implementation, review attempts and corrections remain within the whole-change gate defined by SR-082."
   ],
   "assumptions": [],

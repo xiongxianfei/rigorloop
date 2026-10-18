@@ -1450,17 +1450,17 @@ def _apply_path_selection(
         return
 
 
-    if category == "research-artifact":
+    if category in {"research-artifact", "exploration-artifact"}:
         _add_check(
             selected,
             "documentation_prose.audit",
-            "Changed research artifact requires documentation prose audit validation.",
+            "Changed discovery artifact requires documentation prose audit validation.",
             path=path,
         )
         _add_check(
             selected,
             "markdown_readability.validate",
-            "Changed research artifact requires Markdown readability validation.",
+            "Changed discovery artifact requires Markdown readability validation.",
             path=path,
             changed_sections=changed_sections_by_path.get(path, ()),
         )
@@ -2075,6 +2075,8 @@ def _path_category(path: str) -> str | None:
         return "adapter-artifact-metadata"
     if path.startswith("docs/research/") and path.endswith(".md"):
         return "research-artifact"
+    if path.startswith("docs/explorations/") and path.endswith(".md"):
+        return "exploration-artifact"
     if path == "docs/project-map.md" or (
         path.startswith("docs/project-map/") and path.endswith(".md")
     ):

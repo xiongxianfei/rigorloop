@@ -17,6 +17,9 @@ Generate a UTF-8 JSON support member `rigorloop-workflow.json` at the archive ro
 }
 ```
 
+The descriptor inventories installed capabilities, including optional specialist reviews; membership does not make every skill a mandatory workflow stage. Workflow owns progression and only final whole-change approval remains mandatory before Verify.
+
+
 For this profile every value and array membership/order above is exact; missing, extra, duplicate or unknown entries reject. It is a replacement contract, not an extensible arbitrary path list or project profile system. Optional support skills remain ordinary verified candidate members; they do not belong in required_skills. The two target roots derive from the trusted selected target descriptor, never from strings in this member.
 
 The member is included in the archive byte checksum and complete archive inventory, but is not installed as project policy or included in the skill-root tree hash. Root tree counts remain scoped to their declared roots; archive member counts include the support member. Existing trusted metadata/versioning and v1/v2 tree-hash compatibility remain unchanged. A local archive cannot provide its own substitute checksum trust root.

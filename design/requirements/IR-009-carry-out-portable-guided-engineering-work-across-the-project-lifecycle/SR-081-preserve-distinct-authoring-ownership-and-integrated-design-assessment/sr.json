@@ -3,15 +3,15 @@
   "type": "system-requirement",
   "title": "Preserve distinct authoring ownership and integrated design assessment",
   "status": "draft",
-  "statement": "The system shall distinguish requirement authoring, logical System Design and Architecture Design responsibilities and require one integrated independent Design Review of their affected design composition against the accepted requirement basis before delivery planning relies on it.",
+  "statement": "The system shall preserve distinct requirement, logical behavior and architectural responsibilities within one iterative design activity, allowing an attributable usable design basis to support authorized delivery planning without mandatory intermediate Design Review.",
   "analysis": {
     "method": "5W2H",
     "what": {
-      "problem": "Combined authoring contracts and per-technique approvals can duplicate authority, conceal missing behavior or allocations, and turn delivery tasks into substitutes for architectural obligations.",
-      "desired_outcome": "Participants can identify the responsible author and assess whether the combined design can satisfy accepted requirements."
+      "problem": "Separate authoring responsibilities can be mistaken for separate documents and approval stops.",
+      "desired_outcome": "The affected design is coherent and implementable with each fact owned once, and optional review examines the combined scope."
     },
     "why": {
-      "rationale": "The user-selected workflow must preserve traceability and independent judgment while assigning each engineering decision one owner and avoiding redundant approval cycles."
+      "rationale": "Retain explicit engineering decisions and evidence while avoiding mandatory intermediate approval and duplicate handoffs."
     },
     "who": {
       "stakeholders": [
@@ -22,7 +22,7 @@
     },
     "when": {
       "conditions": [
-        "During design development, integrated assessment, correction routing and handoff to delivery planning."
+        "When new or changed obligations require logical behavior, architecture or delivery decisions."
       ]
     },
     "where": {
@@ -31,20 +31,21 @@
       ]
     },
     "how": {
-      "approach": "Apply the explicit ownership and dependency conditions in the criteria; record exact scope, decisions, exceptions and assessment basis without inferring approval from mechanics. Detailed Function, Module, Interface and storage realization belongs to subsequent design."
+      "approach": "Locate affected owners, refine behavior and allocation together, challenge normal/failure/boundary outcomes, and hand off the exact usable design and remaining issues. Use an integrated specialist review when requested or useful."
     },
     "how_much": {
-      "scope": "The selected requirement-first workflow within one Change and its affected dependencies. No new preliminary proposal gate, per-method approval, mandatory milestone approval or automatic external permission is introduced. Preparing successor definitions may precede their storage delivery; actual invocations retain their applicable current governance and recording requirements. This authoring or assessment obligation does not itself choose a storage technology. Workflow activation retains the compatible-recording and necessary-migration prerequisites owned by SR-083. Functional and architectural completeness are deliberately deferred to design; the Feature constraints express workflow conditions, not a completed behavior realization."
+      "scope": "Update only affected current owners and relevant interactions; do not create entities, diagrams or documents to fill a sequence. Preserve applicable Function/AR completeness and one final whole-change review followed by Verify."
     }
   },
   "acceptance_criteria": [
     "Requirement Analysis owns IR/SR meaning and stakeholder Feature/Scenario intent. System Design owns logical Functions, their behavior and Feature/SR relationships; it does not silently redefine stakeholder intent.",
     "Architecture Design owns accountable Module boundaries, Function allocation, Interfaces and exposure, state/data authority, material realization and AR derivation. Each AR remains a requirement beneath one SR with one accountable Module, not a delivery task or duplicate Module obligation.",
-    "System and Architecture Design may iterate. A newly discovered need or missing system obligation returns to Requirement Analysis and affected Requirement Review rather than being hidden in design or code.",
-    "One integrated Design Review assesses affected logical behavior, architectural allocation, Interfaces, ARs, material realization and cross-boundary feasibility against the exact accepted requirement basis. Separate mandatory System Design, architecture, AR or 4+1 approval gates are not introduced.",
+    "System and Architecture Design may iterate in one working loop. A newly discovered need or missing obligation returns to Requirement Analysis before dependent decisions continue; an intermediate approval is not required.",
+    "The responsible author can select the combined logical and architectural design for planning without an intermediate review. An optional integrated Design Review assesses behavior, allocation, Interfaces, ARs, realization and feasibility against the selected requirement basis.",
     "Missing Function or AR coverage blocks design-completeness claims where required, while previously accepted requirement validity remains distinct. One SR need not produce one Function, and a quality obligation may constrain existing behavior.",
-    "Planning consumes the accepted requirements and reviewed design and allocates delivery work and proof. A missing accountable architectural boundary returns to Architecture Design; a task assignment cannot substitute for an AR.",
-    "5W2H, Scenario Analysis, Functional Analysis, Architecture Allocation, Interface analysis and 4+1 views remain methods or tools inside their responsible activities. Views neither redefine black-box Scenarios nor establish approval or satisfaction."
+    "Planning consumes sufficiently defined requirements and design and allocates work and proof without mandatory Design or Delivery Review. Missing behavior or accountability returns to its author; a task cannot substitute for an AR.",
+    "5W2H, Scenario Analysis, Functional Analysis, Architecture Allocation, Interface analysis and 4+1 views remain methods or tools inside their responsible activities. Views neither redefine black-box Scenarios nor establish approval or satisfaction.",
+    "A small refinement may update a few lines in existing owners. Selected views answer material questions; no separate document, new entity or complete diagram set is required merely because a design activity occurs."
   ],
   "assumptions": [
     "Existing governance and recording remain available until explicit coordinated adoption; target skill and CLI support is not assumed installed."
@@ -81,6 +82,11 @@
       "source": "SRC-ADOPTION-DEPENDENCY-REFINEMENT",
       "locator": "IR-009; SR-079–083; SCN-082",
       "basis": "User-authorized scope refinement: compatible recording for selected work, historical import only when required by its dependencies, and blocked affected adoption when necessary migration is unavailable. Preserve identities, original judgments and separate portable authoring; no workflow activation or migration is performed."
+    },
+    {
+      "source": "SRC-SIMPLIFIED-DESIGN-WORKFLOW",
+      "locator": "User selection, 2026-10-18",
+      "basis": "Remove intermediate approvals; keep final independent whole-change review and verification. Preserve authoring responsibilities, evidence, applicable authority and original historical judgments."
     }
   ],
   "confirms": [

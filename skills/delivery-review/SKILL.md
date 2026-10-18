@@ -1,17 +1,15 @@
 ---
 name: delivery-review
-description: Independently assess whether a delivery plan can implement the accepted requirements/design and demonstrate the outcome, including dependencies, proof allocation and recovery.
+description: Optionally assess delivery sequencing, dependencies, proof allocation and recovery against the selected requirements/design.
 ---
 
 # Delivery Review
 
-Review the plan against its accepted requirement and reviewed design basis. Check coherent sequencing, milestone completion criteria, realistic dependencies, actual check selection, cross-boundary interactions and recovery where failure matters. Missing design or Module accountability goes to its design owner, not to an invented delivery task.
+Assess whether the plan can implement the selected requirements and usable design and demonstrate the outcome. Inspect coherent scope, dependencies, milestone completion conditions, meaningful observations, integration and recovery where failure matters. A path selector or list of IDs alone does not establish proof quality.
 
-Assess proof quality using the project's applicable criteria. A passing path selector or list of requirement IDs does not show that meaningful observations exist. Inspect the relevant test intent, fixture strategy and failure boundaries, using a proportionate level of detail.
+This assessment is optional and does not create a mandatory approval before implementation. Use advisory scope for advice and formal scope for a specifically requested independent judgment. Record exact plan/basis, actual assessor and contributors, findings and limitations; do not edit and independently approve the same contribution.
 
-Require one independent whole-change Code Review after implementation and before separate final Verify. Missing milestone review gates are not defects. A one-milestone Change has one whole-change gate; corrections may require several attempts within it.
-
-Record exact reviewed plan/basis, actual authorship, findings and the judgment under the delivery purpose. Do not edit the plan and approve your own repaired result. A positive judgment establishes plan adequacy for its scope, not implementation correctness or publication authority.
+Return missing behavior or responsibility to its design owner and sequencing/proof defects to plan. Preserve one final independent whole-change review and distinct Verify; missing intermediate or milestone gates are not defects. Resolve findings explicitly and reassess corrections proportionately.
 
 ## Recording boundary
 

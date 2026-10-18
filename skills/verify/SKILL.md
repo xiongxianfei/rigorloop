@@ -5,7 +5,7 @@ description: Assess whether current engineering work, applicable reviews and act
 
 # Verify
 
-State whether the requested assessment is scoped or final. Read accepted IR/SRs and applicable ARs, reviewed System/Architecture Design, delivery intent, actual implementation/work, open issues and selected current evidence. For final success, require adequate applicable whole-change Code Review and current support for the other mandatory bases. A review for every milestone is not required.
+State whether the requested assessment is scoped or final. Read accepted IR/SRs and applicable ARs, selected System/Architecture Design, delivery intent, actual implementation/work, open issues and selected current evidence. For final success, require adequate applicable whole-change Code Review and usable requirement/design bases, delivery intent and current support for any explicitly relied-on reviews. Intermediate requirement, design and delivery approvals are not prerequisites. A review for every milestone is not required.
 
 Run the applicable repository checks and any required direct validation; report commands actually executed, results and limitations. Reuse evidence only where its scope and applicability justify it. Trace evidence through implementation/work to governing SR/AR and accepted IR/request basis. Saving records or passing schemas does not satisfy engineering obligations.
 

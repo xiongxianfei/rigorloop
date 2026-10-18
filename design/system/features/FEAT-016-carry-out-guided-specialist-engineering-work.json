@@ -33,6 +33,11 @@
       "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
       "locator": "FEAT-016",
       "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-SIMPLIFIED-DESIGN-WORKFLOW",
+      "locator": "User selection, 2026-10-18",
+      "basis": "Remove intermediate approvals; keep final independent whole-change review and verification. Preserve authoring responsibilities, evidence, applicable authority and original historical judgments."
     }
   ],
   "description": "People and engineering agents can use applicable specialist guidance to produce or assess scoped engineering results across authoring, implementation, assessment, foundations, discovery, learning, and delivery preparation while preserving each activity's contract.",
@@ -41,7 +46,7 @@
       "Complete specialist procedure, usable output shape, material failure disposition, and explicit claim limits.",
       "Project governance, sufficient evidence, and privacy-safe reporting.",
       "Reuse of adopted REM model-authoring guidance and shared authority and assurance responsibilities.",
-      "Requirement-first authoring and independent requirement assessment, distinct logical and architectural design with integrated assessment, and advisory versus whole-change review scope under the adopted workflow."
+      "Requirement-first authoring and iterative logical/architectural design, optional specialist assessments, one independent whole-change review and distinct final Verify."
     ],
     "excludes": [
       "A universal procedure that replaces specialist reasoning.",

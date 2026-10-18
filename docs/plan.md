@@ -19,6 +19,8 @@ Index policy:
 
 ## Active
 
+- [Remove intermediate approvals](plans/2026-10-18-remove-intermediate-approvals.md) — Change `2026-10-18-remove-intermediate-approvals`; selected policy and final assurance scope.
+
 - [Consolidate REM publication references](plans/2026-10-07-rem-reference-consolidation.md) — Change `2026-10-07-rem-reference-consolidation`.
 
 - [Historical-path compatibility retirement](plans/2026-09-17-retire-historical-path-compatibility.md) — historical record unavailable (`docs/changes/2026-09-17-retire-historical-path-compatibility/change.json`).

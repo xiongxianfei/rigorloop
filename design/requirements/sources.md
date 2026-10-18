@@ -726,3 +726,7 @@ User-authorized SR-078 Design extends existing command/storage responsibility th
 ## SRC-ADOPTION-DEPENDENCY-REFINEMENT
 
 User-approved refinement of IR-009, SR-083 and SCN-082 on 2026-10-06: adoption requires compatible recording for selected work; historical import is unnecessary when there are no earlier dependencies, while necessary unavailable migration blocks affected adoption. This narrows the earlier unconditional migration-independent promise to reconcile the [Constitution successor policy](../../CONSTITUTION.md#workflow-and-review). Preserve actual authority, work and historical judgments; authoring, review and portable invocation do not activate a workflow. Supporting allocation and design follow this refined obligation; review judgments and execution evidence remain operational records.
+
+## SRC-SIMPLIFIED-DESIGN-WORKFLOW
+
+User direction, 2026-10-18: simplify design and remove intermediate approvals while retaining final independent review and verification. This refines IR-009's existing guided-work need and affected IR-004 assessment semantics; it introduces no new IR or model identity. SR-080/081 now allow author-selected usable bases, SR-054/082 retain one final review and Verify, and SR-083 preserves coordinated adoption and historical meaning. SCN-076/077 return to draft because their earlier confirmations do not cover this refinement. Earlier approval references retain their original subjects.

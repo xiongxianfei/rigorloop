@@ -1,0 +1,97 @@
+{
+  "id": "SR-080",
+  "type": "system-requirement",
+  "title": "Establish a usable requirement basis before dependent design",
+  "status": "draft",
+  "statement": "The system shall let the responsible author select an assessable requirement basis, including justified reuse, for authorized dependent design without mandatory independent Requirement Review, while retaining material uncertainty, authority and any explicitly relied-on review support.",
+  "analysis": {
+    "method": "5W2H",
+    "what": {
+      "problem": "Mandatory review of every requirement basis adds an approval dependency even when existing obligations can be reused.",
+      "desired_outcome": "An attributable requirement basis supports design without manufacturing a review or concealing unresolved meaning."
+    },
+    "why": {
+      "rationale": "Retain explicit engineering decisions and evidence while avoiding mandatory intermediate approval and duplicate handoffs."
+    },
+    "who": {
+      "stakeholders": [
+        "Engineers and engineering agents",
+        "Independent reviewers and project decision owners",
+        "Maintainers of guidance, validation and recording tools"
+      ]
+    },
+    "when": {
+      "conditions": [
+        "After reconciling an incoming request and whenever its requirement basis changes."
+      ]
+    },
+    "where": {
+      "contexts": [
+        "The project-selected governed workflow and its scoped specialist activities, including portable isolated use where applicable."
+      ]
+    },
+    "how": {
+      "approach": "Identify exact obligations and supporting Feature/Scenario analysis, justify reuse or refinement, and record the responsible actor and rationale. Use specialist review when requested or useful; do not make its absence a routine prerequisite."
+    },
+    "how_much": {
+      "scope": "Requirements may be selected before downstream Function and AR design is complete. Selection is not independent approval or satisfaction. Final whole-change review and Verify remain required; applicable authority and unresolved decisions still constrain work."
+    }
+  },
+  "acceptance_criteria": [
+    "A responsible author can select an assessable requirement basis with exact subjects and rationale without a Requirement Review record or approval.",
+    "A justified reuse conclusion can proceed to authorized design without artificial requirement edits or new identities.",
+    "Unfinished Functions and ARs remain downstream design work; missing or conflicting stakeholder obligations remain explicit and block dependent decisions.",
+    "An optional Requirement Review assesses request fidelity, ownership, coverage, assessability and uncertainty. Its actual assessor, scope and independence are recorded without treating author selection as independent approval.",
+    "When a Basis explicitly relies on a formal review, changed, adverse or unavailable support remains a visible reliance gap; removing the universal gate does not retarget earlier judgments.",
+    "Selection grants no additional execution or publication authority and does not replace the final whole-change review or Verify."
+  ],
+  "assumptions": [
+    "Existing governance and recording remain available until explicit coordinated adoption; target skill and CLI support is not assumed installed."
+  ],
+  "constraints": [
+    "Draft authoring and structural validation do not establish independent review approval or activate the new workflow."
+  ],
+  "constrains": [
+    "FEAT-016",
+    "FEAT-017"
+  ],
+  "sources": [
+    {
+      "source": "SRC-REQUIREMENT-FIRST-WORKFLOW",
+      "locator": "SR-080",
+      "basis": "User-selected requirement-first workflow and one mandatory whole-change Code Review gate. Proposed requirement analysis only; existing product contracts remain active until coordinated adoption. No new Function, AR, implementation or approval is inferred."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-080",
+      "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-080 AC1,2,4,5; AR-031, AR-032",
+      "basis": "Proposed allocation composition: Assurance preserves exact actor/subject/judgment scope; capability routing requires the applicable basis rather than a saved label or old Proposal review. This is a design argument, not executed satisfaction evidence."
+    },
+    {
+      "source": "SRC-WORKFLOW-DESIGN",
+      "locator": "SR-080 AC3,6; AR-032 with AR-031",
+      "basis": "Proposed allocation composition: The routing boundary permits design from sufficient requirements without requiring completed Functions/ARs; feasibility remains bounded and cannot imply implementation authority. This is a design argument, not executed satisfaction evidence."
+    },
+    {
+      "source": "SRC-ADOPTION-DEPENDENCY-REFINEMENT",
+      "locator": "IR-009; SR-079–083; SCN-082",
+      "basis": "User-authorized scope refinement: compatible recording for selected work, historical import only when required by its dependencies, and blocked affected adoption when necessary migration is unavailable. Preserve identities, original judgments and separate portable authoring; no workflow activation or migration is performed."
+    },
+    {
+      "source": "SRC-SIMPLIFIED-DESIGN-WORKFLOW",
+      "locator": "User selection, 2026-10-18",
+      "basis": "Remove intermediate approvals; keep final independent whole-change review and verification. Preserve authoring responsibilities, evidence, applicable authority and original historical judgments."
+    }
+  ],
+  "confirms": [
+    "FUNC-053",
+    "FUNC-054",
+    "FUNC-029",
+    "FUNC-030",
+    "FUNC-031"
+  ]
+}

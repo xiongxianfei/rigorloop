@@ -13,9 +13,9 @@ Skill owns published engineering guidance and its common invocation, resource an
 | Responsibility | Owner |
 | --- | --- |
 | Coordinate authorized work and resumption | route; [Workflow](../../../MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md) |
-| Interpret RR, reuse/refine requirements, assess the proposed basis | requirement-analysis and independent requirement-review |
-| Define logical behavior and accountable realization | system-design and architecture-design; one integrated design-review |
-| Allocate delivery and proof | plan and independent delivery-review |
+| Interpret RR, reuse/refine requirements, assess the proposed basis | requirement-analysis; optional requirement-review |
+| Define logical behavior and accountable realization | system-design and architecture-design in one loop; optional integrated design-review |
+| Allocate delivery and proof | plan; optional delivery-review |
 | Implement with relevant checks | implement; milestones are checkpoints |
 | Assess the delivered whole Change | code-review; optional interim advice has no approval authority |
 | Assess final success and preserve compact completion | verify |

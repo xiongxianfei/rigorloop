@@ -105,14 +105,13 @@ export function updateSnapshot(before,input,observe) {
   }
   if(input.retention)retain(snapshot,input.retention);
   if(!c.completion)invalidate(before,snapshot);
-  if(input.basis?.decision==='accepted'&&!basisSupported(snapshot,snapshot.accounts.basis.find(b=>b.id===input.basis.id)))fail('invalid-request','New acceptance requires current compatible formal approval of its subjects.');
+  if(input.basis?.decision==='accepted'&&!basisSupported(snapshot,snapshot.accounts.basis.find(b=>b.id===input.basis.id)))fail('invalid-request','A linked Basis Review requires current compatible formal approval of its subjects.');
   return snapshot;
 }
 
 export function prepareReview(before,id,input,observe) {
   if(before.change.completion)fail('invalid-request','Completed Change reviews are historical.');
   if(input.selection.length+input.basis_refs.length>64)fail('size-limit','Review preparation exceeds 64 entries.');
-  if(input.scope==='advisory'&&input.purpose!=='code')fail('invalid-request','Only code reviews admit advisory scope.');
   const snapshot=structuredClone(before),previous=snapshot.accounts.review.find(r=>r.id===id);
   if(previous&&(previous.purpose!==input.purpose||previous.scope!==input.scope))fail('invalid-request','An existing Review cannot change purpose or formal scope.');
   const subjects=observe(input.selection);
@@ -164,12 +163,15 @@ export function requireCompletionBasis(snapshot) {
     const basis=snapshot.accounts.basis.find(b=>b.id===selection?.id);
     if(!basis||!basisSupported(snapshot,basis))fail('invalid-request','Completion requires currently supported accepted requirement and design bases.');
   }
-  for(const purpose of ['requirements','design','delivery','code']) {
+  // Only whole-change approval is mandatory. Optional formal reviews that
+  // were explicitly selected remain support dependencies, not silent waivers.
+  for(const purpose of new Set(['code',...c.reviews.map(r=>r.purpose)])) {
     const review=selectedReview(snapshot,purpose);
-    if(!review||review.scope!=='formal'||review.assessment?.judgment!=='approved'||review.applicability.value!=='current')fail('invalid-request','Completion requires current formal review support for every mandatory gate.');
+    if(!review||review.scope!=='formal'||review.assessment?.judgment!=='approved'||review.applicability.value!=='current')fail('invalid-request','Completion requires current whole-change approval and any explicitly selected formal review support.');
   }
+  if(!c.plan)fail('invalid-request','Completion requires recorded delivery intent.');
   const delivery=selectedReview(snapshot,'delivery');
-  if(!c.plan||!delivery.prepared.subjects.some(s=>equal(s,c.plan)))fail('invalid-request','Completion requires the reviewed delivery plan.');
+  if(delivery&&!delivery.prepared.subjects.some(s=>equal(s,c.plan)))fail('invalid-request','An explicitly selected delivery review must cover the current plan.');
   if(c.work.some(w=>!['completed','cancelled'].includes(w.status)))fail('invalid-request','Completion has unfinished work.');
   const issues=[...c.blockers,...snapshot.accounts.review.flatMap(r=>r.findings)];
   if(issues.some(i=>i.state==='open'||i.state==='deferred'&&!i.disposition?.follow_up))fail('invalid-request','Completion has unresolved obligations; record their explicit disposition before relying on success.');

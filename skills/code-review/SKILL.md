@@ -7,7 +7,7 @@ description: Independently assess the complete delivered Change, or provide expl
 
 Identify scope first: formal whole-change review or optional advisory assessment. An advisory review reports findings and advice about inspected subjects, carries no formal judgment, and cannot advance the lifecycle or replace whole-change review. Serious findings still require owned action.
 
-For the mandatory gate, assess the complete delivered scope against accepted IR/SRs, applicable ARs, reviewed System/Architecture Design and accepted delivery intent. Include relevant code, tests, configuration, migration/recovery behavior, generated outputs, skill instructions and documentation, including cross-milestone and cross-Module interactions. The scope is not merely the latest milestone.
+For the mandatory gate, assess the complete delivered scope against accepted IR/SRs, applicable ARs, selected System/Architecture Design and accepted delivery intent. Include relevant code, tests, configuration, migration/recovery behavior, generated outputs, skill instructions and documentation, including cross-milestone and cross-Module interactions. The scope is not merely the latest milestone.
 
 Use a reviewer who did not author the implementation being approved. Record actual contributors and the basis for independence; role labels and hashes cannot establish it. Inspect the actual diff and sufficient context, evidence and failure behavior to judge the current result. Do not silently repair the reviewed subjects and approve your own repairs.
 
