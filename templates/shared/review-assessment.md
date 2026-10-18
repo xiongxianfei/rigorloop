@@ -1,6 +1,6 @@
 # Independent assessment
 
-Assess the selected engineering responsibility against its governing basis and enough actual context to judge the complete declared scope. Requirement Review assesses obligations and justified reuse; integrated Design Review assesses logical behavior and architecture together; Delivery Review assesses sequencing and proof; whole-change Code Review assesses the delivered implementation and interactions. Advisory code assessment supplies useful findings without formal approval.
+Assess the selected engineering responsibility against its governing basis and enough actual context to judge the complete declared scope. Requirement Review assesses obligations and justified reuse; integrated Design Review assesses logical behavior and architecture together; Delivery Review assesses sequencing and proof; whole-change Code Review assesses the delivered implementation and interactions. Requirement, integrated Design and Delivery Reviews are optional. Advisory assessment for any purpose supplies findings without formal approval; final whole-change approval and distinct Verify remain mandatory.
 
 Identify actual inspected subjects, reviewer, contributors and independence basis. Authors do not silently repair subjects and independently approve those repairs. A known author cannot supply independent approval of their own implementation. Labels and matching hashes cannot authenticate independence or establish semantic adequacy.
 

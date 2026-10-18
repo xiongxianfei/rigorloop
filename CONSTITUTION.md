@@ -12,8 +12,8 @@ External runtime instructions and direct user instructions govern within their a
 Within repository artifacts, follow this order:
 
 1. This Constitution.
-2. Approved owning Designs, including their decisions.
-3. The initiative's approved execution plan and verification allocation.
+2. Current owning Designs selected within applicable authority, including their decisions.
+3. The initiative's execution plan and verification allocation selected within that authority.
 4. [AGENTS.md](AGENTS.md), implementation and informal historical discussion.
 
 Contributors MUST identify conflicts and follow the highest applicable authority; they MUST NOT silently blend contradictory rules or invent missing decisions.
@@ -25,7 +25,7 @@ Actors MUST respect artifact ownership and return corrections to the responsible
 
 ## Design and compatibility
 
-Externally observable behavior MUST have an approved owning Design before implementation.
+Externally observable behavior MUST have a sufficiently defined owning Design before implementation. Its responsible author selects the usable basis within applicable authority; a separate intermediate approval is not required.
 Contracts MUST define requirements, edge cases, non-goals, compatibility and acceptance; required behavior MUST map to concrete verification, retaining stable requirement IDs where used.
 [Design](design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/design-authoring.md) owns authoring conventions and reconciled behavioral and technical decisions.
 Architecture or behavior changes MUST update the affected contract, consumers, documentation and examples in the same change.
@@ -41,9 +41,10 @@ RigorLoop MUST present one standard delivery workflow, without separate public r
 Multi-file, risky, ambiguous, architecture-affecting or migration-heavy work MUST have a reviewable execution plan before implementation.
 Plans carry stable intent; the owning change record and stage-owned evidence carry mutable progress, decisions and closeout.
 
-Required Requirement, integrated Design and Delivery reviews MUST precede reliance on their respective bases and packages.
+Requirement, integrated Design and Delivery reviews are optional specialist assessments, not mandatory approval gates. Responsible authors MUST establish usable requirement/design bases and proportionate delivery intent before dependent work, preserve material uncertainty and resolve decisions outside their authority with the owner.
+An owner-selected basis MUST NOT be represented as independent approval. Explicitly relied-on review conclusions retain their scope, applicability and unresolved findings.
 Review assessments MUST identify the exact subjects, findings, basis and limitations of their conclusions.
-Formal reviews MUST leave durable evidence, including clean outcomes; material findings MUST record evidence, required outcomes and a safe resolution path or explicit decision need before driving fixes.
+Invoked reviews MUST leave proportionate durable evidence, including clean outcomes; material findings MUST record evidence, required outcomes and a safe resolution path or explicit decision need before driving fixes.
 Governed completion MUST include one independent whole-change Code Review gate after complete implementation, proportionate reassessment of corrections within that gate, and distinct successful final Verify. Milestones are implementation/check checkpoints, not approval gates; interim advice is optional.
 Only successful Verify owns the final explanation and closeout assessment; a save, advisory review, milestone completion, merge or PR MUST NOT substitute for required gates.
 

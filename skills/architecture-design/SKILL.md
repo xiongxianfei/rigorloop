@@ -1,19 +1,19 @@
 ---
 name: architecture-design
-description: Define Module responsibilities, Interfaces, Function allocation, state authority, realization and derived ARs. Compose appropriate 4+1 views for integrated design review.
+description: Refine accountable Modules, Interfaces, state ownership, realization and allocated requirements together with logical behavior.
 ---
 
 # Architecture Design
 
-Consume accepted IR/SRs, logical Functions and existing architecture. Refine accountable Module boundaries before choosing convenient file or tool groupings. Preserve stable Module/Interface identities when only names change, use clear responsibility names, and make parent/child responsibility and boundary exposure explicit.
+Start with selected requirements, logical Functions and affected existing architecture. Reuse responsibility boundaries and stable identities where meaning continues; a new file or technology does not automatically create a Module.
 
-Allocate Functions to accountable Modules; define Interfaces, interactions and state/data authority. Derive ARs from SRs once architectural accountability is meaningful. Keep ARs under their owning SR in the requirement model, with one accountable Module; a delivery task is not an AR or a second authoritative obligation. Parent visibility does not duplicate descendant ownership.
+In the same working loop as System Design, define changed Function allocation, Interfaces, interactions, state/data authority and material realization choices. Derive ARs only when architectural accountability is meaningful: one parent SR and one accountable Module; delivery tasks are not ARs. Record consequential choices, rationale and unresolved assumptions with their current owner.
 
-Define material technology choices and rationale in the owning architecture realization. Distinguish intended design from observed implementation. A selected database or runtime realizes logical responsibility; it is not automatically a new REM Module.
+Challenge the proposed behavior and architecture using representative normal, failure and boundary situations. Return missing obligations to requirement-analysis and behavior gaps to system-design. Resolve material unknowns before dependent work rather than covering them with an approval label.
 
-Generate and inspect relevant Logical, Process, Development, Physical and Scenario views from their owning model data. Keep governed Scenarios black-box; internal participation belongs in derived Scenario views. Use concise dependency, sequence or state diagrams when they clarify the question. A Development view explains intended code organization and dependencies; it can name meaningful directories/files without merely cataloguing today's checkout. Reuse repository data and existing generators rather than maintaining duplicate diagrams or tables.
+Select views that answer actual questions about the affected scope. A sequence, state or dependency diagram can be sufficient; document omitted/combined concerns concisely under the owning view-selection rules. Reuse generated model views, keep stakeholder Scenarios black-box and place internal participation in derived views. Do not create a complete diagram set merely to fill a template.
 
-Return missing system obligations to requirement-analysis and incoherent logical behavior to system-design. Submit the combined affected design and AR allocation to one integrated design-review. Views and successful schema checks cannot approve the design.
+Update the affected authoritative models and their consumers, then select the usable combined design for proportionate planning. Optional integrated Design Review assesses the complete affected composition; it is not a mandatory intermediate approval. Final whole-change review includes requirements, architecture, implementation and proof.
 
 ## Recording boundary
 

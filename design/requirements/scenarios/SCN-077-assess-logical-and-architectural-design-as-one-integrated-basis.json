@@ -2,10 +2,10 @@
   "id": "SCN-077",
   "type": "scenario",
   "title": "Assess logical and architectural design as one integrated basis",
-  "status": "confirmed",
+  "status": "draft",
   "actor": "An independent design reviewer",
   "goal": "Determine whether the affected combined design can satisfy accepted requirements.",
-  "context": "System and Architecture Design have produced identifiable work from a reviewed requirement basis.",
+  "context": "Affected logical and architectural design is ready for an optional integrated specialist assessment; planning does not universally require this approval.",
   "trigger": "The author requests integrated Design Review.",
   "preconditions": [
     "The requested scope and relevant project authority are identifiable."
@@ -33,6 +33,10 @@
     {
       "condition": "An architectural concern can be resolved within the accepted obligations.",
       "outcome": "The responsible design author corrects the design and obtains affected integrated reassessment."
+    },
+    {
+      "condition": "The authorized author has a usable design basis and no intermediate review is requested.",
+      "outcome": "Planning can proceed with the exact basis and unresolved issues visible; the final whole-change review still assesses the complete delivered composition."
     }
   ],
   "failures": [
@@ -65,6 +69,11 @@
       "source": "SRC-WORKFLOW-REQUIREMENT-REVIEW",
       "locator": "design/requirements/sources.md#src-workflow-requirement-review",
       "basis": "Document-based author assessment under the explicit Constitution exception confirms this Scenario as requirement-analysis knowledge. It is not independent review, executed product evidence or workflow activation."
+    },
+    {
+      "source": "SRC-SIMPLIFIED-DESIGN-WORKFLOW",
+      "locator": "User selection, 2026-10-18",
+      "basis": "Remove intermediate approvals; keep final independent whole-change review and verification. Preserve authoring responsibilities, evidence, applicable authority and original historical judgments."
     }
   ]
 }

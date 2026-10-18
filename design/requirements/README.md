@@ -1,5 +1,7 @@
 # Requirement Analysis
 
+The [2026-10-18 workflow refinement](sources.md#src-simplified-design-workflow) removes mandatory requirement, design and delivery approvals while retaining final independent whole-change review and Verify. Current owner-selected bases are distinct from approval; earlier assessment accounts below keep their original scope.
+
 Requirements express what must become or remain true.
 REM separates the initial need, the system obligation, and its allocation to architectural responsibility.
 The [REM requirement model](../../rem/models/requirements.md) owns the general semantics.
@@ -15,7 +17,7 @@ Apply the [requirement-analysis method](../../rem/methods/requirement-analysis.m
 
 The current draft contains 10 IRs, 76 SRs, 22 Features, 73 Functions, and 80 Scenarios.
 The original seven-IR engineering-model analysis is extended by [published-product coverage](published-products.md): explicit CLI operations, portable guided engineering activities, and trustworthy compatible tool distribution.
-IRs, SRs, Features, and Functions retain `draft` status; 70 Scenarios are confirmed, including eight assessed workflow and five customer-browser Scenarios; five revised and five local-history Scenarios remain draft.
+IRs, SRs, Features, and Functions retain `draft` status; 68 Scenarios are confirmed, including six assessed workflow and five customer-browser Scenarios; seven revised and five local-history Scenarios remain draft.
 These are bounded definition and coverage conclusions, not requirement approval, implemented behavior, or a complete migration of existing product contracts.
 Current [Requirement Analysis](../../rem/methods/requirement-analysis.md), [Scenario Analysis](../../rem/methods/scenario-analysis.md), and [Functional Analysis](../../rem/methods/functional-analysis.md) define the method; the source register distinguishes each derivation pass.
 
@@ -121,7 +123,7 @@ The [requirement-first workflow analysis](workflow-refactor.md) refines IR-009, 
 | [SR-077](IR-003-control-engineering-changes-and-recover-prior-states/SR-077-migrate-operational-records-with-explicit-preservation-and-disposition/sr.json) | IR-003 | Migrate operational records with explicit preservation and disposition |
 | [SR-078](IR-008-operate-on-recorded-engineering-work-through-reliable-explicit-commands/SR-078-query-retained-change-history-by-selected-engineering-subject/sr.json) | IR-008 | Query retained change history by selected engineering subject |
 | [SR-079](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-079-reconcile-incoming-requests-with-existing-requirement-owners/sr.json) | IR-009 | Reconcile incoming requests with existing requirement owners |
-| [SR-080](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-080-establish-the-reviewed-requirement-basis-before-dependent-design/sr.json) | IR-009 | Establish the reviewed requirement basis before dependent design |
+| [SR-080](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-080-establish-a-usable-requirement-basis-before-dependent-design/sr.json) | IR-009 | Establish a usable requirement basis before dependent design |
 | [SR-081](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-081-preserve-distinct-authoring-ownership-and-integrated-design-assessment/sr.json) | IR-009 | Preserve distinct authoring ownership and integrated design assessment |
 | [SR-082](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-082-require-one-whole-change-review-gate-after-checked-implementation/sr.json) | IR-009 | Require one whole-change review gate after checked implementation |
 | [SR-083](IR-009-carry-out-portable-guided-engineering-work-across-the-project-lifecycle/SR-083-adopt-replacement-workflow-contracts-without-reinterpreting-history/sr.json) | IR-009 | Adopt replacement workflow contracts without reinterpreting history |

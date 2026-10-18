@@ -1,17 +1,17 @@
 ---
 name: requirement-analysis
-description: Reconcile a request, proposal, issue or incident with existing IRs, SRs, Features and Scenarios. Propose justified reuse, refinement or new requirements before requirement review.
+description: Reconcile a request with existing requirements and select an assessable basis for authorized design, without a mandatory intermediate approval.
 ---
 
 # Requirement Analysis
 
-Treat incoming material as RR input. Preserve its source and meaning; a suggested technology or approved direction is not automatically an engineering obligation.
+Treat incoming requests, proposals, issues and incidents as RR input. Compare each material part with existing IR/SR, Feature and Scenario meaning before creating identities. Reuse existing coverage; refine continuing obligations; create a new IR only for a distinct durable need. Preserve source, scope, constraints, acceptance intent and material uncertainty.
 
-Inspect the applicable existing requirements before creating identities. Compare need, scope, conditions and acceptance: reuse without modification is a valid outcome; refine an existing requirement when its meaning evolves; create an IR only for a distinct durable need. One RR may affect several needs. Keep unresolved or conflicting portions visible.
+Apply Requirement Analysis, Scenario Analysis and 5W2H where needed. Keep stakeholder capability, black-box use, system obligation and implementation preference distinct. Do not create a Function per SR or demand completed Function/AR allocation before selecting requirements for design.
 
-Apply the packaged Requirement Analysis and 5W2H methods when deriving or refining IR/SR content. Confirm the stakeholder-visible Feature and black-box Scenarios. Preserve stable IDs and the distinction between a capability, its concrete use and a delivery milestone. Derive assessable SRs, including relevant quality, data, failure and compatibility obligations. Do not create a Function per SR or demand complete Function/AR allocation before requirement approval.
+Update the authoritative affected definitions and concise rationale. Within applicable authority, select a usable requirement basis with exact subjects and a justified disposition; no separate Requirement Review approval is required. An unresolved material obligation still prevents dependent decisions. Owner selection is not independent approval, implementation evidence or external permission.
 
-Update the owning repository definitions and concise applicable rationale. Record RR interpretation, reuse/refinement/creation dispositions, scope, acceptance and material uncertainty in the current handoff. A separate proposal dossier is not required. Prepare the exact proposed requirement basis for independent requirement-review; do not finalize architecture or approve your own work.
+Use optional Requirement Review when requested or useful. Preserve any explicitly relied-on review support and findings. Hand the selected basis and remaining design questions into the iterative design work; final whole-change review will assess the delivered requirements and their realization together. Record at a meaningful handoff without a duplicate proposal dossier.
 
 ## Recording boundary
 

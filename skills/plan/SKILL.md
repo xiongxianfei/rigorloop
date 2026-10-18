@@ -1,19 +1,17 @@
 ---
 name: plan
-description: Turn accepted requirements and reviewed System/Architecture Design into a proportionate delivery plan with milestones, dependencies, proof and recovery. Use before multi-component or risky implementation.
+description: Allocate selected requirements and usable design to proportionate implementation work and meaningful proof, without mandatory delivery approval.
 ---
 
 # Plan
 
-Read the accepted IR/SR basis, applicable ARs, reviewed System/Architecture Design and material constraints. If a needed obligation, logical behavior or architectural owner is missing, return it to its author instead of deciding it through a task assignment.
+Read selected IR/SRs, applicable ARs, usable logical/architectural design and material constraints. Return a missing obligation, behavior or accountable owner to its author rather than deciding it through a task assignment.
 
-Create or revise the initiative's stable plan in the project's plan convention, using the packaged plan skeleton when useful. Keep mutable progress and execution outcomes in the current operational handoff. Do not overwrite another initiative's plan.
+Define only the milestones and detail needed to coordinate scope, dependencies, completion conditions, proof, commands and relevant recovery. Use the existing plan convention and packaged skeleton when useful; keep mutable progress and outcomes in the operational handoff. Do not overwrite another initiative's plan or turn Feature into a delivery work level.
 
-Define coherent milestones with scope, prerequisites, completion conditions, required proof, actual validation commands and relevant failure/recovery considerations. Allocate requirement and design outcomes to implementation and checks; include cross-milestone interactions. Use only work levels that improve coordination. Feature remains a stakeholder-visible capability, not a delivery work level.
+Allocate local and integrated observations that can expose material defects. Use specialist proof methods only for relevant boundaries; no one-test-per-requirement rule is needed. Reuse existing design and proof allocation where sufficient; create another document only when it adds needed delivery reasoning.
 
-Milestone completion means implementation and required checks are complete for that scope. Specify one whole-change independent Code Review checkpoint after the complete implementation and before distinct final Verify. Do not add mandatory per-milestone review handoffs. Optional interim advice remains optional.
-
-Use the relevant packaged proof methods for concurrency, migration, recovery, negative boundaries or integrated behavior. Select observations that can expose a plausible violation; no one-test-per-requirement rule or requirement-shaped stub is needed. Submit the plan and proof allocation together to delivery-review before implementation reliance.
+Select the plan within applicable authority and continue to implementation without mandatory Delivery Review. Optional review can assess a consequential uncertainty. Include one independent whole-change Code Review after complete implementation and distinct final Verify. Milestones complete their scoped work and checks without intermediate approvals.
 
 ## Recording boundary
 

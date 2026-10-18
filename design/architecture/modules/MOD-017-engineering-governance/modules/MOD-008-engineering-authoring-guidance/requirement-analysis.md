@@ -8,7 +8,7 @@ A request, proposal, issue or incident supplies RR input to Requirement Analysis
 
 [Engineering authoring](design-authoring.md#authoring-responsibilities) and the canonical [Requirement Analysis method](../../../../../../rem/methods/requirement-analysis.md) own interpretation against existing requirements. Reuse without modification, refinement, creation, deferral and an explicit conflict are valid dispositions when justified. Proposed technology remains a candidate solution unless the caller establishes it as a genuine constraint.
 
-[Workflow](../MOD-006-engineering-change-control/workflow.md) owns the first mandatory Requirement Review, followed by System/Architecture Design and one integrated Design Review. Optional Explore and Research can resolve material uncertainty without supplying approval or expanding execution authority.
+[Workflow](../MOD-006-engineering-change-control/workflow.md) lets the responsible author select a usable requirement basis for iterative System/Architecture Design without mandatory intermediate approval. Requirement and integrated Design Review remain available on demand; final whole-change review and Verify remain required. Optional Explore and Research can resolve material uncertainty without supplying approval or expanding execution authority.
 
 ## Historical disposition
 
@@ -25,7 +25,7 @@ These stable local references reconcile the prior document contract with the cur
 | PROP-SR-03 | Authoring MUST respect exact requested scope, authority and existing work; ambiguous authority does not justify fallback or implicit expansion. |
 | PROP-SR-04 | Requirement Analysis MUST load the relevant REM methods and enough current model context to assess stakeholder need and supporting Feature/Scenario coverage. |
 | PROP-SR-05 | Operational recording MUST use current CLI tasks and revisions; recorded source material does not grant engineering acceptance. |
-| PROP-SR-06 | The first mandatory review MUST assess the requirement basis, including reuse. No separate Proposal approval gate or mandatory RR document is required. |
+| PROP-SR-06 | The responsible author MUST establish an assessable requirement basis, including justified reuse, before dependent design. Requirement Review is optional; final whole-change review still assesses the basis. No separate Proposal approval gate or mandatory RR document is required. |
 
 ### Boundary scan and acceptance scenarios
 

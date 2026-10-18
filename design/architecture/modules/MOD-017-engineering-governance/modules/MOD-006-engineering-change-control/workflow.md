@@ -10,13 +10,15 @@ The current workflow is owned by [Change control (MOD-006)](README.md). Its requ
 
 ```text
 Request / proposal / issue / incident (RR input)
-  → requirement-analysis → requirement-review
-  → system-design ↔ architecture-design → integrated design-review
-  → plan → delivery-review → implement
+  → requirement-analysis
+  → system-design ↔ architecture-design
+  → proportionate plan → implement
   → whole-change code-review → final verify → authorized PR
 ```
 
-Requirement Analysis decides reuse, refinement or creation of IR/SR and supporting Feature/Scenario definitions. Requirement Review is the first mandatory approval and assesses the proposed requirement basis, including justified reuse. It does not require completed Functions or AR allocations. System Design defines logical behavior; Architecture Design assigns Module accountability, Interfaces, realization and ARs. One integrated Design Review assesses their composition.
+Requirement Analysis decides reuse, refinement or creation of IR/SR and supporting Feature/Scenario definitions. The responsible author selects a usable requirement basis without an intermediate approval; unfinished Functions or ARs remain design work. System Design defines logical behavior; Architecture Design assigns Module accountability, Interfaces, realization and ARs. Work on them in one iterative loop, updating only affected owners and material interactions. A usable combined design supports proportionate planning without a Design or Delivery Review gate.
+
+Requirement, integrated Design and Delivery Reviews are available when requested or useful for a consequential uncertainty. They are not default prerequisites. An optional assessment cannot grant execution authority, hide an unresolved decision or replace final whole-change review. Explicitly relied-on formal judgments retain their support requirements; recorded adverse findings remain actionable.
 
 Route coordinates authorized work from the current handoff. It cannot supply a specialist's judgment, expand user authority or settle an upstream defect by assigning a downstream task. Wrong needs or obligations return to requirement-analysis; logical behavior to system-design; allocation, Interfaces and ARs to architecture-design; delivery sequencing and proof allocation to plan; code defects to implement or bugfix.
 
@@ -56,7 +58,7 @@ These stable local references reconcile the prior document contract with the cur
 | --- | --- |
 | WF-SR-01 | Responsible actors MUST explicitly decide activity, status, ownership and authorized continuation. Workflow MUST consume review applicability and closeout conclusions under RC-SR-04/05/13 rather than infer them from saves or reads. |
 | WF-SR-02 | A Change MUST identify its contract, RR, current accepted requirement/design basis, activity, authority, owner, open issues, selected evidence and next action. Mutable progress belongs to current operational records, not engineering definitions or plan bodies. |
-| WF-SR-03 | Workflow MUST obtain the required independent judgment through Review and Closeout RC-SR-01–04 before relying on approval. This stable ID now references that policy owner; it does not redefine reviewer independence or judgment. |
+| WF-SR-03 | Workflow MUST preserve independent judgment for final whole-change review and distinct Verify under RC-SR-01–04. Requirement, integrated Design and Delivery assessments are optional; their absence alone MUST NOT prevent authorized dependent work with a usable basis. Explicitly relied-on reviews retain their applicability requirements. |
 | WF-SR-04 | Route MUST assess cross-model correction impacts and select the responsible owner without requiring that owner to appear in a previously derived pending set. Authors and receiving actors MUST apply RC-SR-05–07/10 to changed-subject impact, applicability and reassessment; uncertain impact is handled under that policy. |
 | WF-SR-05 | Workflow MUST provide an owned recording and correction path for defects discovered by any responsible stage, including Verify, under RC-SR-08/10/14. Record Format and CLI retain representation and mechanical recording ownership. |
 | WF-SR-06 | Completion MUST remain a historical acceptance statement. Later regressions become linked new work; an error in the original account receives an explicit completion note. Open active-work obligations retain owned correction and disposition paths. |

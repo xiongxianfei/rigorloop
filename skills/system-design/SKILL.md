@@ -1,17 +1,17 @@
 ---
 name: system-design
-description: Define or refine logical Functions and behavior from accepted SRs, including Feature–Function and SR–Function relationships. Use architecture-design for Module responsibility and realization.
+description: Refine logical behavior from the selected requirements, iterating with architectural responsibility in one focused design activity.
 ---
 
 # System Design
 
-Start from the accepted requirement basis and current system definitions. Determine the logical behavior required: Function purpose, inputs, outputs, states, rules and observable outcomes. Reuse existing Functions and relationships where they already satisfy the obligation.
+Locate the selected requirements and affected existing Functions. Reuse sufficient behavior and relationships. Define only the changed purpose, inputs, outputs, states, rules, failures and observable outcomes; one SR need not create one Function, and a quality obligation can constrain existing behavior.
 
-Use Functional Analysis and the system model reference as needed. Several Functions may satisfy one SR, and one Function may support several obligations. A quality constraint can constrain existing behavior; do not mirror the requirement tree mechanically.
+Work with Architecture Design in one loop: locate affected owners, refine behavior and allocation, challenge representative normal/failure/boundary cases, and hand off the usable design. Keep system behavior distinct from Module responsibility without demanding separate documents or approval checkpoints.
 
-Feature intent remains anchored in requirement analysis. Return changes to stakeholder need or obligation to requirement-analysis. Leave Module allocation, Interfaces, realization and architectural AR derivation to architecture-design. Iterate with that owner when feasibility or interactions expose a gap.
+Update the current model and relevant interactions. Diagrams explain its facts and do not create parallel authority. Return a changed need or missing system obligation to requirement-analysis; unresolved material questions remain visible. Architecture Design owns Modules, Interfaces, realization and allocated requirements.
 
-Update the owning repository model and supporting behavior/information explanations. Diagrams explain that design; they do not create separate authoritative copies of entities. Prepare the affected logical behavior together with Architecture Design for one integrated design-review.
+The responsible author can select a usable combined design for planning within current authority. Integrated Design Review is optional and examines the combined scope when invoked. Final independent whole-change review and distinct Verify remain required.
 
 ## Recording boundary
 

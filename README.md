@@ -11,7 +11,7 @@ See [VISION.md](VISION.md) for goals, non-goals, and falsifiability.
 <!-- vision:end -->
 
 RigorLoop makes AI-assisted delivery inspectable after the chat ends.
-The chain runs from request and Requirement Analysis through reviewed design, delivery planning, implementation, review, and final verification. PR handoff is an optional external integration after compact lifecycle completion.
+The chain runs from request and Requirement Analysis through usable design, delivery planning, implementation, review, and final verification. PR handoff is an optional external integration after compact lifecycle completion.
 
 It is for contributors and maintainers who want AI agents to help with serious software work without losing the reasoning, proof, and review trail that make a change safe to continue.
 
@@ -57,7 +57,7 @@ Key paths: [workflow contract](design/architecture/modules/MOD-017-engineering-g
 
 ## Recommended Use
 
-Use the [standard workflow](#workflow-at-a-glance) and current engineering owners. Start Requirement Analysis from the caller's request, reuse existing needs where adequate, and keep requirements, logical behavior and architecture distinct. Plan reviewed work into bounded milestones with required checks, then obtain one independent whole-change Code Review and distinct final Verify.
+Use the [standard workflow](#workflow-at-a-glance) and current engineering owners. Start Requirement Analysis from the caller's request, reuse existing needs where adequate, and keep requirements, logical behavior and architecture distinct. Plan sufficiently defined work into bounded milestones with required checks, then obtain one independent whole-change Code Review and distinct final Verify.
 
 Keep the current handoff useful for the next engineer: goal and authority, governing basis, progress, open issues, relevant evidence, review standing and next action. Preserve older detail selectively where it still supports a decision. A direct skill invocation performs its authorized scope without silently starting the full workflow.
 
@@ -254,8 +254,8 @@ Claude Code uses native skill slash commands after the Claude adapter is install
 /requirement-analysis Analyze this request against the existing requirements.
 /system-design Define the required logical behavior.
 /architecture-design Allocate responsibilities and realization.
-/implement Build the approved milestone with tests first.
-/code-review Review the current diff against the approved artifacts.
+/implement Build the authorized milestone with tests first.
+/code-review Assess the whole change against its selected requirements, design and evidence.
 /pr Prepare the verified change for pull request review.
 ```
 
@@ -278,7 +278,7 @@ RigorLoop recommends one standard workflow for complete AI-assisted delivery:
 - Living references: `docs/project-map.md` when repository shape is not obvious enough for safe reliance
 - Workflow infrastructure: Designs, CLI workflow context, affected root guidance, affected skills, and generated outputs
 - On-demand support: `explore` and `research`
-- Compact per-change chain: `requirement-analysis -> requirement-review -> system-design / architecture-design -> design-review -> plan -> delivery-review -> implement -> code-review -> verify`. PR is an optional external handoff after lifecycle completion.
+- Compact per-change chain: `requirement-analysis -> system-design / architecture-design -> plan -> implement -> code-review -> verify`. Requirement, integrated Design and Delivery Reviews are optional. One final independent whole-change review and distinct verification remain required. PR is an optional external handoff after lifecycle completion.
 - Periodic learning: `learn`
 
 Explore (`explore`) expands a materially unclear decision space; Research (`research`) reduces bounded uncertainty about facts that can change a decision. Use both when the option comparison depends on unanswered research questions, and neither when direction and relevant facts are already clear. They are optional supporting skills: an explicit invocation writes a standalone artifact under `docs/explorations/` or `docs/research/`, and the owning stage must adopt any conclusion that affects its decision. Neither skill approves a direction or advances the lifecycle. `learn` is periodic or explicitly invoked, not a final stage for every change. `ci-maintenance` means updating hosted workflow automation or related CI infrastructure; validation execution belongs to `verify`.

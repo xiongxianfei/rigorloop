@@ -1,28 +1,27 @@
 ---
 name: route
-description: Resume and coordinate authorized engineering work from current CLI context. Select the responsible skill, preserve authority limits and continue through the applicable requirement-first workflow.
+description: Resume authorized engineering work from current context; coordinate usable requirements/design, implementation, final independent review and verification.
 ---
 
 # Route
 
-Use the selected Change's current handoff to identify goal, authority, governing basis, work, open issues, evidence, review standing and next action. Resolve an ambiguous Change selection rather than scanning private storage or guessing from filenames. Missing or contradictory support remains a gap.
-
-The standard dependency chain is:
+Read the selected Change's goal, authority, requirement/design basis, work, issues, evidence and next action. Resolve an ambiguous target rather than scanning private storage. Missing or conflicting meaning is a gap; a missing intermediate approval is not.
 
 ```text
-RR → requirement-analysis → requirement-review
-   → system-design ↔ architecture-design → design-review
-   → plan → delivery-review → implement
-   → whole-change code-review → verify → authorized PR
+RR → requirement-analysis → system-design ↔ architecture-design
+   → proportionate plan → implement → whole-change code-review → verify
+   → authorized PR when requested
 ```
 
-Route chooses work; the specialist owns its definitions or judgments. Requirement changes return to requirement-analysis, logical behavior to system-design, allocation/Interface/AR defects to architecture-design, sequencing/proof allocation to plan, and implementation defects to implement or bugfix. Explore is optional when the option space is materially unclear. Research is optional when a material decision depends on an uncertain fact. Use both when research questions could materially change the option comparison, and neither when direction and decision-relevant facts are sufficiently clear. An explicit invocation produces the specialist artifact. An incidental fact check does not create a discovery artifact. The owning stage must explicitly adopt any consequential conclusion; discovery does not approve work and does not advance lifecycle state.
+The responsible author selects usable requirement and design bases within existing authority. Work on logical behavior and architecture in one iterative loop. Requirement, integrated Design and Delivery Reviews are optional specialist assessments; invoke them when requested or useful for a material uncertainty. Do not introduce approval pauses or duplicate reports solely because the activity changes.
 
-Within the user's authorization, continue across milestones whose work and required checks are complete. Milestones require no reviewer assignment, review record or clean-review label. Known in-scope defects, failed required checks, unresolved dependencies and exhausted authority still block affected work. An isolated request ends at its authorized slice.
+Return a defect to the owner of its meaning: obligations to requirement-analysis, behavior to system-design, responsibility/Interfaces/ARs to architecture-design, sequencing/proof allocation to plan, and implementation to implement or bugfix. Material unresolved decisions, missing authority, failed required checks and open findings still constrain dependent work. Continue authorized work when those dependencies are settled.
 
-When the complete delivered scope is ready, request one independent whole-change Code Review gate. Interim advice is optional and cannot approve the gate. Corrections and proportionate reassessment remain inside that same gate. Final Verify is separate. A save, route decision, installation or schema pass grants no engineering approval or external permission.
+Explore is optional when the option space is materially unclear. Research is optional when a material decision depends on an uncertain fact. Use both when research questions could materially change the option comparison, and neither when direction and decision-relevant facts are sufficiently clear. An explicit invocation produces the specialist artifact; an incidental fact check does not create a discovery artifact. The owning stage must explicitly adopt consequential conclusions. Discovery does not approve work and does not advance lifecycle state.
 
-Update the handoff at consequential changes and before transfer, not after every action. Preserve unresolved obligations and actual judgment ownership. After response loss, inspect current state before reconciling another request; do not replay stale intent. Continue to PR when already authorized and all required work is ready; do not invent another permission checkpoint.
+After complete implementation, obtain one independent whole-change Code Review covering the current requirements, design, delivery intent, implementation and evidence. Corrections and proportionate reassessment stay within that gate; distinct final Verify follows. Optional advice cannot replace either. Preserve explicit formal-review dependencies and unresolved findings rather than treating an optional gate as permission to ignore contrary evidence.
+
+Update records at meaningful transitions and handoffs, not after each action. Use the actual current revision; after response loss, inspect before retrying. Isolated requests remain scoped. Continue through PR only when already authorized; approval of engineering work grants no merge or release permission.
 
 ## Recording boundary
 

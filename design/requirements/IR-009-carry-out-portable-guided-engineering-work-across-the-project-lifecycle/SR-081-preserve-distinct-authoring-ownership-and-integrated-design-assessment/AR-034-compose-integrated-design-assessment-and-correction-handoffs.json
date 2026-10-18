@@ -8,7 +8,7 @@
     "method": "5W2H",
     "what": {
       "problem": "The SR-081 obligation crosses guidance, governance or publication boundaries; an unowned contribution can make a locally valid step appear sufficient for the whole workflow.",
-      "desired_outcome": "Present the complete affected System and Architecture Design against the accepted requirements to one integrated review before planning."
+      "desired_outcome": "Keep combined logical and architectural design usable for planning and final whole-change assessment; specialist integrated review is optional."
     },
     "why": {
       "rationale": "MOD-012 owns the behavior or state needed for this contribution; separating it preserves one accountable owner while allowing the parent SR to compose several contributors."
@@ -30,14 +30,14 @@
       ]
     },
     "how": {
-      "approach": "Apply the allocated criteria through the constrained Functions and explicit contract inputs/outcomes; preserve actual actor decisions, subject identity and known limitations."
+      "approach": "Keep the affected System and Architecture Design coherent against the selected requirements. Permit planning without intermediate approval and offer integrated review when requested or useful. Preserve the other acceptance conditions and current authority."
     },
     "how_much": {
       "scope": "This allocated contribution to SR-081; other contributors, independent assessment, physical recording implementation and product activation remain distinct."
     }
   },
   "acceptance_criteria": [
-    "Present the complete affected System and Architecture Design against the accepted requirements to one integrated review before planning.",
+    "Keep the affected System and Architecture Design coherent against the selected requirements. Permit planning without intermediate approval and offer integrated review when requested or useful.",
     "Route changed needs to Requirement Analysis, behavior to System Design, and boundary/allocation defects to Architecture Design; preserve iteration and assessed scope."
   ],
   "assumptions": [
@@ -56,6 +56,11 @@
       "source": "SRC-WORKFLOW-DESIGN",
       "locator": "SR-081; AR-034",
       "basis": "Draft integrated design from the accepted requirement-first basis. This defines target responsibility and cooperation, not installed capability, design approval, runtime evidence or SQLite adoption."
+    },
+    {
+      "source": "SRC-SIMPLIFIED-DESIGN-WORKFLOW",
+      "locator": "User selection, 2026-10-18",
+      "basis": "Remove intermediate approvals; keep final independent whole-change review and verification. Preserve authoring responsibilities, evidence, applicable authority and original historical judgments."
     }
   ]
 }

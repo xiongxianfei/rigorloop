@@ -16,9 +16,9 @@ Mutable lifecycle state, current milestone state, review status, blockers, routi
 
 ## Source artifacts
 
-- Accepted requirement basis: <IR/SR and relevant Feature/Scenario references>
-- Reviewed logical behavior: <Function and behavior definitions>
-- Reviewed architecture: <Modules, Interfaces, realization and applicable ARs>
+- Selected requirement basis: <IR/SR and relevant Feature/Scenario references>
+- Logical behavior basis: <Function and behavior definitions>
+- Architecture basis: <Modules, Interfaces, realization and applicable ARs>
 - Prior-contract test spec: <path only when independently applicable to current approved scope, otherwise none>
 
 ## Context and orientation

@@ -1,48 +1,48 @@
 {
   "id": "SCN-076",
   "type": "scenario",
-  "title": "Approve a requirement basis before detailed design exists",
-  "status": "confirmed",
-  "actor": "An independent requirement reviewer",
-  "goal": "Decide whether the proposed requirement basis is sufficient for downstream design.",
+  "title": "Select a usable requirement basis before detailed design exists",
+  "status": "draft",
+  "actor": "An authorized requirement author",
+  "goal": "Establish sufficient requirements for dependent design without a mandatory intermediate approval.",
   "context": "Requirement analysis supplies proposed changes or justified reuse, while Functions and ARs may be unfinished.",
-  "trigger": "The author requests independent Requirement Review.",
+  "trigger": "The author has reconciled an incoming request with existing requirements.",
   "preconditions": [
     "The requested scope and relevant project authority are identifiable."
   ],
   "interaction": [
     {
       "actor": "Author",
-      "action": "Supplies the RR basis, exact requirement and supporting analysis subjects, proposed disposition and acceptance criteria."
+      "action": "Identifies the exact requirement and supporting analysis subjects, justified disposition, acceptance intent and unresolved questions."
     },
     {
-      "actor": "Reviewer",
-      "action": "Assesses request fidelity, ownership, coverage, assessability and material uncertainty."
-    },
-    {
-      "actor": "Reviewer",
-      "action": "Records a scoped judgment and any findings against the exact basis."
+      "actor": "Author",
+      "action": "Selects the usable basis within current authority and records the rationale without claiming independent approval."
     },
     {
       "actor": "System",
-      "action": "Presents the judgment and its design-reliance limits."
+      "action": "Preserves the basis and permits authorized design without requiring an intermediate review record."
     }
   ],
-  "expected_outcome": "A justified independent judgment establishes or withholds the requirement basis for design without claiming design or implementation completeness.",
+  "expected_outcome": "The selected requirement basis supports design; final independent whole-change review and Verify remain required.",
   "alternatives": [
     {
       "condition": "Existing requirements fully cover the request.",
-      "outcome": "The review assesses the reuse conclusion without requiring artificial edits."
+      "outcome": "The author reuses the existing requirements without artificial edits or mandatory reuse approval."
     },
     {
       "condition": "Required logical behavior and architectural allocations are not yet designed.",
       "outcome": "A sufficient requirement basis may be accepted while the later design obligations remain explicit."
+    },
+    {
+      "condition": "An optional formal review is explicitly relied on.",
+      "outcome": "Its exact support and limitations remain attributable and adverse or stale support is not silently ignored."
     }
   ],
   "failures": [
     {
-      "condition": "The author supplies their own judgment as independent review, or material requirements are ambiguous.",
-      "outcome": "The gate does not establish independent acceptance and exposes the missing basis or correction."
+      "condition": "Material requirements remain ambiguous or authority is missing.",
+      "outcome": "Dependent work remains unresolved and exposes the necessary decision; absence of an approval record alone is not the blocker."
     },
     {
       "condition": "Material requirement subjects change after the assessment.",
@@ -68,6 +68,11 @@
       "source": "SRC-WORKFLOW-REQUIREMENT-REVIEW",
       "locator": "design/requirements/sources.md#src-workflow-requirement-review",
       "basis": "Document-based author assessment under the explicit Constitution exception confirms this Scenario as requirement-analysis knowledge. It is not independent review, executed product evidence or workflow activation."
+    },
+    {
+      "source": "SRC-SIMPLIFIED-DESIGN-WORKFLOW",
+      "locator": "User selection, 2026-10-18",
+      "basis": "Remove intermediate approvals; keep final independent whole-change review and verification. Preserve authoring responsibilities, evidence, applicable authority and original historical judgments."
     }
   ]
 }

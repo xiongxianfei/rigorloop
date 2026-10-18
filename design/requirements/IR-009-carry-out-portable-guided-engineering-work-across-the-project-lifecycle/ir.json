@@ -33,6 +33,11 @@
       "source": "SRC-ADOPTION-DEPENDENCY-REFINEMENT",
       "locator": "IR-009; SR-079–083; SCN-082",
       "basis": "User-authorized scope refinement: compatible recording for selected work, historical import only when required by its dependencies, and blocked affected adoption when necessary migration is unavailable. Preserve identities, original judgments and separate portable authoring; no workflow activation or migration is performed."
+    },
+    {
+      "source": "SRC-SIMPLIFIED-DESIGN-WORKFLOW",
+      "locator": "IR-009",
+      "basis": "User-selected removal of intermediate approvals; retain final independent review and verification. The existing guided-work need and identity continue."
     }
   ],
   "statement": "People working with engineering agents need discoverable and usable guidance for carrying out bounded engineering activities across a project lifecycle, so they can produce the appropriate artifacts, corrections, assessments, and handoffs under their own project authority without depending on RigorLoop repository internals.",
@@ -64,7 +69,7 @@
       ]
     },
     "how": {
-      "approach": "Provide distinct capability descriptions, resolve project context and authority, select applicable resources, guide the requested specialist procedure, and report usable outputs and remaining limits. Use the supported CLI procedure only when governed recording applies. Existing authority, work-context, evidence, model-authoring, and learning responsibilities remain shared rather than copied into this need. Treat requests, proposals, issues and incidents as RR input. Analyze existing needs before creating entities. Requirement Review establishes the first accepted basis; System Design and Architecture Design remain distinct authoring responsibilities with one integrated Design Review. Milestones organize implementation and proof, with optional interim advice and one independent whole-change Code Review gate before distinct final Verify. Reassessment may repeat within a gate. Scope and authority determine continuation; support methods are not automatic extra stages."
+      "approach": "Provide distinct capability descriptions, resolve project context and authority, select applicable resources, guide the requested specialist procedure, and report usable outputs and remaining limits. Use the supported CLI procedure only when governed recording applies. Existing authority, work-context, evidence, model-authoring, and learning responsibilities remain shared rather than copied into this need. Treat requests, proposals, issues and incidents as RR input. Analyze existing needs before creating entities. The responsible author selects a usable requirement basis; System Design and Architecture Design remain distinct responsibilities in one iterative activity. Intermediate requirement, design and delivery reviews are optional. Milestones organize implementation and proof, with optional interim advice and one independent whole-change Code Review gate before distinct final Verify. Reassessment may repeat within a gate. Scope and authority determine continuation; support methods are not automatic extra stages."
     },
     "how_much": {
       "scope": "The refined scope covers the requirement-first workflow, authoring ownership, stage-specific assessment dependencies, bounded isolated activities and coordinated adoption of published guidance. Existing detailed specialist contracts remain active until reviewed replacement and explicit adoption; the draft does not claim that the new skill names or CLI operations already exist. It adds no new IR, universal requirement to edit already adequate entities, standalone RR file, preliminary proposal approval, mandatory milestone approval or per-method approval gates. Package generation, installation and release remain separately owned. Workflow authoring can precede storage delivery. Activation requires compatible recording for the selected work; migration is a prerequisite only where that work depends on incompatible earlier records. A fresh store cannot substitute for unresolved active-work dependencies."
@@ -72,7 +77,7 @@
   },
   "assumptions": [],
   "constraints": [
-    "Requirement approval establishes a basis for design; it does not require complete Function or AR allocation or grant implementation or external-action authority.",
+    "Owner selection establishes a usable basis for design without intermediate approval; it does not require complete Function or AR allocation or grant implementation or external-action authority.",
     "One whole-change Code Review gate may contain several independent assessment attempts. Optional advisory feedback cannot settle that gate or be ignored when it exposes a material defect."
   ],
   "confirms": [

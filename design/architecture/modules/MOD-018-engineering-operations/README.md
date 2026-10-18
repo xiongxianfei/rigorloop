@@ -8,16 +8,19 @@ Each handoff identifies the requested scope, current subject set, governing requ
 
 | Activity | Owned result | Reliance condition and next owner |
 | --- | --- | --- |
-| Requirement Analysis | RR interpretation; IR/SR reuse/refinement/creation; stakeholder Feature/Scenario analysis | Independent Requirement Review assesses the exact proposed basis, including justified reuse. |
-| Requirement Review | Scoped requirement judgment and findings | Accepted basis permits authorized System/Architecture Design; Function/AR completion is not required here. |
+| Requirement Analysis | RR interpretation; IR/SR reuse/refinement/creation; stakeholder Feature/Scenario analysis | The responsible author selects a usable basis, including justified reuse, for authorized System/Architecture Design; Function/AR completion is not required here. |
+| Requirement Review (optional) | Scoped requirement judgment and findings | When invoked, assesses the selected basis and returns material requirement gaps to Requirement Analysis. |
 | System Design | Logical behavior and Feature/SR–Function relationships | Work iterates with Architecture Design; changed stakeholder obligations return upstream. |
-| Architecture Design | Accountable Modules, Interfaces, realization and ARs | One integrated Design Review assesses the complete affected design composition. |
-| Design Review | Integrated judgment and correction ownership | Planning relies on the accepted design. Missing architectural responsibility cannot become a delivery task. |
-| Plan and Delivery Review | Delivery intent, sequencing, dependencies and proof allocation; reviewed adequacy | Authorized implementation begins only with an applicable delivery basis. |
+| Architecture Design | Accountable Modules, Interfaces, realization and ARs | The responsible authors select a usable combined System/Architecture Design for planning. |
+| Design Review (optional) | Integrated judgment and correction ownership | When invoked, assesses the combined design and returns material gaps to its authors. Missing architectural responsibility cannot become a delivery task. |
+| Plan | Delivery intent, sequencing, dependencies and proof allocation | Authorized implementation relies on an applicable delivery basis selected by the responsible author. |
+| Delivery Review (optional) | Scoped delivery judgment and findings | When invoked, assesses plan adequacy and returns material gaps to their owners. |
 | Implement | Actual work, required checks, blockers and remaining scope | Eligible milestones continue; full implementation readiness requests one whole-change gate. |
 | Code Review, advisory scope | Attributable feedback on explicitly selected interim subjects | No lifecycle approval. Material defects still require correction or disposition. |
 | Code Review, whole-change scope | Exact complete candidate, governing basis, judgment and findings | Corrections return to owners and reassessment remains in the same gate. Applicable approval permits distinct Verify. |
 | Verify | Current criterion support and scoped completion conclusion | Engineering defects return to their owners; evidence-only retries repeat affected verification without inventing a new review gate. Optional PR retains separate authority. |
+
+Author selection does not establish independent approval. An explicitly relied-on formal review remains a dependency; optional advisory feedback does not establish gate approval.
 
 Stage validity, artifact completeness, approval applicability, execution authority and recorded persistence outcome are separate predicates. FUNC-054 composes them; the CLI supplies observations and accepts explicit decisions without becoming a semantic router. Missing or unknown stage/scope values must reject before consistency inference. Concrete closed vocabularies and literal operation schemas belong to the replacement CLI/Records contract and require negative tests during implementation.
 

@@ -41,11 +41,11 @@
     "A milestone is complete only when its recorded implementation scope and required checks are complete. If another milestone is authorized and its dependencies are satisfied, it may proceed without reviewer assignment, a milestone review ID or a clean-review status.",
     "Failed required checks, missing authority, an unresolved requirement or architectural decision, or a material safety issue blocks affected work. Known in-scope defects must be corrected or explicitly dispositioned under applicable authority before implementation is claimed complete.",
     "An explicitly requested interim code review is advisory: its findings concern the inspected scope and cannot settle the whole-change gate, advance lifecycle approval or become an automatic milestone prerequisite. Material findings remain attributable and require responsible correction or disposition without duplicate dossiers.",
-    "Implementation completion supplies the complete delivered scope for independent whole-change assessment against accepted IR/SR, applicable ARs, reviewed System/Architecture Design, delivery intent and current evidence, including cross-milestone interactions and relevant code, tests, configuration, migrations, generated output, skills and documentation.",
+    "Complete implementation is independently assessed against the selected IR/SR and design bases, applicable ARs, delivery intent and current evidence, including interactions, code, tests, configuration, migrations, generated output, skills and documentation. Absence of intermediate requirement, design or delivery approval does not prevent this assessment.",
     "A changes-requested assessment keeps its actionable findings and basis until explicit disposition or reassessment. Owned corrections and relevant checks receive independent reassessment within the same whole-change gate. The current assessment may replace superseded detail without losing open obligations or falsely retargeting a judgment still relied upon.",
     "Reassessment establishes adequate coverage of the complete current result, inspecting corrections and affected interactions and explicitly determining retained applicability. It need not reread unchanged files or rerun unaffected checks automatically; uncertain impact or broad changes may require broader assessment.",
     "Final Verify requires applicable whole-change approval and current evidence and remains distinct from Code Review. A clean advisory review, passed tests or a single completed milestone cannot substitute. A one-milestone Change has one whole-change gate, not an additional milestone approval.",
-    "An implementation defect discovered during Verify returns to implementation and affected independent reassessment before renewed Verify; requirement/design defects return to their authoring and review owners. Evidence-collection failure without changed engineering subjects permits affected verification retry without automatic Code Review restart. New contradictory evidence requires approval-applicability assessment.",
+    "A defect discovered during Verify returns to its responsible author and affected independent whole-change reassessment before renewed Verify. Evidence-collection failure without changed subjects permits retry without automatic review restart; contradictory evidence requires applicability assessment.",
     "Operational bookkeeping, evidence retries and edits shown to have no material effect on assessed behavior, instructions, obligations or support can retain an approved whole-change Review with an explicit applicability disposition, without another Review attempt. Material changes require independent reassessment of affected subjects and interactions; uncertain impact remains unresolved until assessed. Route coordinates recorded handoffs but does not create reviewer judgments or infer harmlessness from edit size or file type.",
     "An isolated request for one implementation slice ends at that authorized scope. Removal of milestone review gates grants no additional execution, merge, publication or other external-action authority."
   ],
@@ -94,6 +94,11 @@
       "source": "SRC-ADOPTION-DEPENDENCY-REFINEMENT",
       "locator": "IR-009; SR-079–083; SCN-082",
       "basis": "User-authorized scope refinement: compatible recording for selected work, historical import only when required by its dependencies, and blocked affected adoption when necessary migration is unavailable. Preserve identities, original judgments and separate portable authoring; no workflow activation or migration is performed."
+    },
+    {
+      "source": "SRC-SIMPLIFIED-DESIGN-WORKFLOW",
+      "locator": "User selection, 2026-10-18",
+      "basis": "Remove intermediate approvals; keep final independent whole-change review and verification. Preserve authoring responsibilities, evidence, applicable authority and original historical judgments."
     }
   ],
   "confirms": [

@@ -470,7 +470,7 @@ No automatic promotion from proposed to observed is defined here. Later implemen
 
 ### Workflow activity selection
 
-The first proposed activity selects the [Operations handoff protocol](../architecture/modules/MOD-018-engineering-operations/README.md#authoring-assessment-and-handoff-protocol), without copying its detailed obligations into another workflow document. Its main path covers requirement analysis/review, iterative System/Architecture Design, integrated Design Review, planning/delivery review, checked implementation, whole-change Code Review and separate Verify. RR is input. Optional PR requires separate authorization.
+The first proposed activity selects the [Operations handoff protocol](../architecture/modules/MOD-018-engineering-operations/README.md#authoring-assessment-and-handoff-protocol), without copying its detailed obligations into another workflow document. Its main path covers requirement analysis, iterative System/Architecture Design, proportionate planning, checked implementation, final independent whole-change Code Review and separate Verify. Requirement, Design and Delivery Review are optional assessments when invoked. RR is input. Optional PR requires separate authorization.
 
 The activity must distinguish required conditions from automatic execution. Requirement acceptance enables authorized design even when Function/AR allocations are incomplete. Milestone completion with required checks permits otherwise authorized continuation; it does not require a review record. Interim advice is optional and cannot establish gate approval. A direct isolated invocation exits at its authorized scope rather than following the whole path automatically.
 

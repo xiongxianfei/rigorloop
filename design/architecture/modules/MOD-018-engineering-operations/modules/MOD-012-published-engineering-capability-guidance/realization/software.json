@@ -11,7 +11,7 @@
       {
         "name": "requirement-review",
         "group": "Requirements",
-        "purpose": "Independently assess the exact requirement basis, including justified reuse; establish the first mandatory approval.",
+        "purpose": "Optionally assess a requirement basis or justified reuse; owner selection does not require intermediate approval.",
         "contract": "design/architecture/modules/MOD-017-engineering-governance/README.md",
         "source_path": "skills/requirement-review/SKILL.md"
       },
@@ -32,21 +32,21 @@
       {
         "name": "design-review",
         "group": "Design",
-        "purpose": "Assess System and Architecture Design together against the accepted requirement basis in one integrated review.",
+        "purpose": "Optionally assess logical and architectural design together against the selected requirement basis.",
         "contract": "design/architecture/modules/MOD-017-engineering-governance/README.md",
         "source_path": "skills/design-review/SKILL.md"
       },
       {
         "name": "plan",
         "group": "Delivery",
-        "purpose": "Define implementation milestones, dependencies, proof and recovery from accepted requirements and reviewed design.",
+        "purpose": "Define implementation milestones, dependencies, proof and recovery from accepted requirements and usable design.",
         "contract": "design/architecture/modules/MOD-018-engineering-operations/README.md#authoring-assessment-and-handoff-protocol",
         "source_path": "skills/plan/SKILL.md"
       },
       {
         "name": "delivery-review",
         "group": "Delivery",
-        "purpose": "Assess sequencing and proof allocation, including one whole-change review before final Verify.",
+        "purpose": "Optionally assess sequencing and proof allocation; preserve one final whole-change review and Verify.",
         "contract": "design/architecture/modules/MOD-017-engineering-governance/README.md",
         "source_path": "skills/delivery-review/SKILL.md"
       },
@@ -198,17 +198,17 @@
             {
               "function": "FUNC-029",
               "relation": "guides",
-              "contribution": "Independently assess the exact requirement basis, including justified reuse; establish the first mandatory approval."
+              "contribution": "Optionally assess a requirement basis or justified reuse; owner selection does not require intermediate approval."
             },
             {
               "function": "FUNC-031",
               "relation": "guides",
-              "contribution": "Independently assess the exact requirement basis, including justified reuse; establish the first mandatory approval."
+              "contribution": "Optionally assess a requirement basis or justified reuse; owner selection does not require intermediate approval."
             },
             {
               "function": "FUNC-053",
               "relation": "guides",
-              "contribution": "Independently assess the exact requirement basis, including justified reuse; establish the first mandatory approval."
+              "contribution": "Optionally assess a requirement basis or justified reuse; owner selection does not require intermediate approval."
             }
           ],
           "limits": [
@@ -267,17 +267,17 @@
             {
               "function": "FUNC-029",
               "relation": "guides",
-              "contribution": "Assess System and Architecture Design together against the accepted requirement basis in one integrated review."
+              "contribution": "Optionally assess logical and architectural design together against the selected requirement basis."
             },
             {
               "function": "FUNC-031",
               "relation": "guides",
-              "contribution": "Assess System and Architecture Design together against the accepted requirement basis in one integrated review."
+              "contribution": "Optionally assess logical and architectural design together against the selected requirement basis."
             },
             {
               "function": "FUNC-053",
               "relation": "guides",
-              "contribution": "Assess System and Architecture Design together against the accepted requirement basis in one integrated review."
+              "contribution": "Optionally assess logical and architectural design together against the selected requirement basis."
             }
           ],
           "limits": [
@@ -290,7 +290,7 @@
             {
               "function": "FUNC-053",
               "relation": "guides",
-              "contribution": "Define implementation milestones, dependencies, proof and recovery from accepted requirements and reviewed design."
+              "contribution": "Define implementation milestones, dependencies, proof and recovery from accepted requirements and usable design."
             }
           ],
           "limits": [
@@ -303,17 +303,17 @@
             {
               "function": "FUNC-029",
               "relation": "guides",
-              "contribution": "Assess sequencing and proof allocation, including one whole-change review before final Verify."
+              "contribution": "Optionally assess sequencing and proof allocation; preserve one final whole-change review and Verify."
             },
             {
               "function": "FUNC-031",
               "relation": "guides",
-              "contribution": "Assess sequencing and proof allocation, including one whole-change review before final Verify."
+              "contribution": "Optionally assess sequencing and proof allocation; preserve one final whole-change review and Verify."
             },
             {
               "function": "FUNC-053",
               "relation": "guides",
-              "contribution": "Assess sequencing and proof allocation, including one whole-change review before final Verify."
+              "contribution": "Optionally assess sequencing and proof allocation; preserve one final whole-change review and Verify."
             }
           ],
           "limits": [
@@ -543,7 +543,7 @@
     },
     {
       "choice": "Replace proposal/proposal-review and combined design with requirement-analysis/requirement-review, system-design and architecture-design.",
-      "rationale": "Three distinct authoring responsibilities and one integrated Design Review realize the accepted requirement basis through existing Functions, not one Module per skill.",
+      "rationale": "Distinct authoring responsibilities cooperate in one design loop through existing Functions; optional integrated review does not create an intermediate gate or a Module per skill.",
       "alternatives": [
         "Keep parallel old authoring entrypoints.",
         "Create one Module and one mandatory review per method."
@@ -588,23 +588,23 @@
         {
           "name": "requirement-review",
           "group": "Requirements",
-          "purpose": "Independently assess the exact requirement basis, including justified reuse; establish the first mandatory approval.",
+          "purpose": "Optionally assess a requirement basis or justified reuse; owner selection does not require intermediate approval.",
           "contract": "design/architecture/modules/MOD-017-engineering-governance/README.md",
           "functions": [
             {
               "function": "FUNC-029",
               "relation": "guides",
-              "contribution": "Independently assess the exact requirement basis, including justified reuse; establish the first mandatory approval."
+              "contribution": "Optionally assess a requirement basis or justified reuse; owner selection does not require intermediate approval."
             },
             {
               "function": "FUNC-031",
               "relation": "guides",
-              "contribution": "Independently assess the exact requirement basis, including justified reuse; establish the first mandatory approval."
+              "contribution": "Optionally assess a requirement basis or justified reuse; owner selection does not require intermediate approval."
             },
             {
               "function": "FUNC-053",
               "relation": "guides",
-              "contribution": "Independently assess the exact requirement basis, including justified reuse; establish the first mandatory approval."
+              "contribution": "Optionally assess a requirement basis or justified reuse; owner selection does not require intermediate approval."
             }
           ],
           "limits": [
@@ -666,23 +666,23 @@
         {
           "name": "design-review",
           "group": "Design",
-          "purpose": "Assess System and Architecture Design together against the accepted requirement basis in one integrated review.",
+          "purpose": "Optionally assess logical and architectural design together against the selected requirement basis.",
           "contract": "design/architecture/modules/MOD-017-engineering-governance/README.md",
           "functions": [
             {
               "function": "FUNC-029",
               "relation": "guides",
-              "contribution": "Assess System and Architecture Design together against the accepted requirement basis in one integrated review."
+              "contribution": "Optionally assess logical and architectural design together against the selected requirement basis."
             },
             {
               "function": "FUNC-031",
               "relation": "guides",
-              "contribution": "Assess System and Architecture Design together against the accepted requirement basis in one integrated review."
+              "contribution": "Optionally assess logical and architectural design together against the selected requirement basis."
             },
             {
               "function": "FUNC-053",
               "relation": "guides",
-              "contribution": "Assess System and Architecture Design together against the accepted requirement basis in one integrated review."
+              "contribution": "Optionally assess logical and architectural design together against the selected requirement basis."
             }
           ],
           "limits": [
@@ -692,13 +692,13 @@
         {
           "name": "plan",
           "group": "Delivery",
-          "purpose": "Define implementation milestones, dependencies, proof and recovery from accepted requirements and reviewed design.",
+          "purpose": "Define implementation milestones, dependencies, proof and recovery from accepted requirements and usable design.",
           "contract": "design/architecture/modules/MOD-018-engineering-operations/README.md#authoring-assessment-and-handoff-protocol",
           "functions": [
             {
               "function": "FUNC-053",
               "relation": "guides",
-              "contribution": "Define implementation milestones, dependencies, proof and recovery from accepted requirements and reviewed design."
+              "contribution": "Define implementation milestones, dependencies, proof and recovery from accepted requirements and usable design."
             }
           ],
           "limits": [
@@ -708,23 +708,23 @@
         {
           "name": "delivery-review",
           "group": "Delivery",
-          "purpose": "Assess sequencing and proof allocation, including one whole-change review before final Verify.",
+          "purpose": "Optionally assess sequencing and proof allocation; preserve one final whole-change review and Verify.",
           "contract": "design/architecture/modules/MOD-017-engineering-governance/README.md",
           "functions": [
             {
               "function": "FUNC-029",
               "relation": "guides",
-              "contribution": "Assess sequencing and proof allocation, including one whole-change review before final Verify."
+              "contribution": "Optionally assess sequencing and proof allocation; preserve one final whole-change review and Verify."
             },
             {
               "function": "FUNC-031",
               "relation": "guides",
-              "contribution": "Assess sequencing and proof allocation, including one whole-change review before final Verify."
+              "contribution": "Optionally assess sequencing and proof allocation; preserve one final whole-change review and Verify."
             },
             {
               "function": "FUNC-053",
               "relation": "guides",
-              "contribution": "Assess sequencing and proof allocation, including one whole-change review before final Verify."
+              "contribution": "Optionally assess sequencing and proof allocation; preserve one final whole-change review and Verify."
             }
           ],
           "limits": [

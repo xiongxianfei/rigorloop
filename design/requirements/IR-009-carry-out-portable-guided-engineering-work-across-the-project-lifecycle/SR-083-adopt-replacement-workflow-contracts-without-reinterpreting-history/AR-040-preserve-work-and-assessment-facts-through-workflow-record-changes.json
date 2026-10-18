@@ -39,7 +39,8 @@
   "acceptance_criteria": [
     "Publish coherent current work, review, evidence and Verify accounts under the selected contract without mandatory milestone approval or an activity ledger.",
     "During workflow adoption preserve required original source meaning and reconcile active dependencies. During normal work permit explicit current-account replacement and selective compaction; reject unknown or mixed contracts before mutation.",
-    "Use fresh guarded coherent publication and truthful recovery outcomes; persistence must not infer semantic approval or alter engineering model files."
+    "Use fresh guarded coherent publication and truthful recovery outcomes; persistence must not infer semantic approval or alter engineering model files.",
+    "Admit an owner-selected accepted Basis with a null review reference without fabricating approval. If a formal review is explicitly linked, preserve compatible current support requirements. Final success needs code-review approval and distinct Verify, not intermediate review records."
   ],
   "assumptions": [
     "The selected project contract, scope and required counterpart contributions are identifiable; absence is reported rather than inferred."
@@ -63,6 +64,11 @@
       "source": "SRC-CURRENT-HANDOFF",
       "locator": "AR-040",
       "basis": "User-selected current handoff and selective retention refinement. Reuse existing identity and responsibility; no runtime adoption or independent approval is asserted."
+    },
+    {
+      "source": "SRC-SIMPLIFIED-DESIGN-WORKFLOW",
+      "locator": "User selection, 2026-10-18",
+      "basis": "Remove intermediate approvals; keep final independent whole-change review and verification. Preserve authoring responsibilities, evidence, applicable authority and original historical judgments."
     }
   ]
 }

@@ -1,17 +1,17 @@
 ---
 name: requirement-review
-description: Independently assess proposed IR/SR changes or a justified reuse conclusion, with their supporting Feature and Scenario analysis. Establish the first requirement basis for downstream design.
+description: Assess a requested requirement basis or reuse conclusion; this optional specialist review does not create a routine workflow gate.
 ---
 
 # Requirement Review
 
-Review the request interpretation and proposed requirement basis together. Assess fidelity to the RR, existing ownership and duplication, stakeholder scope, assessability, material uncertainty and relevant Feature/Scenario coverage. A justified no-change conclusion can pass without manufacturing requirement edits.
+Assess RR fidelity, existing ownership and duplication, stakeholder scope, requirement meaning, assessability, material uncertainty and Feature/Scenario coverage. A justified reuse conclusion can succeed without manufacturing edits. Do not require downstream Function or AR completeness to judge requirement validity.
 
-The author does not provide independent approval of their own subjects. Record actual reviewer/contributor attribution, inspected subjects, governing basis, findings and limitations. Approval permits downstream design to rely on the reviewed obligations; it does not establish Function completeness, allocated ARs, implementation correctness or permission for external actions.
+This review is optional. Authors may select a usable requirement basis for authorized design without it. When invoked, record actual subjects, assessor, contributors, basis, findings and limitations. Use advisory scope for advice; a specifically requested formal independent judgment uses formal scope. An author must not claim independent approval of their own subjects.
 
-Do not require complete Function or AR allocation as a condition of approving requirements for design. Return wrong needs, missing obligations and scope conflicts to requirement-analysis. Review corrections against their effects while maintaining adequate coverage of the complete current requirement basis. Earlier approval never silently covers rewritten obligations.
+Return defects to requirement-analysis. Review corrections against their effects while retaining adequate current scope; do not silently retarget earlier conclusions. An explicitly linked formal judgment remains a reliance dependency, and optional review findings cannot be erased by omission.
 
-Use review prepare/show/record for the requirements purpose. The requirement owner can select the resulting accepted Basis after applicable approval is recorded. Retain unresolved findings through later submissions; a save creates no approval beyond the reviewer's actual conclusion.
+Use review prepare/show/record with the requirements purpose. Assessment does not grant execution authority, establish downstream completeness or replace final whole-change review and Verify.
 
 ## Recording boundary
 

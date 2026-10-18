@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Realize accepted requirements and reviewed design in authorized, testable milestones. Maintain current evidence and hand off the complete implementation for independent whole-change Code Review.
+description: Realize selected requirements and usable design in authorized, testable milestones. Maintain current evidence and hand off the complete implementation for independent whole-change Code Review.
 ---
 
 # Implement
