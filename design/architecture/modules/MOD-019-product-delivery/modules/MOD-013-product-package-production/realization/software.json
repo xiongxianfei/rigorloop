@@ -104,27 +104,11 @@
         "contract": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#test-design",
         "test_sources": [
           {
-            "path": "tests/engineering/packaging/adapter_generation_tests.py",
-            "role": "Checks isolated outputs, deterministic drift detection and preservation around unsafe output roots."
-          },
-          {
             "path": "tests/engineering/packaging/adapter_archive_tests.py",
-            "role": "Checks actual archive membership, independent hash representations and current resource inclusion."
-          },
-          {
-            "path": "tests/engineering/packaging/adapter_metadata_tests.py",
-            "role": "Checks attributed artifact metadata and closed metadata vocabulary."
-          },
-          {
-            "path": "tests/engineering/packaging/adapter_resources_tests.py",
-            "role": "Checks required resource presence and integrity in generated artifacts."
-          },
-          {
-            "path": "tests/engineering/packaging/adapter_install_tests.py",
-            "role": "Checks archive-root validation and local archive consumption through a source-copied CLI candidate with generated trust metadata; this path does not use an npm tarball."
+            "role": "Selected essential assertions in this retained source; the broader former regression population is intentionally removed."
           }
         ],
-        "observation_boundary": "Real adapter generation and ZIP inspection in private output roots, with independent member/hash expectations and controlled malformed inputs. Local clean-install smoke consumes those archives through a source-copied CLI candidate; source and active-installation sentinels remain separate from outputs.",
+        "observation_boundary": "Actual retained assertions in private stores, filesystem or archive fixtures. Historical group titles do not establish coverage of removed variants.",
         "fixtures": [
           {
             "path": "tests/engineering/packaging/adapter_fixture_helpers.py",
@@ -133,30 +117,17 @@
         ],
         "execution": {
           "owner_contract": "design/support/validation.md",
-          "selection": [
-            {
-              "path": "scripts/select-validation.py",
-              "role": "Optional public path-selection entrypoint for the repository-owned checks containing this group; direct native invocation does not call it."
-            },
-            {
-              "path": "scripts/lib/validation/validation_selection.py",
-              "role": "Declares the applicable catalog commands and path-selection rules; selects existing checks rather than establishing this group's coverage."
-            }
-          ],
+          "selection": [],
           "runners": [
             {
-              "path": "scripts/lib/validation/validation_execution.py",
-              "role": "When selected through the repository wrapper, admits and schedules this group's existing native suite with isolated case execution and attributed results."
+              "path": "scripts/ci.sh",
+              "role": "Direct native Node/Python commands run the complete essential suite without path selection or custom scheduling."
             }
           ],
           "entrypoints": [
             {
-              "path": "tests/engineering/packaging/test-adapter-distribution.py",
-              "role": "Native unittest collector importing the adapter test groups; adapters.regression and adapters.full_regression select bounded or complete existing populations."
-            },
-            {
-              "path": "scripts/ci.sh",
-              "role": "Optional repository validation wrapper that selects and dispatches the relevant existing catalog checks; recorded as a dependency, not invoked by this architecture mapping."
+              "path": "tests/engineering/packaging/adapter_archive_tests.py",
+              "role": "Retained native test source; see the direct runner for its group entrypoint."
             }
           ]
         },
@@ -166,11 +137,9 @@
           "For local archive-consumer smoke, Node and a private source-copied CLI candidate with generated trust metadata; this is distinct from the packed npm consumer below."
         ],
         "limits": [
-          "This attributed source organization identifies available test mechanisms; it establishes neither complete requirement coverage nor a passing execution.",
-          "Shared selection and execution tooling retains its Validation contract owner. Its REM Module allocation remains unresolved; this group does not allocate it to the assessed Module or to MOD-007.",
-          "Static test-source inspection here does not execute generation or read skill instructions.",
-          "Byte and archive observations do not establish semantic faithfulness of transformed instructions, release authorization or public availability.",
-          "Source-copied CLI smoke does not establish emitted npm package completeness; that observation belongs to the separate packed-candidate group."
+          "Source attribution only; execution results remain operational evidence.",
+          "The maintainer selected reduced automated coverage. Detailed rendering, acquisition, malformed-input, model and concurrency variants outside retained assertions are proof gaps.",
+          "See design/support/validation.md for the complete selected allocation and actual entrypoints."
         ]
       },
       {
@@ -179,14 +148,10 @@
         "test_sources": [
           {
             "path": "tests/engineering/packaging/test-npm-package-publication.py",
-            "role": "Checks independent package policy, actual emitted tar members, installed binary completeness and installation behavior."
-          },
-          {
-            "path": "tests/engineering/packaging/npm_recording_tests.py",
-            "role": "Exercises explicit and primary recording through the actual packed binary after installation for supported targets."
+            "role": "Selected essential assertions in this retained source; the broader former regression population is intentionally removed."
           }
         ],
-        "observation_boundary": "Actual npm tarball inspection and installation in fresh consumer roots, followed by the installed binary consuming target ZIPs and selected record interactions; package configuration alone is not the observation.",
+        "observation_boundary": "Actual retained assertions in private stores, filesystem or archive fixtures. Historical group titles do not establish coverage of removed variants.",
         "fixtures": [
           {
             "path": "tests/engineering/packaging/npm_fixture_helpers.py",
@@ -195,30 +160,17 @@
         ],
         "execution": {
           "owner_contract": "design/support/validation.md",
-          "selection": [
-            {
-              "path": "scripts/select-validation.py",
-              "role": "Optional public path-selection entrypoint for the repository-owned checks containing this group; direct native invocation does not call it."
-            },
-            {
-              "path": "scripts/lib/validation/validation_selection.py",
-              "role": "Declares the applicable catalog commands and path-selection rules; selects existing checks rather than establishing this group's coverage."
-            }
-          ],
+          "selection": [],
           "runners": [
             {
-              "path": "scripts/lib/validation/validation_execution.py",
-              "role": "When selected through the repository wrapper, admits and schedules this group's existing native suite with isolated case execution and attributed results."
+              "path": "scripts/ci.sh",
+              "role": "Direct native Node/Python commands run the complete essential suite without path selection or custom scheduling."
             }
           ],
           "entrypoints": [
             {
               "path": "tests/engineering/packaging/test-npm-package-publication.py",
-              "role": "Native unittest package-policy and emitted-artifact entrypoint, also importing PackedRecordingTests; npm_package_publication.test selects this suite."
-            },
-            {
-              "path": "scripts/ci.sh",
-              "role": "Optional repository validation wrapper that selects and dispatches the relevant existing catalog checks; recorded as a dependency, not invoked by this architecture mapping."
+              "role": "Retained native test source; see the direct runner for its group entrypoint."
             }
           ]
         },
@@ -227,10 +179,9 @@
           "The actual current candidate npm tarball, target ZIPs, bundled trust metadata/index, runtime schemas/templates and private installed consumer roots."
         ],
         "limits": [
-          "This attributed source organization identifies available test mechanisms; it establishes neither complete requirement coverage nor a passing execution.",
-          "Shared selection and execution tooling retains its Validation contract owner. Its REM Module allocation remains unresolved; this group does not allocate it to the assessed Module or to MOD-007.",
-          "Packed composition belongs to Packaging and references CLI/Installation contracts; it neither transfers those responsibilities nor duplicates their complete case populations.",
-          "Temporary fixture production is not a qualified release candidate, publication approval, successful current run or registry observation."
+          "Source attribution only; execution results remain operational evidence.",
+          "The maintainer selected reduced automated coverage. Detailed rendering, acquisition, malformed-input, model and concurrency variants outside retained assertions are proof gaps.",
+          "See design/support/validation.md for the complete selected allocation and actual entrypoints."
         ]
       }
     ]

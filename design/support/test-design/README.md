@@ -29,7 +29,7 @@ Apply the [selection procedure](rules.md#select-requirements-and-proof) before e
 | Records | [Stored contracts, identities and preservation](../../architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md#test-design) | Inline groups |
 | Installation | [Acquisition, conflicts, replacement and partial failure](../../architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#test-design) | Inline groups |
 | Engineering | [Development and qualification composition](../development.md#test-design) | Inline groups |
-| Validation | [Admission, selection, execution and measured cost](../validation.md#test-design) | Inline groups |
+| Validation | [Admission, selection, execution and measured cost](../validation.md#test-sources-groups-and-fixtures) | Inline groups |
 | Packaging | [Canonical inputs, reproducible artifacts and consumers](../../architecture/modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/packaging.md#test-design) | Inline groups |
 | Release | [Preparation, candidate qualification, authorized publication and recovery](../../architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/test-design/test-design.md) | [Release cases](../../architecture/modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/test-design/test-cases.json) |
 

@@ -4,8 +4,8 @@
 
 - Map status: partial
 - Scope: repository
-- Baseline: 85a1b9ba7cd1a43ad9e72b924edd88a68fe15872 plus the canonical-design-ownership change. Definition ownership, contract paths and current recording guidance refreshed; unrelated tooling observations retain their earlier qualification.
-- Last reviewed: 2026-10-04
+- Baseline: d7761c8c9c34f0f3a4bb3a74504190e0ceafed53 plus the minimal-tests change for validation/test scope. Unrelated repository observations retain their earlier qualification.
+- Last reviewed: 2026-10-18 (validation/test scope only)
 - Coverage: current test/fixture placement and validation/CI callers; prior repository orientation retained outside this refresh.
 - Exclusions: external account configuration, hosted release execution and historical artifact contents.
 - Parent map: not-applicable
@@ -43,7 +43,7 @@ Optional Explore output uses `docs/explorations/` when invoked; that directory n
 
 Statically traced: [rigorloop.js](../packages/rigorloop/dist/bin/rigorloop.js) dispatches installation, recording, discovery and diagnostic commands. Installation uses [installer-replacement.js](../packages/rigorloop/dist/lib/installer-replacement.js); command logging and rendering are separate modules. Recording uses the package-local record-store modules and schemas. The CLI constructs and persists explicit actor decisions; [route](../skills/route/SKILL.md) supplies semantic routing.
 
-Repository validation enters through [ci.sh](../scripts/ci.sh), uses [validation_selection.py](../scripts/lib/validation/validation_selection.py) for trusted check selection and [validation_execution.py](../scripts/lib/validation/validation_execution.py) for bounded execution. [build-adapters.py](../scripts/build-adapters.py) generates archives from canonical skills and thin templates; [boundary-first-resources.yaml](../scripts/resources/boundary-first/boundary-first-resources.yaml) declares shared projection inputs.
+Repository validation enters through [ci.sh](../scripts/ci.sh), which directly invokes the native Node/Python essential suites. There is no path selector or custom scheduler. [build-adapters.py](../scripts/build-adapters.py) generates archives from canonical skills and thin templates.
 
 ## Data flow
 
@@ -57,22 +57,21 @@ Skill frontmatter and Markdown resources become generated ZIP archives. The pack
 
 ## Test map
 
-Python unittest entrypoints now live in `tests/skill/` and `tests/engineering/{validation,packaging,release}/`. The release suite imports its sibling `release_candidate_tests.py`, `release_coordination_tests.py`, `release_execution_tests.py` and `release_evidence_tests.py`. Supported validation commands remain in `scripts/`; internal helpers live under `scripts/lib/{validation,packaging,release}/`, and authored templates/manifest under `scripts/resources/`; the test-only phrase helper lives in `tests/skill/`. Node tests and builders live in packages/rigorloop/test/. Earlier test-maintenance assessments retain their original population and do not serve as a permanent test registry.
+Python entrypoints live in `tests/skill/` and `tests/engineering/{packaging,release}/`. Node tests and their private store/recovery helpers live in `packages/rigorloop/test/`. The four routine groups cover workflow completion guards, storage/recovery, actual package installation and skill resources. Release has a separate small identity/authority/publication-recovery group with controlled service fixtures.
 
-Current groups protect skills/resources, portable boundary inputs, documentation, selectors/execution, current SQLite operations and explicit historical-record import, installation/privacy, archives/npm and actual release candidates. Retired lifecycle/review engines and exclusive fixtures are absent. [validate-governed-lifecycle-cli.py](../scripts/validate-governed-lifecycle-cli.py) validates current discovery or exact Git snapshots; [release_evidence.py](../scripts/release_evidence.py) retains the release-owned checklist.
+The removed model/browser/prose/selector regression suites and detailed input/legacy/concurrency variants are not claimed covered. Current allocation and explicit limitations live in [Validation](../design/support/validation.md). Product validators and generators remain available for affected changes; their existence does not mean ordinary CI runs them.
 
 ## CI and release map
 
 Configured commands:
 
 ```bash
-bash scripts/ci.sh --mode local
-bash scripts/ci.sh --mode pr --base BASE --head HEAD
+bash scripts/ci.sh
 npm test --prefix packages/rigorloop
 python scripts/build-adapters.py --check
 ```
 
-The CI workflow selects PR-range checks or full main gates, then separately proves real executor overlap. Python and Node cases share the configured worker budget. Unknown paths or invalid preflight scope fail closed. Release automation calls release-coordinator.py; prepared-candidate qualification reaches release-verify.sh with the exact candidate directory. This map does not authorize publication.
+The CI workflow runs the same direct essential suite for PRs and main. Native runners own discovery and failures; no path selection, worker scheduler or overlap gate remains. Release automation calls release-coordinator.py; prepared-candidate qualification reaches release-verify.sh with the exact candidate directory. This map does not authorize publication.
 
 ## Architecture rules observed
 
@@ -91,7 +90,7 @@ External account and hosted release state are outside this repository map's scop
 | Evidence | Type | Result |
 | --- | --- | --- |
 | packages/rigorloop/package.json and dist/bin/rigorloop.js | source | Public package boundary and command dispatch. |
-| scripts/lib/validation/validation_selection.py and scripts/lib/validation/validation_execution.py | source | Current catalog and shared bounded executor; stable commands import their explicit package. |
+| scripts/ci.sh | source | Direct essential-suite invocation through native runners. |
 | scripts/lib/packaging/, scripts/lib/release/, scripts/resources/ | source | Capability-owned implementation and authored operational resources; supported command paths remain at scripts root. |
 | .github/workflows/ci.yml and release.yml | source | Hosted entrypoints and separate operational boundaries. |
 | M4 validation evidence | executed command | Local plus broad CI, Node and current record/release proofs passed on the recorded M4 subjects. |

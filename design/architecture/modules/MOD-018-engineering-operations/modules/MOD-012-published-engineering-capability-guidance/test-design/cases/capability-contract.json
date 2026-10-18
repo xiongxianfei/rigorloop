@@ -18,10 +18,7 @@
         "A private skill directory has name/description frontmatter, one title and Expected output. It has no resources or readability opt-in.",
         "For negative variants validate the unchanged baseline first, then alter only the named field."
       ],
-      "reference_test": {
-        "path": "tests/skill/skill_metadata_tests.py",
-        "symbol": "SkillMetadataTests.test_valid_skill_passes"
-      }
+      "limitation": "Fixture implementation retired with the explicitly reduced regression suite; initial_state remains scenario intent, not executed proof."
     },
     {
       "id": "readability-skill",
@@ -29,20 +26,14 @@
         "A private readable package explicitly selects schema-version skill-readability-v1, version 1.0.0, a complete Workflow role and fillable Output skeleton.",
         "Validate before each named mutation; no historical skill version is selected."
       ],
-      "reference_test": {
-        "path": "tests/skill/skill_metadata_tests.py",
-        "symbol": "SkillMetadataTests.test_skill_readability_valid_fixture_passes"
-      }
+      "limitation": "Fixture implementation retired with the explicitly reduced regression suite; initial_state remains scenario intent, not executed proof."
     },
     {
       "id": "command-environment",
       "initial_state": [
         "Run the trusted skill-validator command in a fresh temporary working directory with an isolated PATH, synthetic runtime trap scripts and no RigorLoop checkout prerequisites in that directory."
       ],
-      "reference_test": {
-        "path": "tests/skill/skill_cli_tests.py",
-        "symbol": "SkillCliTests.test_gate_a_command_has_no_target_runtime_dependency"
-      }
+      "limitation": "Fixture implementation retired with the explicitly reduced regression suite; initial_state remains scenario intent, not executed proof."
     },
     {
       "id": "review-package",
@@ -85,14 +76,11 @@
         "Exit zero with a canonical-integrity result; no resource-map or absent-resource section is required."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/skill/skill_metadata_tests.py",
-            "symbol": "SkillMetadataTests.test_valid_skill_passes"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       }
     },
     {
@@ -124,27 +112,11 @@
         "Exit nonzero and identify the missing name, description, single top-level title or Expected output section."
       ],
       "realization": {
-        "state": "partial",
-        "tests": [
-          {
-            "path": "tests/skill/skill_metadata_tests.py",
-            "symbol": "SkillMetadataTests.test_missing_name_fails"
-          },
-          {
-            "path": "tests/skill/skill_metadata_tests.py",
-            "symbol": "SkillMetadataTests.test_missing_description_fails"
-          },
-          {
-            "path": "tests/skill/skill_metadata_tests.py",
-            "symbol": "SkillMetadataTests.test_missing_title_fails"
-          },
-          {
-            "path": "tests/skill/skill_metadata_tests.py",
-            "symbol": "SkillMetadataTests.test_missing_expected_output_fails"
-          }
-        ],
+        "state": "proposed",
+        "tests": [],
         "gaps": [
-          "Existing negative fixtures assert the intended diagnostics, but these methods do not establish the same passing fixture before each omission."
+          "Existing negative fixtures assert the intended diagnostics, but these methods do not establish the same passing fixture before each omission.",
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
         ]
       },
       "variants": [
@@ -208,19 +180,11 @@
         "Unknown workflow stage is rejected with its closed-vocabulary diagnostic."
       ],
       "realization": {
-        "state": "partial",
-        "tests": [
-          {
-            "path": "tests/skill/skill_metadata_tests.py",
-            "symbol": "SkillMetadataTests.test_skill_readability_invalid_schema_version_fails"
-          },
-          {
-            "path": "tests/skill/skill_metadata_tests.py",
-            "symbol": "SkillMetadataTests.test_skill_readability_invalid_stage_fails"
-          }
-        ],
+        "state": "proposed",
+        "tests": [],
         "gaps": [
-          "Existing fixtures cover unknown values, but do not exercise the competing schema inconsistency and exact early-return observation."
+          "Existing fixtures cover unknown values, but do not exercise the competing schema inconsistency and exact early-return observation.",
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
         ]
       },
       "variants": [
@@ -267,19 +231,11 @@
         "Reject a missing skeleton and reject a skeleton with no fillable placeholders. This check says nothing about the completeness of an emitted artifact."
       ],
       "realization": {
-        "state": "partial",
-        "tests": [
-          {
-            "path": "tests/skill/skill_metadata_tests.py",
-            "symbol": "SkillMetadataTests.test_skill_readability_missing_output_skeleton_fails"
-          },
-          {
-            "path": "tests/skill/skill_metadata_tests.py",
-            "symbol": "SkillMetadataTests.test_skill_readability_output_skeleton_without_placeholder_fails"
-          }
-        ],
+        "state": "proposed",
+        "tests": [],
         "gaps": [
-          "The separate negative fixtures do not prove a single valid baseline before each defining mutation."
+          "The separate negative fixtures do not prove a single valid baseline before each defining mutation.",
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
         ]
       }
     },
@@ -311,15 +267,11 @@
         "Accept 1023 and 1024; reject 1025 with description must be 1024 characters or fewer."
       ],
       "realization": {
-        "state": "partial",
-        "tests": [
-          {
-            "path": "tests/skill/skill_metadata_tests.py",
-            "symbol": "SkillMetadataTests.test_published_design_description_too_long_fails"
-          }
-        ],
+        "state": "proposed",
+        "tests": [],
         "gaps": [
-          "The linked method tests an overlong fixture; just-below and at-limit acceptance are not asserted there."
+          "The linked method tests an overlong fixture; just-below and at-limit acceptance are not asserted there.",
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
         ]
       },
       "variants": [
@@ -374,14 +326,11 @@
         "Reject with generated output path must not be used as authored source of truth."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/skill/skill_metadata_tests.py",
-            "symbol": "SkillMetadataTests.test_generated_output_path_is_rejected"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       }
     },
     {
@@ -412,14 +361,11 @@
         "Both runs succeed with two one-skill results and empty stderr; the target-invoked marker never appears. This demonstrates tool independence, not agent behavior."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/skill/skill_cli_tests.py",
-            "symbol": "SkillCliTests.test_gate_a_command_has_no_target_runtime_dependency"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       }
     },
     {

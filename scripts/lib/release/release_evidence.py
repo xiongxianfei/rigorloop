@@ -371,29 +371,10 @@ def _get_section(sections: dict[str, str], name: str) -> str | None:
     return None
 
 
-def _prepared_ci_release_tag(root: Path, revision: str | None) -> str | None:
-    if os.environ.get('RIGORLOOP_CI_WORKSPACE') != str(root.resolve()):
-        return None
-    output = os.environ.get('RIGORLOOP_CI_CANDIDATE')
-    if not output:
-        return None
-    import tarfile
-    from lib.release.release_candidate import CandidateError, ci_subject
-    try:
-        candidate = ci_subject(Path(output), root)
-        if revision is not None and revision != candidate['prepared_commit']:
-            raise CandidateError('selected revision differs from prepared candidate')
-        return candidate['tag']
-    except (CandidateError, OSError, KeyError, TypeError, AttributeError, ValueError,
-            subprocess.SubprocessError, tarfile.TarError) as exc:
-        raise ValueError('invalid or mismatched prepared CI release context') from exc
-
-
-def validate_paths(root: Path, paths: list[str], *, revision: str | None = None) -> list[str]:
+def validate_paths(root: Path, paths: list[str]) -> list[str]:
     from lib.release.release_candidate import local_file
     if not paths:
         return ['release evidence requires explicit paths']
-    prepared_tag = _prepared_ci_release_tag(root, revision)
     errors = []
     for raw in paths:
         if not re.fullmatch(r'docs/releases/v[^/]+\.md', raw):
@@ -406,7 +387,7 @@ def validate_paths(root: Path, paths: list[str], *, revision: str | None = None)
             errors.append('missing, unsafe or unreadable release evidence')
             continue
         errors.extend(validate_release_evidence_checklist(Path(raw), content,
-            require_preflight_pass=raw != f'docs/releases/{prepared_tag}.md'))
+            require_preflight_pass=True))
     return errors
 
 

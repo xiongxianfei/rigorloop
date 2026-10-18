@@ -14,10 +14,6 @@
   "fixtures": [
     {
       "id": "unprepared",
-      "builder": {
-        "path": "tests/engineering/release/release_fixture_helpers.py",
-        "symbol": "make_release_repo"
-      },
       "profile": "tests/fixtures/release-transaction/profiles/valid-routine-v0.3.5.yaml",
       "facts": {
         "previous_package_version": "0.3.4",
@@ -44,33 +40,27 @@
         "packages/rigorloop/dist/metadata/releases.json",
         "packages/rigorloop/package.json",
         "tests/fixtures/release-transaction/current-version.json"
-      ]
+      ],
+      "limitation": "Fixture implementation retired with the explicitly reduced regression suite; initial_state remains scenario intent, not executed proof."
     },
     {
       "id": "prepared",
       "extends": "unprepared",
-      "builder": {
-        "path": "tests/engineering/release/release_fixture_helpers.py",
-        "symbol": "make_prepared_release"
-      },
       "initial_state": [
         "Run ordinary prepare_release(v0.3.5) once; establish validate_pending_release_artifacts returns [] before a negative case mutation. Capture literal facts independently for REL-TC-001."
-      ]
+      ],
+      "limitation": "Fixture implementation retired with the explicitly reduced regression suite; initial_state remains scenario intent, not executed proof."
     },
     {
       "id": "finalized-local",
       "extends": "prepared",
-      "reference_test": {
-        "path": "tests/engineering/release/release_preparation_tests.py",
-        "symbol": "PrepareReleaseTests.test_prepare_release_check_accepts_finalized_prepublication_evidence"
-      },
       "initial_state": [
         "Write packages/rigorloop/dist/metadata/adapter-artifacts-v0.3.5.json containing {} followed by a newline.",
         "In release.yaml, set manifest_version from the independently read fixture adapter manifest; replace pending results/required gate fields with pass. Keep smoke tool versions and evidence nonempty.",
         "In the adapter report, set source_commit to 0123456789abcdef0123456789abcdef01234567, date to 2026-08-06, each pending sha256 to 64 a characters and pending results to pass.",
         "Run normal and approval-driven preparation as in the reference test, capture the resulting complete tree, and require check=True succeeds before applying a negative variant."
       ],
-      "limitation": "Synthetic finalized local evidence tests format/preservation only; it is not actual qualification, smoke or publication evidence."
+      "limitation": "Fixture implementation retired with the explicitly reduced regression suite; initial_state remains scenario intent, not executed proof."
     }
   ],
   "cases": [
@@ -108,28 +98,16 @@
         "npm-publication.md retains Status: pending-publication and published: false; codex/claude smoke results remain pending-publication. Approval-driven evidence contains no generated pass assertion or invented duration."
       ],
       "realization": {
-        "state": "partial",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_prepare_release_generates_pending_artifacts_idempotently"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_workflow_driven_preparation_preserves_reviewed_version_and_no_generated_passes"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_generated_pending_release_artifacts_validate_shape"
-          }
-        ],
+        "state": "proposed",
+        "tests": [],
         "gaps": [
           "Write the profile package version: The existing test checks changed paths and repeatability but never reads the resulting package version.",
           "Set profile-owned identity and preserve unrelated package metadata: No existing preparation test observes package-field preservation or profile-name replacement.",
           "Generate exactly the selected local preparation surfaces: The existing test checks the reported changed_paths but does not compare them with the actual first-call filesystem diff.",
           "Generated pending evidence has a valid pending shape: The existing test checks only errors == []; assert the pending values independently so producer and validator cannot agree on fabricated success.",
           "Approval-driven preparation does not invent timing measurements: The approval-driven branch explicitly skips new timing output, but no preparation test asserts absence.",
-          "Approval-driven preparation preserves existing timing bytes: The branch preserves existing timing files, but no preparation test observes that behavior."
+          "Approval-driven preparation preserves existing timing bytes: The branch preserves existing timing files, but no preparation test observes that behavior.",
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
         ]
       },
       "method": "automated-test",
@@ -162,18 +140,11 @@
         "The complete tree remains byte-identical and changed_paths is empty; finalized evidence is not reset to pending."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_prepare_release_generates_pending_artifacts_idempotently"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_prepare_release_check_accepts_finalized_prepublication_evidence"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       },
       "method": "automated-test",
       "boundary": "contract"
@@ -205,19 +176,11 @@
         "A human pass example does not become generated proof or select a different planning branch."
       ],
       "realization": {
-        "state": "partial",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_prepare_release_generates_pending_artifacts_idempotently"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_workflow_driven_preserves_human_notes_outside_generated_region"
-          }
-        ],
+        "state": "proposed",
+        "tests": [],
         "gaps": [
-          "Preserve human narrative and earlier release evidence: Existing narrative assertions check substring presence; compare exact outside-region bytes and their positions."
+          "Preserve human narrative and earlier release evidence: Existing narrative assertions check substring presence; compare exact outside-region bytes and their positions.",
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
         ]
       },
       "method": "automated-test",
@@ -250,20 +213,12 @@
         "Both success and rejection preserve the complete tree. Check success establishes local preparation only."
       ],
       "realization": {
-        "state": "partial",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_prepare_release_check_mode_reports_pending_changes_without_writing"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_prepare_release_cli_check_succeeds_after_generation"
-          }
-        ],
+        "state": "proposed",
+        "tests": [],
         "gaps": [
           "The public CLI check reports a prepared no-op: The existing CLI case checks status and output, but needs an independent before/after tree comparison.",
-          "The public CLI check rejects an unprepared tree without writes: The existing rejection case calls the function only; add an actual CLI invocation to observe exit and dispatch."
+          "The public CLI check rejects an unprepared tree without writes: The existing rejection case calls the function only; add an actual CLI invocation to observe exit and dispatch.",
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
         ]
       },
       "method": "automated-test",
@@ -299,62 +254,11 @@
         "A published claim in pending evidence, wrong command serialization or disagreement between text and structured facts rejects with the responsible field identified."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_incomplete_release_yaml"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_incomplete_standing_record"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_pending_standing_record_requires_every_preflight_row"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_pending_standing_record_rejects_unknown_or_duplicate_preflight_rows"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_pending_standing_record_rejects_missing_or_duplicate_registry_rows"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_premature_public_status"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_require_standing_release_record"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_target_result_published"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_npx_y_command_shape"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_missing_target_row"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_duplicate_target_row"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_unknown_target_row"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_pending_release_artifacts_reject_table_projection_mismatch"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       },
       "method": "automated-test",
       "boundary": "contract"
@@ -387,27 +291,11 @@
         "The mutated tree remains byte-for-byte unchanged by check mode."
       ],
       "realization": {
-        "state": "partial",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_prepare_release_does_not_preserve_partial_finalized_release_yaml"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_prepare_release_does_not_preserve_bogus_finalized_manifest"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_prepare_release_does_not_preserve_empty_passing_smoke_evidence"
-          },
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_prepare_release_does_not_preserve_whitespace_passing_smoke_fields"
-          }
-        ],
+        "state": "proposed",
+        "tests": [],
         "gaps": [
-          "Invalid finalized-looking evidence is scheduled for correction: Existing negative fixtures do not prove a successful finalized baseline before mutation; several hardcode manifest v0.1.5. Start from finalized-local, isolate the fault and compare bytes after the check."
+          "Invalid finalized-looking evidence is scheduled for correction: Existing negative fixtures do not prove a successful finalized baseline before mutation; several hardcode manifest v0.1.5. Start from finalized-local, isolate the fault and compare bytes after the check.",
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
         ]
       },
       "variants": [
@@ -471,15 +359,11 @@
         "No Git tag, push, GitHub release operation or npm lookup/publish is invoked through those boundaries."
       ],
       "realization": {
-        "state": "partial",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_preparation_tests.py",
-            "symbol": "PrepareReleaseTests.test_prepare_release_does_not_publish_or_require_external_state"
-          }
-        ],
+        "state": "proposed",
+        "tests": [],
         "gaps": [
-          "Local preparation makes no external operation: The existing test asserts only the returned external_actions tuple. Observe external call boundaries; a self-reported empty tuple is insufficient. This boundary list must track any newly introduced process/network client."
+          "Local preparation makes no external operation: The existing test asserts only the returned external_actions tuple. Observe external call boundaries; a self-reported empty tuple is insufficient. This boundary list must track any newly introduced process/network client.",
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
         ]
       },
       "method": "automated-test",

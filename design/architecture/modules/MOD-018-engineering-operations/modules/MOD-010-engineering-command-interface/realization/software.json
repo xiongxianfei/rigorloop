@@ -40,14 +40,14 @@
         "test_sources": [
           {
             "path": "packages/rigorloop/test/operational-store.test.js",
-            "role": "Actual successor operation and relevant negative/interruption observations on isolated stores."
+            "role": "Selected essential assertions in this retained source; the broader former regression population is intentionally removed."
           },
           {
             "path": "packages/rigorloop/test/operational-update.test.js",
-            "role": "Actual successor operation and relevant negative/interruption observations on isolated stores."
+            "role": "Selected essential assertions in this retained source; the broader former regression population is intentionally removed."
           }
         ],
-        "observation_boundary": "Actual Node task execution against isolated project-local SQLite databases and selected retained files; no hosted or published outcome is implied.",
+        "observation_boundary": "Actual retained assertions in private stores, filesystem or archive fixtures. Historical group titles do not establish coverage of removed variants.",
         "fixtures": [
           {
             "path": "packages/rigorloop/test/helpers/operational-fixture.mjs",
@@ -56,34 +56,21 @@
         ],
         "execution": {
           "owner_contract": "design/support/validation.md",
-          "selection": [
-            {
-              "path": "scripts/select-validation.py",
-              "role": "Optional public path-selection entrypoint for the repository-owned checks containing this group; direct native invocation does not call it."
-            },
-            {
-              "path": "scripts/lib/validation/validation_selection.py",
-              "role": "Declares the applicable catalog commands and path-selection rules; selects existing checks rather than establishing this group's coverage."
-            }
-          ],
+          "selection": [],
           "runners": [
             {
-              "path": "scripts/lib/validation/validation_execution.py",
-              "role": "When selected through the repository wrapper, admits and schedules this group's existing native suite with isolated case execution and attributed results."
-            },
-            {
-              "path": "scripts/lib/validation/validation_node_adapter.mjs",
-              "role": "Adapts native Node test discovery and execution for repository-selected package cases; it does not own the product behavior under test."
+              "path": "scripts/ci.sh",
+              "role": "Direct native Node/Python commands run the complete essential suite without path selection or custom scheduling."
             }
           ],
           "entrypoints": [
             {
-              "path": "packages/rigorloop/package.json",
-              "role": "The test script invokes native Node test discovery across package-owned test files; rigorloop_cli.test selects this existing package suite."
+              "path": "packages/rigorloop/test/operational-store.test.js",
+              "role": "Retained native test source; see the direct runner for its group entrypoint."
             },
             {
-              "path": "scripts/ci.sh",
-              "role": "Optional repository validation wrapper that selects and dispatches the relevant existing catalog checks; recorded as a dependency, not invoked by this architecture mapping."
+              "path": "packages/rigorloop/test/operational-update.test.js",
+              "role": "Retained native test source; see the direct runner for its group entrypoint."
             }
           ]
         },
@@ -92,8 +79,9 @@
           "Independently owned temporary project and source payload fixtures."
         ],
         "limits": [
-          "Source organization and available mechanisms, not passing execution evidence or complete engineering adequacy.",
-          "Shared runner and selector remain Validation-owned; this mapping does not reallocate that responsibility."
+          "Source attribution only; execution results remain operational evidence.",
+          "The maintainer selected reduced automated coverage. Detailed rendering, acquisition, malformed-input, model and concurrency variants outside retained assertions are proof gaps.",
+          "See design/support/validation.md for the complete selected allocation and actual entrypoints."
         ]
       },
       {
@@ -102,14 +90,14 @@
         "test_sources": [
           {
             "path": "packages/rigorloop/test/operational-store.test.js",
-            "role": "Actual successor operation and relevant negative/interruption observations on isolated stores."
+            "role": "Selected essential assertions in this retained source; the broader former regression population is intentionally removed."
           },
           {
             "path": "packages/rigorloop/test/operational-update.test.js",
-            "role": "Actual successor operation and relevant negative/interruption observations on isolated stores."
+            "role": "Selected essential assertions in this retained source; the broader former regression population is intentionally removed."
           }
         ],
-        "observation_boundary": "Actual Node task execution against isolated project-local SQLite databases and selected retained files; no hosted or published outcome is implied.",
+        "observation_boundary": "Actual retained assertions in private stores, filesystem or archive fixtures. Historical group titles do not establish coverage of removed variants.",
         "fixtures": [
           {
             "path": "packages/rigorloop/test/helpers/operational-fixture.mjs",
@@ -118,34 +106,21 @@
         ],
         "execution": {
           "owner_contract": "design/support/validation.md",
-          "selection": [
-            {
-              "path": "scripts/select-validation.py",
-              "role": "Optional public path-selection entrypoint for the repository-owned checks containing this group; direct native invocation does not call it."
-            },
-            {
-              "path": "scripts/lib/validation/validation_selection.py",
-              "role": "Declares the applicable catalog commands and path-selection rules; selects existing checks rather than establishing this group's coverage."
-            }
-          ],
+          "selection": [],
           "runners": [
             {
-              "path": "scripts/lib/validation/validation_execution.py",
-              "role": "When selected through the repository wrapper, admits and schedules this group's existing native suite with isolated case execution and attributed results."
-            },
-            {
-              "path": "scripts/lib/validation/validation_node_adapter.mjs",
-              "role": "Adapts native Node test discovery and execution for repository-selected package cases; it does not own the product behavior under test."
+              "path": "scripts/ci.sh",
+              "role": "Direct native Node/Python commands run the complete essential suite without path selection or custom scheduling."
             }
           ],
           "entrypoints": [
             {
-              "path": "packages/rigorloop/package.json",
-              "role": "The test script invokes native Node test discovery across package-owned test files; rigorloop_cli.test selects this existing package suite."
+              "path": "packages/rigorloop/test/operational-store.test.js",
+              "role": "Retained native test source; see the direct runner for its group entrypoint."
             },
             {
-              "path": "scripts/ci.sh",
-              "role": "Optional repository validation wrapper that selects and dispatches the relevant existing catalog checks; recorded as a dependency, not invoked by this architecture mapping."
+              "path": "packages/rigorloop/test/operational-update.test.js",
+              "role": "Retained native test source; see the direct runner for its group entrypoint."
             }
           ]
         },
@@ -154,8 +129,9 @@
           "Independently owned temporary project and source payload fixtures."
         ],
         "limits": [
-          "Source organization and available mechanisms, not passing execution evidence or complete engineering adequacy.",
-          "Shared runner and selector remain Validation-owned; this mapping does not reallocate that responsibility."
+          "Source attribution only; execution results remain operational evidence.",
+          "The maintainer selected reduced automated coverage. Detailed rendering, acquisition, malformed-input, model and concurrency variants outside retained assertions are proof gaps.",
+          "See design/support/validation.md for the complete selected allocation and actual entrypoints."
         ]
       },
       {
@@ -164,14 +140,10 @@
         "test_sources": [
           {
             "path": "packages/rigorloop/test/operational-review.test.js",
-            "role": "Actual successor operation and relevant negative/interruption observations on isolated stores."
-          },
-          {
-            "path": "packages/rigorloop/test/operational-reliance.test.js",
-            "role": "Actual successor operation and relevant negative/interruption observations on isolated stores."
+            "role": "Selected essential assertions in this retained source; the broader former regression population is intentionally removed."
           }
         ],
-        "observation_boundary": "Actual Node task execution against isolated project-local SQLite databases and selected retained files; no hosted or published outcome is implied.",
+        "observation_boundary": "Actual retained assertions in private stores, filesystem or archive fixtures. Historical group titles do not establish coverage of removed variants.",
         "fixtures": [
           {
             "path": "packages/rigorloop/test/helpers/operational-fixture.mjs",
@@ -180,34 +152,17 @@
         ],
         "execution": {
           "owner_contract": "design/support/validation.md",
-          "selection": [
-            {
-              "path": "scripts/select-validation.py",
-              "role": "Optional public path-selection entrypoint for the repository-owned checks containing this group; direct native invocation does not call it."
-            },
-            {
-              "path": "scripts/lib/validation/validation_selection.py",
-              "role": "Declares the applicable catalog commands and path-selection rules; selects existing checks rather than establishing this group's coverage."
-            }
-          ],
+          "selection": [],
           "runners": [
             {
-              "path": "scripts/lib/validation/validation_execution.py",
-              "role": "When selected through the repository wrapper, admits and schedules this group's existing native suite with isolated case execution and attributed results."
-            },
-            {
-              "path": "scripts/lib/validation/validation_node_adapter.mjs",
-              "role": "Adapts native Node test discovery and execution for repository-selected package cases; it does not own the product behavior under test."
+              "path": "scripts/ci.sh",
+              "role": "Direct native Node/Python commands run the complete essential suite without path selection or custom scheduling."
             }
           ],
           "entrypoints": [
             {
-              "path": "packages/rigorloop/package.json",
-              "role": "The test script invokes native Node test discovery across package-owned test files; rigorloop_cli.test selects this existing package suite."
-            },
-            {
-              "path": "scripts/ci.sh",
-              "role": "Optional repository validation wrapper that selects and dispatches the relevant existing catalog checks; recorded as a dependency, not invoked by this architecture mapping."
+              "path": "packages/rigorloop/test/operational-review.test.js",
+              "role": "Retained native test source; see the direct runner for its group entrypoint."
             }
           ]
         },
@@ -216,8 +171,9 @@
           "Independently owned temporary project and source payload fixtures."
         ],
         "limits": [
-          "Source organization and available mechanisms, not passing execution evidence or complete engineering adequacy.",
-          "Shared runner and selector remain Validation-owned; this mapping does not reallocate that responsibility."
+          "Source attribution only; execution results remain operational evidence.",
+          "The maintainer selected reduced automated coverage. Detailed rendering, acquisition, malformed-input, model and concurrency variants outside retained assertions are proof gaps.",
+          "See design/support/validation.md for the complete selected allocation and actual entrypoints."
         ]
       }
     ]

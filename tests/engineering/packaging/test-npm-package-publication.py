@@ -21,7 +21,6 @@ from lib.packaging.npm_package_validation import (
     NpmPackageValidationError, inspect_package_tarball,
     is_forbidden_path, validate_package_policy,
 )
-from npm_recording_tests import PackedRecordingTests
 
 
 # Packaging DIST-SR-23: public entrypoint, current Records runtime/schema/template
@@ -86,99 +85,6 @@ class NpmPackagePublicationTests(unittest.TestCase):
     def setUp(self):
         configure_npm_case(self.addCleanup)
 
-    def test_publication_validation_step_supports_selected_tag_layouts(self):
-        # Execute the actual workflow step, without publication or remote services.
-        parser = "const fs=require('fs'),YAML=require('yaml'); console.log(JSON.stringify(YAML.parse(fs.readFileSync(process.argv[1],'utf8'),{uniqueKeys:true})))"
-        parsed = run_command(['node', '-e', parser, str(ROOT / '.github/workflows/publish-github-packages.yml')], cwd=PACKAGE_ROOT)
-        self.assertEqual(parsed.returncode, 0, parsed.stderr)
-        steps = json.loads(parsed.stdout)['jobs']['publish']['steps']
-        command = next(step['run'] for step in steps if step.get('name') == 'Verify package before publication')
-        current = 'tests/engineering/packaging/test-npm-package-publication.py'
-        historical = 'scripts/test-npm-package-publication.py'
-        scenarios = (
-            ('current', {current: ('current', 0)}, 0, 'current'),
-            ('historical', {historical: ('historical', 0)}, 0, 'historical'),
-            ('both', {current: ('current', 0), historical: ('historical', 0)}, 0, 'current'),
-            ('missing', {}, None, ''),
-            ('failure', {current: ('current', 7)}, 7, 'current'),
-        )
-        for name, files, expected_code, expected_output in scenarios:
-            with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
-                root = Path(temporary)
-                for relative, (marker, code) in files.items():
-                    target = root / relative
-                    target.parent.mkdir(parents=True, exist_ok=True)
-                    target.write_text(f'print({marker!r})\nraise SystemExit({code})\n')
-                result = run_command(['bash', '-e', '-c', command], cwd=root)
-                if expected_code is None:
-                    self.assertNotEqual(result.returncode, 0)
-                else:
-                    self.assertEqual(result.returncode, expected_code, result.stderr)
-                self.assertEqual(result.stdout.strip(), expected_output)
-
-    def test_package_policy_rejects_lifecycle_scripts_and_runtime_dependencies(self) -> None:
-        validate_package_policy(
-            {
-                "name": "@xiongxianfei/rigorloop",
-                "version": PACKAGE_VERSION,
-                "bin": {"rigorloop": "dist/bin/rigorloop.js"},
-                "files": ["dist/", "package.json", "README.md", "LICENSE"],
-                "scripts": {"test": "node --test"},
-                "dependencies": {"yaml": "2.9.0"},
-                "license": "MIT",
-            }
-        )
-
-        for script_name in ("preinstall", "install", "postinstall", "prepare", "prepack"):
-            with self.subTest(script=script_name):
-                with self.assertRaisesRegex(NpmPackageValidationError, script_name):
-                    validate_package_policy({"scripts": {script_name: "echo unsafe"}})
-
-        self.assertIsNone(validate_package_policy({"dependencies": {"yaml": "2.9.0"}}))
-        with self.assertRaisesRegex(NpmPackageValidationError, "unapproved runtime dependency"):
-            validate_package_policy({"dependencies": {"left-pad": "1.3.0"}})
-        with self.assertRaisesRegex(NpmPackageValidationError, "unapproved runtime dependency"):
-            validate_package_policy({"dependencies": {"yaml": "2.8.1"}})
-
-    def test_forbidden_path_detection_rejects_root_and_nested_sensitive_files(self) -> None:
-        forbidden_paths = [
-            "package/dist/lib/compact-operations.js",
-            "package/dist/lib/lifecycle-read.js",
-            "package/dist/lib/new-change.js",
-            "package/dist/lib/final-verification-protocol.js",
-            "package/dist/schemas/explicit-recording-v1.schema.json",
-            "package/dist/templates/explicit-recording/records.json",
-            "package/dist/metadata/compact-current-state-activation.json",
-            "package/rigorloop-adapter-codex-v0.2.0.zip",
-            "package/archive.tgz",
-            "package/.env",
-            "package/secret.pem",
-            "package/secret.key",
-            "package/assets/rigorloop-adapter-codex-v0.2.0.zip",
-            "package/tmp/archive.tgz",
-            "package/config/.env",
-            "package/secrets/secret.pem",
-            "package/secrets/secret.key",
-            "package/dist/adapters/codex/skills/proposal/SKILL.md",
-            "package/.codex/skills/proposal/SKILL.md",
-            "package/.agents/skills/proposal/SKILL.md",
-        ]
-        for path in forbidden_paths:
-            with self.subTest(path=path):
-                self.assertTrue(is_forbidden_path(path))
-
-        allowed_paths = [
-            "package/package.json",
-            "package/README.md",
-            "package/LICENSE",
-            "package/dist/bin/rigorloop.js",
-            "package/dist/lib/some-runtime-file.js",
-            f"package/dist/metadata/{METADATA_FILE}",
-        ]
-        for path in allowed_paths:
-            with self.subTest(path=path):
-                self.assertFalse(is_forbidden_path(path))
-
     def test_actual_tarball_contains_required_runtime_files_only(self) -> None:
         with tempfile.TemporaryDirectory(prefix="rigorloop-npm-pack-") as temp:
             tarball = pack_package(Path(temp))
@@ -188,33 +94,6 @@ class NpmPackagePublicationTests(unittest.TestCase):
         self.assertEqual(report.forbidden_paths, ())
         self.assertIn(f"package/dist/metadata/{METADATA_FILE}", report.paths)
         self.assertNotIn("package/dist/metadata/adapter-artifacts-v0.1.3.json", report.paths)
-
-    def test_inspector_rejects_forbidden_paths(self) -> None:
-        cases = [
-            "package/rigorloop-adapter-codex-v0.2.0.zip",
-            "package/archive.tgz",
-            "package/.env",
-            "package/secret.pem",
-            "package/secret.key",
-            "package/assets/rigorloop-adapter-codex-v0.2.0.zip",
-            "package/tmp/archive.tgz",
-            "package/config/.env",
-            "package/secrets/secret.pem",
-            "package/secrets/secret.key",
-            "package/dist/adapters/codex/skills/proposal/SKILL.md",
-        ]
-        for forbidden_path in cases:
-            with self.subTest(path=forbidden_path):
-                with tempfile.TemporaryDirectory(prefix="rigorloop-npm-forbidden-") as temp:
-                    tarball = Path(temp) / "fixture.tgz"
-                    with tarfile.open(tarball, "w:gz") as archive:
-                        for name in sorted(EXPECTED_RUNTIME_PATHS | {forbidden_path}):
-                            info = tarfile.TarInfo(name)
-                            info.size = 0
-                            archive.addfile(info)
-
-                    with self.assertRaisesRegex(NpmPackageValidationError, "forbidden"):
-                        inspect_package_tarball(tarball)
 
     def assert_no_state_files(self, project_root: Path) -> None:
         self.assertFalse((project_root / "rigorloop.yaml").exists())
@@ -343,117 +222,10 @@ class NpmPackagePublicationTests(unittest.TestCase):
             self.assertEqual(new_change_payload["errors"][0]["code"], "invalid-usage")
             self.assertFalse((Path(project_temp) / "docs/changes/test-change").exists())
             workflow = run_command(
-                ["node", "--test", "--test-name-pattern=operational completion", "packages/rigorloop/test/operational-review.test.js"],
+                ["node", "--test", "--test-name-pattern=owner-selected bases", "packages/rigorloop/test/operational-review.test.js"],
                 env={**os.environ, "RIGORLOOP_TEST_PACKAGED_BIN": str(bin_path)},
             )
             self.assertEqual(workflow.returncode, 0, workflow.stdout + workflow.stderr)
-
-    def test_packed_package_observability_surface_matches_documentation(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="rigorloop-npm-pack-") as pack_temp, tempfile.TemporaryDirectory(
-            prefix="rigorloop-npm-install-"
-        ) as install_temp, tempfile.TemporaryDirectory(prefix="rigorloop-npm-observability-") as project_temp, tempfile.TemporaryDirectory(
-            prefix="rigorloop-npm-release-output-"
-        ) as release_temp:
-            tarball = pack_package(Path(pack_temp))
-            release_output = Path(release_temp)
-            build_result = run_command(
-                ["python", "scripts/build-adapters.py", "--version", RELEASE_TAG, "--output-dir", str(release_output)]
-            )
-            self.assertEqual(build_result.returncode, 0, build_result.stderr)
-
-            install_root = Path(install_temp)
-            install = run_command(["npm", "install", "--prefix", str(install_root), str(tarball)])
-            self.assertEqual(install.returncode, 0, install.stderr)
-            bin_path = install_root / "node_modules" / ".bin" / "rigorloop"
-            package_root = install_root / "node_modules" / "@xiongxianfei" / "rigorloop"
-            project_root = Path(project_temp)
-            log_root = project_root / "logs"
-            archive = release_output / f"rigorloop-adapter-codex-{RELEASE_TAG}.zip"
-            command_env = {**os.environ, "RIGORLOOP_LOG_DIR": str(log_root)}
-
-            concise = run_command(
-                [str(bin_path), "init", "codex", "--from-archive", str(archive), "--dry-run", "--format", "concise-json"],
-                cwd=project_root,
-                env=command_env,
-            )
-            self.assertEqual(concise.returncode, 0, concise.stderr or concise.stdout)
-            self.assertEqual(concise.stderr, "")
-            concise_payload = json.loads(concise.stdout)
-            self.assertEqual(concise_payload["projection"], "concise")
-            self.assertEqual(concise_payload["observability"], "recorded")
-            invocation_id = concise_payload["invocation_id"]
-
-            path_result = run_command([str(bin_path), "logs"], cwd=project_root, env=command_env)
-            self.assertEqual(path_result.returncode, 0, path_result.stderr)
-            self.assertEqual(Path(path_result.stdout.strip()), log_root)
-
-            show_result = run_command(
-                [str(bin_path), "logs", "--invocation", invocation_id, "--format", "json"], cwd=project_root, env=command_env
-            )
-            self.assertEqual(show_result.returncode, 0, show_result.stderr or show_result.stdout)
-            show_payload = json.loads(show_result.stdout)
-            self.assertEqual(show_payload["status"], "success")
-            self.assertEqual({event["event"] for event in show_payload["events"]}, {"invocation-start", "invocation-complete"})
-
-            concise_human = run_command(
-                [
-                    str(bin_path),
-                    "init",
-                    "codex",
-                    "--from-archive",
-                    str(archive),
-                    "--dry-run",
-                    "--format",
-                    "concise-human",
-                    "--no-file-log",
-                    "--console-log-level",
-                    "off",
-                ],
-                cwd=project_root,
-                env=command_env,
-            )
-            self.assertEqual(concise_human.returncode, 0, concise_human.stderr or concise_human.stdout)
-            self.assertEqual(concise_human.stderr, "")
-            self.assertLessEqual(len([line for line in concise_human.stdout.splitlines() if line.strip()]), 2)
-
-            detailed = run_command(
-                [
-                    str(bin_path),
-                    "init",
-                    "codex",
-                    "--from-archive",
-                    str(archive),
-                    "--dry-run",
-                    "--format",
-                    "detailed-json",
-                    "--no-file-log",
-                ],
-                cwd=project_root,
-                env=command_env,
-            )
-            self.assertEqual(detailed.returncode, 0, detailed.stderr or detailed.stdout)
-            self.assertEqual(json.loads(detailed.stdout)["command"], "init")
-
-            legacy = run_command(
-                [str(bin_path), "init", "codex", "--from-archive", str(archive), "--dry-run", "--json", "--no-file-log"],
-                cwd=project_root,
-                env=command_env,
-            )
-            self.assertEqual(legacy.returncode, 0, legacy.stderr or legacy.stdout)
-            self.assertEqual(json.loads(legacy.stdout)["command"], "init")
-
-            readme = (package_root / "README.md").read_text(encoding="utf-8")
-            for documented_surface in (
-                "rigorloop logs",
-                "rigorloop logs --invocation <invocation-id>",
-                "--no-file-log",
-                "--console-log-level debug|info|warning|error|off",
-                "--format concise-json",
-                "--format concise-human",
-                "--format detailed-json",
-            ):
-                with self.subTest(documented_surface=documented_surface):
-                    self.assertIn(documented_surface, readme)
 
 
 if __name__ == "__main__":

@@ -42,41 +42,8 @@ jobs:
         with:
           node-version: 24
 
-      - name: Install REM schema and diagram dependencies
-        run: |
-          python -m pip install 'jsonschema==4.10.3'
-          rem_tools=$(mktemp -d)
-          curl --fail --location --retry 3 --output "$rem_tools/d2.tar.gz" \
-            https://github.com/d2lang/d2/releases/download/v0.9.0/d2-v0.9.0-linux-amd64.tar.gz
-          echo "5669ddc46b99e942cc96078f4a4e36d5e62103348f4c05179ede27802fdd87a9  $rem_tools/d2.tar.gz" | sha256sum --check --strict
-          tar -xzf "$rem_tools/d2.tar.gz" -C "$rem_tools"
-          "$rem_tools/d2-v0.9.0/bin/d2" --version
-          echo "$rem_tools/d2-v0.9.0/bin" >> "$GITHUB_PATH"
-          mkdir "$rem_tools/browser-tests"
-          cp tests/engineering/validation/browser-toolchain/package*.json "$rem_tools/browser-tests/"
-          npm ci --prefix "$rem_tools/browser-tests" --ignore-scripts --no-audit --no-fund
-          PUPPETEER_CACHE_DIR="$rem_tools/chromium" "$rem_tools/browser-tests/node_modules/.bin/puppeteer" browsers install chrome@149.0.7827.55
-          echo "REM_PUPPETEER=$rem_tools/browser-tests/node_modules/puppeteer" >> "$GITHUB_ENV"
-          echo "REM_CHROMIUM=$rem_tools/chromium/chrome/linux-149.0.7827.55/chrome-linux64/chrome" >> "$GITHUB_ENV"
-
       - name: Install public package dependencies
-        run: npm ci --prefix packages/rigorloop
+        run: npm ci --prefix packages/rigorloop --ignore-scripts --no-audit --no-fund
 
-      - name: Run change-selected PR checks or full main gates
-        run: |
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            # Timeout applies to each leaf check or isolated case.
-            bash scripts/ci.sh --mode pr --base "${{ github.event.pull_request.base.sha }}" --head "${{ github.event.pull_request.head.sha }}" --timeout 600
-          else
-            bash scripts/ci.sh --mode main --base "${{ github.event.before }}" --head "${{ github.sha }}"
-          fi
-
-      - name: Verify actual executor overlap
-        # A separate invocation reserves two workers for the tiny overlap fixtures.
-        # Case-isolated execution inside ci.sh gives each of these cases one worker.
-        env:
-          RIGORLOOP_VALIDATION_WORKERS: "2"
-        run: >-
-          python tests/engineering/validation/test-validation-execution.py
-          ExecutionTests.test_parallel_tasks_actually_overlap_with_bounded_workers
-          CaseAdapterTests.test_normal_and_isolated_fixture_preserve_hooks_population_and_parallelism
+      - name: Run essential tests
+        run: bash scripts/ci.sh

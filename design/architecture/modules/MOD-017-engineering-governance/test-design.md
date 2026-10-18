@@ -1,5 +1,7 @@
 # Change and quality control: adoption integration test design
 
+Current automation follows [the minimal-suite allocation](../../../support/validation.md). Existing scenario descriptions retain intent; removed executable variants are explicit coverage gaps, and historical test paths do not establish current protection.
+
 Apply the [shared test rules](../../../support/test-design/rules.md). MOD-017 owns the adoption decision composed from work, authority, assurance and external package/installation observations. Canonical Scenario records remain black-box; the following is an internal cooperation walkthrough and future proof intent.
 
 | Scenario / basis | Cooperation and representative observation | Plausible defect and required proof boundary |

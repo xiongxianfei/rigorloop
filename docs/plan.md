@@ -19,6 +19,8 @@ Index policy:
 
 ## Active
 
+- [Minimal repository tests](plans/2026-10-18-minimal-tests.md) — Change `2026-10-18-minimal-tests`.
+
 - [Remove intermediate approvals](plans/2026-10-18-remove-intermediate-approvals.md) — Change `2026-10-18-remove-intermediate-approvals`; selected policy and final assurance scope.
 
 - [Consolidate REM publication references](plans/2026-10-07-rem-reference-consolidation.md) — Change `2026-10-07-rem-reference-consolidation`.

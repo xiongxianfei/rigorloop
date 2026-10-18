@@ -3,106 +3,31 @@
 from __future__ import annotations
 
 import sys
+
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[3]
+
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from lib.release.release_transaction import GitHubReleaseAsset, NpmPackageMetadata, PublicEvidenceUnavailable, PublicSmokeResult
+
 import copy
+
 from lib.release.release_execution import ExecutionError
+
 from lib.release.release_provider import NetworkPublisher
-
-
-class RecordingPublicEvidenceProvider:
-    def __init__(
-        self,
-        *,
-        fail_github: bool = False,
-        fail_npm: bool = False,
-        fail_smoke_command: str | None = None,
-        github_assets: tuple[GitHubReleaseAsset, ...] | None = None,
-        npm_metadata: NpmPackageMetadata | None = None,
-    ) -> None:
-        self.fail_github = fail_github
-        self.fail_npm = fail_npm
-        self.fail_smoke_command = fail_smoke_command
-        self.github_calls: list[str] = []
-        self.npm_calls: list[tuple[str, str]] = []
-        self.smoke_calls: list[str] = []
-        self.github_assets = github_assets or (
-            GitHubReleaseAsset(
-                name="rigorloop-adapter-codex-v0.3.5.zip",
-                url="https://provider.example/releases/codex-provider.zip",
-                size=123,
-                sha256="provider-codex-archive",
-            ),
-            GitHubReleaseAsset(
-                name="rigorloop-adapter-claude-v0.3.5.zip",
-                url="https://provider.example/releases/claude-provider.zip",
-                size=124,
-                sha256="sha256:provider-claude-archive",
-            ),
-        )
-        self.npm_metadata = npm_metadata or NpmPackageMetadata(
-            package="@xiongxianfei/rigorloop",
-            version="0.3.5",
-            tarball_url="https://registry.provider.example/rigorloop-0.3.5.tgz",
-            integrity="sha512-provider-integrity",
-            shasum="provider-shasum",
-            published_at="2026-06-29T00:00:00Z",
-        )
-
-    def fetch_github_release_assets(self, *, tag: str) -> tuple[GitHubReleaseAsset, ...]:
-        self.github_calls.append(tag)
-        if self.fail_github:
-            raise PublicEvidenceUnavailable(f"GitHub release asset metadata not found for {tag}")
-        return self.github_assets
-
-    def fetch_npm_package_metadata(self, *, package: str, version: str) -> NpmPackageMetadata:
-        self.npm_calls.append((package, version))
-        if self.fail_npm:
-            raise PublicEvidenceUnavailable(f"npm metadata for {package}@{version} not available")
-        return self.npm_metadata
-
-    def run_public_npx_smoke(self, *, command: str, cwd: Path) -> PublicSmokeResult:
-        self.smoke_calls.append(command)
-        if command == self.fail_smoke_command:
-            return PublicSmokeResult(
-                command=command,
-                exit_code=1,
-                stdout="",
-                stderr="smoke failed",
-                summary="smoke failed",
-            )
-        target = command.split()[-1]
-        if command.endswith(" version"):
-            stdout = "0.3.5\n"
-            summary = "0.3.5"
-        else:
-            stdout = (
-                f"created {target} adapter\n"
-                f"tree_hashes=sha256:provider-{target}-tree\n"
-                "file_counts=12\n"
-            )
-            summary = f"created {target} adapter"
-        return PublicSmokeResult(
-            command=command,
-            exit_code=0,
-            stdout=stdout,
-            stderr="",
-            summary=summary,
-        )
 
 class FixtureReleaseAuthority:
     def __init__(self, facts, payload=b''): self.facts, self.payload = facts, payload
-    def artifact_bytes(self, binding): return self.payload
-    def fetch(self, binding): return copy.deepcopy(self.facts)
 
+    def artifact_bytes(self, binding): return self.payload
+
+    def fetch(self, binding): return copy.deepcopy(self.facts)
 
 class FixturePublisher(NetworkPublisher):
     """External service fixture only. Executor, Git CAS and closeout validators run."""
+
     def __init__(self, candidate, output):
         super().__init__()
         self.candidate, self.output = candidate, output

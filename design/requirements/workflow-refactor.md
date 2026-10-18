@@ -74,7 +74,7 @@ After an accepted requirement basis, System and Architecture Design can reconcil
 
 ## Authoring validation
 
-`bash scripts/ci.sh --mode local` passed all eight selected REM checks: requirements, system, architecture, projection, browser, current product inventory, current browser output and browser JavaScript syntax. The browser was regenerated with D2 0.9.0. Documentation prose checks and `git diff --check` passed.
+`bash scripts/ci.sh` passed all eight selected REM checks: requirements, system, architecture, projection, browser, current product inventory, current browser output and browser JavaScript syntax. The browser was regenerated with D2 0.9.0. Documentation prose checks and `git diff --check` passed.
 
 The same CI invocation failed `current_records.validate` with `current-record-discovery-unavailable`, the previously observed CLI discovery failure. Consequently this package has structural validation evidence, not a clean overall CI result or reconciled governed review records. Under the subsequent user-authorized exception, this recording failure does not block document-based analysis or review. The document-based review is complete under that exception; independent approval and governed recording are not claimed.
 

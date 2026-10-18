@@ -1,5 +1,7 @@
 # Skills and commands: current handoff integration test design
 
+Current automation follows [the minimal-suite allocation](../../../support/validation.md). Existing scenario descriptions retain intent; removed executable variants are explicit coverage gaps, and historical test paths do not establish current protection.
+
 Apply the [System-owned shared test rules](../../../support/test-design/rules.md). This design specifies decision-relevant observations, not a new executable suite. Existing model, projection and browser checks prove structure/presentation only. Delivery allocates runtime proof after the refined design is assessed.
 
 | Existing Scenario / requirement | Representative setup and independent observation | Plausible failure and boundary |

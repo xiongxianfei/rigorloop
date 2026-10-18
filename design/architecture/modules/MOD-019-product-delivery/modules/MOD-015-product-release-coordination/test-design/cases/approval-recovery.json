@@ -37,10 +37,7 @@
       "initial_state": [
         "Initiation, source, artifact and environment facts plus protected main branch, settings evidence_ref=refs/heads/release-evidence and trusted_publisher=github:xiongxianfei/rigorloop:release.yml:release; event run_id=12, source=b repeated 40, source_ref=refs/heads/main, attempt=1."
       ],
-      "builder": {
-        "path": "tests/engineering/release/release_coordination_tests.py",
-        "symbol": "ReleaseCoordinationTests.setUp"
-      }
+      "limitation": "Fixture implementation retired with the explicitly reduced regression suite; initial_state remains scenario intent, not executed proof."
     },
     {
       "id": "hosted-composition",
@@ -80,7 +77,7 @@
         "Each unsupported trigger, mismatched binding, failed check or changed package blocks writes; naming a version or passing a local check cannot grant authority."
       ],
       "realization": {
-        "state": "existing",
+        "state": "partial",
         "tests": [
           {
             "path": "tests/engineering/release/release_execution_tests.py",
@@ -92,34 +89,12 @@
           },
           {
             "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseAuthorityTests.test_material_provider_changes_and_unprotected_environment_reject"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseAuthorityTests.test_unknown_initiation_policy_rejects_before_identity_consistency"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
             "symbol": "ReleaseExecutorTests.test_candidate_tamper_and_cancelled_run_cause_no_external_writes"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_legacy_attempt_stops_without_rewriting_evidence"
-          },
-          {
-            "path": "tests/engineering/release/release_coordination_tests.py",
-            "symbol": "ReleaseCoordinationTests.test_authority_transport_does_not_request_approval_records"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_different_invocation_attempt_stops_before_writes"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_unknown_legacy_or_mismatched_recovery_authority_preserves_bytes"
           }
         ],
-        "gaps": []
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       },
       "method": "automated-test",
       "boundary": "composition"
@@ -153,22 +128,11 @@
         "Failed initial durable recording prevents every publication write."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseEvidenceStoreTests.test_real_git_compare_and_swap_preserves_unrelated_and_rejects_race"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseEvidenceStoreTests.test_source_ref_collision_is_rejected"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_first_persistence_failure_cannot_publish"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       },
       "method": "automated-test",
       "boundary": "composition"
@@ -201,18 +165,11 @@
         "The active attempt excludes a competing writer. Identical mirrored bytes are reusable; conflicting bytes stop without overwrite."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_competing_executor_is_excluded_by_durable_active_attempt"
-          },
-          {
-            "path": "tests/engineering/release/release_coordination_tests.py",
-            "symbol": "ReleaseCoordinationTests.test_evidence_mirror_reuses_exact_bytes_and_rejects_conflict"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       },
       "method": "automated-test",
       "boundary": "composition"
@@ -245,18 +202,11 @@
         "Retry never republishes the completed immutable operation. Missing recovery observations require intervention rather than inferred success."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_failed_reporting_retains_observations_and_recovery_cannot_republish"
-          },
-          {
-            "path": "tests/engineering/release/release_coordination_tests.py",
-            "symbol": "ReleaseCoordinationTests.test_missing_retry_observations_require_explicit_recovery"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       },
       "method": "automated-test",
       "boundary": "composition"
@@ -301,18 +251,11 @@
         "Failed checks block dependent publication. Repeated delivery observes matching public state and performs no duplicate immutable write."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_candidate_tests.py",
-            "symbol": "ReleaseCandidateIntegrationTests.test_actual_candidate_build_and_packed_metadata_chain"
-          },
-          {
-            "path": "tests/engineering/release/release_coordination_tests.py",
-            "symbol": "ReleaseCoordinationTests.test_actual_workflow_has_automatic_executor_and_no_tag_bypass"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       },
       "method": "automated-test",
       "boundary": "composition"
@@ -345,26 +288,11 @@
         "Runtime authority is checked without inferring it from a setup declaration or local success."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_coordination_tests.py",
-            "symbol": "ReleaseCoordinationTests.test_supported_setup_has_explicit_inspected_and_unobservable_boundary"
-          },
-          {
-            "path": "tests/engineering/release/release_coordination_tests.py",
-            "symbol": "ReleaseCoordinationTests.test_missing_or_unprotected_setup_blocks_publication"
-          },
-          {
-            "path": "tests/engineering/release/release_coordination_tests.py",
-            "symbol": "ReleaseCoordinationTests.test_additional_review_or_waiting_gate_is_an_adoption_mismatch"
-          },
-          {
-            "path": "tests/engineering/release/release_coordination_tests.py",
-            "symbol": "ReleaseCoordinationTests.test_missing_runtime_oidc_stops_before_any_publication"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       },
       "method": "automated-test",
       "boundary": "contract"
@@ -402,35 +330,11 @@
         "Retry observes the committed identity and resumes without repeating its immutable write. Unknown execution state/boundary rejects."
       ],
       "realization": {
-        "state": "partial",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_lost_write_response_observes_matching_state_without_second_write"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_subprocess_timeout_inspects_matching_write_before_continuation"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_public_uncertainty_never_implies_absence_or_republish"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_unknown_value_execution_state_and_boundary_reject"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_successful_first_write_with_unknown_observation_stays_uncertain"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_delayed_npm_visibility_completes_without_duplicate_publication"
-          }
-        ],
+        "state": "proposed",
+        "tests": [],
         "gaps": [
-          "Visibility exhaustion stops at its exact boundary and recovers by observation: Existing tests cover npm success on observation 121 and unknown tag outcome; add explicit exhaustion counts and recovery at every boundary."
+          "Visibility exhaustion stops at its exact boundary and recovers by observation: Existing tests cover npm success on observation 121 and unknown tag outcome; add explicit exhaustion counts and recovery at every boundary.",
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
         ]
       },
       "method": "automated-test",
@@ -463,14 +367,11 @@
         "Write history is exactly [github, npm]; the matching tag is not written again."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_partial_github_assets_resume_only_missing_publication"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       },
       "method": "automated-test",
       "boundary": "composition"
@@ -510,14 +411,11 @@
           {
             "path": "tests/engineering/release/release_execution_tests.py",
             "symbol": "ReleaseExecutorTests.test_failed_smoke_preserves_publication_and_retry_only_observes"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_public_tree_mismatch_keeps_failed_closeout"
           }
         ],
         "gaps": [
-          "Public identity changes during smoke prevent completed closeout: Add an explicit change during closeout; initial conflict and installed-tree mismatch tests cover different boundaries."
+          "Public identity changes during smoke prevent completed closeout: Add an explicit change during closeout; initial conflict and installed-tree mismatch tests cover different boundaries.",
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
         ]
       },
       "method": "automated-test",
@@ -550,14 +448,11 @@
         "Raise ExecutionError and leave publication write history empty."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_conflicting_public_identity_stops_without_overwrite"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       },
       "method": "automated-test",
       "boundary": "composition"
@@ -577,29 +472,22 @@
       "given": {
         "fixture": "setup",
         "conditions": [
-          "For read-evidence inject PermissionError naming /private/worker/user/release-secret. For check-ci inject OSError, FileNotFoundError(errno=2), CandidateError with a private log path, KeyError, TypeError and AttributeError."
+          "For read-evidence and prepare, inject controlled OSError, missing-input and malformed-input failures with a private diagnostic path."
         ]
       },
       "when": [
         "Invoke the real dispatcher with controlled services; capture stderr and any GitHub summary file."
       ],
       "then": [
-        "Every variant exits 1 and excludes /private/worker from user-visible output.",
-        "check-ci reports CI release preparation stopped:; the errno=2 variant preserves OS error 2 without its path."
+        "Every variant reports failure and excludes private paths from user-visible output.",
+        "A filesystem errno may be reported without its path; failures cannot produce a ready candidate."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_coordination_tests.py",
-            "symbol": "ReleaseCoordinationTests.test_actual_cli_does_not_report_private_filesystem_errors"
-          },
-          {
-            "path": "tests/engineering/release/release_coordination_tests.py",
-            "symbol": "ReleaseCoordinationTests.test_actual_ci_dispatch_does_not_report_private_diagnostics"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       },
       "method": "automated-test",
       "boundary": "public-command"
@@ -630,22 +518,11 @@
         "Stop before later GitHub/npm writes when authority loss is observed; retain the completed tag outcome and report incomplete publication. Cancellation does not erase a committed write."
       ],
       "realization": {
-        "state": "existing",
-        "tests": [
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_run_cancelled_after_tag_prevents_later_boundaries"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_attempt_drift_before_first_write_stops_publication"
-          },
-          {
-            "path": "tests/engineering/release/release_execution_tests.py",
-            "symbol": "ReleaseExecutorTests.test_attempt_drift_after_tag_preserves_completed_boundary"
-          }
-        ],
-        "gaps": []
+        "state": "proposed",
+        "tests": [],
+        "gaps": [
+          "Automated realization removed under the maintainer-selected minimal suite. This scenario is not claimed covered by the retained suite; see design/support/validation.md."
+        ]
       },
       "method": "automated-test",
       "boundary": "composition"
