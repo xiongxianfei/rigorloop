@@ -1,7 +1,7 @@
 # Functional Analysis method
 
 Use Functional Analysis after System Requirements are sufficiently clear to confirm the durable logical behavior the system must perform.
-The [Function concept](../concepts/README.md#system-and-architecture-assets) defines what a Function means, and the [System Design model](../models/system-design.md) owns Feature-to-Function and SR-to-Function relationships.
+The [Function concept](../concepts/system-and-architecture.md#system-and-architecture-assets) defines what a Function means, and the [System Design model](../models/system-design.md) owns Feature-to-Function and SR-to-Function relationships.
 
 ## Purpose
 

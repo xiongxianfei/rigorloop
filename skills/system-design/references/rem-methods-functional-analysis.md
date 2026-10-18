@@ -1,9 +1,9 @@
-<!-- Generated from rem/methods/functional-analysis.md; source SHA-256 70aca72b937bc5063b2fd130d3e050d3973c16b478426bdf78e7b34bd3c80cb4. Edit the owning REM source. -->
+<!-- Generated from rem/methods/functional-analysis.md; source SHA-256 50241083047e5360f155c405f87773c70959d9ff03f8122b88bb381f9dfa1ddf. Edit the owning REM source. -->
 
 # Functional Analysis method
 
 Use Functional Analysis after System Requirements are sufficiently clear to confirm the durable logical behavior the system must perform.
-The [Function concept](https://github.com/xiongxianfei/rigorloop/blob/main/rem/concepts/README.md#system-and-architecture-assets) defines what a Function means, and the [System Design model](rem-models-system-design.md) owns Feature-to-Function and SR-to-Function relationships.
+The [Function concept](https://github.com/xiongxianfei/rigorloop/blob/main/rem/concepts/system-and-architecture.md#system-and-architecture-assets) defines what a Function means, and the [System Design model](rem-models-system-design.md) owns Feature-to-Function and SR-to-Function relationships.
 
 ## Purpose
 

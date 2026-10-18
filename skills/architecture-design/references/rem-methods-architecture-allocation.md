@@ -1,4 +1,4 @@
-<!-- Generated from rem/methods/architecture-allocation.md; source SHA-256 675b1b02d083815c4563baacefc2bc53e9de19eee1c735559af1c0baae218388. Edit the owning REM source. -->
+<!-- Generated from rem/methods/architecture-allocation.md; source SHA-256 e3462c9ce0439eb6890c1934a2a6f048955def1bdc715b0dc712639817df346a. Edit the owning REM source. -->
 
 # Architecture Allocation method
 
@@ -140,4 +140,4 @@ Architecture Allocation is complete enough for realization when:
 - unresolved ownership, containment, encapsulation, or interaction gaps are explicit;
 - allocations describe responsibility rather than merely mirroring the current code layout.
 
-After logical allocation is coherent, use [Architecture Design](rem-methods-architecture-design.md#design-the-physicalsoftware-realization) to define the material physical/software realization as subordinate Module and Interface views.
+After logical allocation is coherent, use [Architecture Design](rem-methods-realization-design.md#design-the-physicalsoftware-realization) to define the material physical/software realization as subordinate Module and Interface views.

@@ -34,6 +34,8 @@ For Change-managed work, read the packaged operational interface reference befor
 
 - READ `references/review-assessment.md` when applying its criteria to this responsibility.
 
+- READ `references/rem-models-operational-support.md` when applying shared definition clarity, semantic authority, representation or maintenance rules.
+
 ## Expected output
 
 Report the actual scoped outcome, governing basis, changed subjects or recorded judgment, material gaps and the next authorized action. Distinguish progress, review approval, final verification and external publication; claim only outcomes supported by this invocation.

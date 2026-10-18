@@ -111,7 +111,7 @@ These records propose an architecture. Selected owners additionally carry explic
 
 ### Subordinate realization views
 
-Each Module or Interface owns one directory containing its logical definition and optional realization facets. This applies REM's [architecture realization model](../../rem/models/architecture-design.md#architecture-realization-views) without making subordinate records independent entities.
+Each Module or Interface owns one directory containing its logical definition and optional realization facets. This applies REM's [architecture realization model](../../rem/models/architecture-realization.md#architecture-realization-views) without making subordinate records independent entities.
 
 ```text
 architecture/
@@ -201,7 +201,7 @@ The Development browser derives its test overview and subject details from these
 
 ### Public entries and proposed correspondence
 
-The [REM discoverability principle](../../rem/principles/README.md) is implemented through the existing interaction and software facets. IF-004's `interaction.json` owns exact public command names. MOD-012's `software.json` owns public skill names. These subordinate entries have no independent REM type, global identity, or lifecycle.
+The [REM public-entry discoverability model](../../rem/models/architecture-realization.md#public-entry-discoverability) is implemented through the existing interaction and software facets. IF-004's `interaction.json` owns exact public command names. MOD-012's `software.json` owns public skill names. These subordinate entries have no independent REM type, global identity, or lifecycle.
 
 `observed.public_entries` is an optional nonempty array. Each entry requires `name`, `group`, `purpose`, `source_path`, and `contract`. Names are unique within the facet; groups are readable navigation labels, not closed architectural categories. `source_path` identifies an existing repository-relative file, and `contract` identifies a local Markdown contract with an optional anchor. Command entries also require `operation`, resolving to an operation on the owning Interface. Software entries reject that field. Paths to SKILL.md may be checked for existence without reading or invoking the skill.
 
@@ -239,7 +239,7 @@ Ancestry supplies structural context rather than extra executing participants. I
 
 ### Scenario outcome reading profile
 
-The shared projection's `scripts/lib/rem_architecture_scenarios.py` selects explanatory context for the eleven expected, alternative and failure outcomes of SCN-046 publication and SCN-047 recovery. It implements REM's [outcome walkthrough method](../../rem/methods/architecture-views.md#outcome-walkthroughs). Canonical Scenario records and their schema retain only their existing stakeholder meaning and requirement relationships. No internal architecture or outcome-coverage assertion is added to them.
+The shared projection's `scripts/lib/rem_architecture_scenarios.py` selects explanatory context for the eleven expected, alternative and failure outcomes of SCN-046 publication and SCN-047 recovery. It implements REM's [outcome walkthrough method](../../rem/methods/views/scenario.md#outcome-walkthroughs). Canonical Scenario records and their schema retain only their existing stakeholder meaning and requirement relationships. No internal architecture or outcome-coverage assertion is added to them.
 
 Each projected outcome retains its exact Scenario source pointer, condition and outcome text. Short labels are navigation aids. Pilot selections identify existing SR/AR acceptance criteria and material realization fields; the generated representation retains their canonical paths and field pointers. Selected SRs must be informed by that Scenario, and selected ARs must belong to an informed SR. Accountable Modules derive from the selected AR allocations; Interface provider context retains the logical model's exact ownership. Reading selection does not add a logical relationship or turn contextual parents into executing participants.
 
@@ -273,7 +273,7 @@ Process graphs derive execution boundaries and conditional paths from `observed.
 
 The overview shows four parent responsibilities and declared cross-parent collaboration, with draft/selected-scope qualification and access to the owners' recorded `design_limits`. Missing edges do not imply independence. Render limits directly without guessing categories from prose or inventing collaboration. Counts are descriptive and do not establish coverage adequacy. Separate searchable Commands and Skills pages present designed names, Function correspondence, derived Feature/Module context and limits. Observed names remain attributed Development facts. Catalog placement does not change exact accountability.
 
-RigorLoop applies REM's [optional Logical reading perspectives](../../rem/methods/architecture-views.md#logical-reading-perspectives) through the following browser organization. These choices belong to this application profile; the [original method and REM adaptation](../../rem/methods/architecture-views.md#origin-and-reference) do not prescribe these pages or product categories.
+RigorLoop applies REM's [optional Logical reading perspectives](../../rem/methods/views/logical.md#logical-reading-perspectives) through the following browser organization. These choices belong to this application profile; the [original method and REM adaptation](../../rem/methods/architecture-views.md#origin-and-reference) do not prescribe these pages or product categories.
 
 | Reading perspective | RigorLoop presentation |
 | --- | --- |
@@ -303,7 +303,7 @@ The direct [projection tests](../../tests/engineering/validation/architecture_vi
 
 ## Entity naming and filenames
 
-Apply REM's [clarity principle](../../rem/principles/README.md), [Scenario criteria](../../rem/models/scenarios.md), and [System Design criteria](../../rem/models/system-design.md) to the name and definition before deriving a physical label.
+Apply REM's [clear-definition rule](../../rem/models/operational-support.md#clear-engineering-definitions), [Scenario criteria](../../rem/models/scenarios.md), and [System Design criteria](../../rem/models/system-design.md) to the name and definition before deriving a physical label.
 Names communicate engineering meaning; identities preserve continuity.
 The title must identify the engineering purpose and subject, distinguish the entity from its neighbors, and agree with its current scope.
 Scenario titles describe a stakeholder goal and situation; Feature titles describe a stakeholder capability; Function titles describe a logical action. Prefer action plus subject and add conditions when they distinguish the meaning.
@@ -329,7 +329,7 @@ Check the destination before renaming; a collision or unsupported filename must 
 Historical paths retain the meaning of their original states.
 
 IRs and SRs use title-derived directories containing `ir.json` or `sr.json`. AR files use the full-title filename convention directly within their single parent SR directory, without an additional AR directory.
-It is a repository representation choice. REM's clarity principle also applies to implementations that do not use files.
+It is a repository representation choice. REM's clear-definition rule also applies to implementations that do not use files.
 JSON Schema checks required text and shape; checking filename or directory agreement requires reading the file path, and judging clarity requires engineering review.
 
 ## Relationship ownership
@@ -428,7 +428,7 @@ The [workflow composition and owning records](../architecture/README.md#requirem
 
 Scope disposition: the structured `process_models` extension below is retained as a deferred design option, not a prerequisite for refining the current Process View or an accepted customer product contract. Its former PP delivery allocation has been withdrawn. Current registered architecture explanations use D2 in owning documents and links from the views guide; existing admitted JSON and generated views retain their current contracts. The [customer browser composition](../architecture/README.md#customer-architecture-browser-composition) owns proposed product integration, and requirement/design assessment must settle that scope before any renderer extension is scheduled.
 
-This proposed application-profile refinement applies the [REM Process method](../../rem/methods/architecture-views.md#process-view). It defines the source mapping and projection behavior for subsequent schema and renderer work; the fields described as proposed below are not yet admitted by the current schemas. Existing observed execution, interaction and lifecycle records remain valid and retain their original qualification. This section owns projection mechanics; [Operations](../architecture/modules/MOD-018-engineering-operations/README.md) owns workflow cooperation and [Governance](../architecture/modules/MOD-017-engineering-governance/README.md) owns approval and applicability semantics.
+This proposed application-profile refinement applies the [REM Process method](../../rem/methods/views/process.md#process-view). It defines the source mapping and projection behavior for subsequent schema and renderer work; the fields described as proposed below are not yet admitted by the current schemas. Existing observed execution, interaction and lifecycle records remain valid and retain their original qualification. This section owns projection mechanics; [Operations](../architecture/modules/MOD-018-engineering-operations/README.md) owns workflow cooperation and [Governance](../architecture/modules/MOD-017-engineering-governance/README.md) owns approval and applicability semantics.
 
 ### Projection structure and source mapping
 

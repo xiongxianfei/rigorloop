@@ -2,7 +2,7 @@
 
 Scenarios are first-class governed REM entities used during Initial Requirement analysis.
 They describe stakeholder-observable situations in which a durable Feature is exercised.
-The [Scenario concept](../concepts/README.md#requirement-analysis-entities) defines their meaning; [Scenario Analysis](../methods/scenario-analysis.md) defines how to develop and maintain them.
+The [Scenario concept](../concepts/scenarios.md#requirement-analysis-entities) defines their meaning; [Scenario Analysis](../methods/scenario-analysis.md) defines how to develop and maintain them.
 
 ## Identity and ownership
 
@@ -115,6 +115,6 @@ A confirmed Scenario is acceptable when:
 
 ## Architecture walkthroughs
 
-The [Scenario View (+1)](../methods/architecture-views.md#scenario-view-1) projects architectural context for an existing Scenario. Its [outcome walkthroughs](../methods/architecture-views.md#outcome-walkthroughs) retain the Scenario's full expected, alternative and failure outcomes, then select relevant obligations and architecture details from their own sources.
+The [Scenario View (+1)](../methods/views/scenario.md#scenario-view-1) projects architectural context for an existing Scenario. Its [outcome walkthroughs](../methods/views/scenario.md#outcome-walkthroughs) retain the Scenario's full expected, alternative and failure outcomes, then select relevant obligations and architecture details from their own sources.
 
 The Scenario remains the stakeholder situation; the walkthrough is a derived reading of related engineering knowledge. Selecting architectural or test context does not confirm complete outcome coverage, executed behavior or applicable evidence. Missing explanations remain explicit without rewriting the Scenario to match the available implementation.

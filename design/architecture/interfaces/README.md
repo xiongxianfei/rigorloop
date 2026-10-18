@@ -1,7 +1,7 @@
 # Interfaces
 
 An Interface defines an explicit interaction contract between architectural responsibilities.
-Apply the [REM Interface criteria](../../../rem/models/architecture-design.md#interfaces) to purpose, inputs, outputs, preconditions, failure outcomes, consistency, and compatibility.
+Apply the [REM Interface criteria](../../../rem/models/architecture-boundaries.md#interfaces) to purpose, inputs, outputs, preconditions, failure outcomes, consistency, and compatibility.
 
 The collection uses `<IF-ID>-<full-title-slug>/interface.json` under the [entity naming convention](../../support/README.md#entity-naming-and-filenames).
 The draft contracts cover the [IR-001 architecture walkthrough](../README.md#scenario-walkthrough), the proposed [published-product responsibilities](../../requirements/published-products.md), and selected [parent-boundary cooperation](../views/browser/index.html#scenarios). They describe logical interactions and artifact contracts rather than asserting new public runtime APIs or implementation.

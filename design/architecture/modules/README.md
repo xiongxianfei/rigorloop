@@ -1,7 +1,7 @@
 # Modules
 
 A Module is a durable architectural responsibility with a meaningful boundary.
-The [REM definition criteria](../../../rem/models/architecture-design.md#modules) explain purpose, responsibility, state authority, and exclusions; the [architecture method](../../../rem/methods/architecture-design.md) develops those boundaries.
+The [REM definition criteria](../../../rem/models/architecture-boundaries.md#modules) explain purpose, responsibility, state authority, and exclusions; the [architecture method](../../../rem/methods/architecture-design.md) develops those boundaries.
 
 The collection uses `<MOD-ID>-<retained-slug>/module.json` under the [entity naming convention](../../support/README.md#entity-naming-and-filenames). New directory suffixes derive from the full title and remain stable across title refinements. Child owners use the same convention under their parent's `modules/` directory. This nesting alone defines parentage: do not add `parent_module` fields or authored child lists. An owner can have both `modules/` and `realization/` directories.
 All 19 records describe proposed target architecture with `draft` status: four parents and 15 children. MOD-010 and MOD-011 additionally distinguish source-backed implementation observations from proposed realization choices; neither establishes approval or requirement satisfaction.

@@ -1,7 +1,7 @@
 # System Design model
 
 System Design describes durable stakeholder-visible capabilities and the durable logical behavior that realizes them.
-The [concept definitions](../concepts/README.md#system-and-architecture-assets) distinguish Features and Functions from Requirements.
+The [concept definitions](../concepts/system-and-architecture.md#system-and-architecture-assets) distinguish Features and Functions from Requirements.
 The [Scenario model](scenarios.md) defines the governed stakeholder situations that exercise Features.
 
 ```text
@@ -11,7 +11,7 @@ SR ── confirms ──────> Function
 Feature ─realizedBy──> Function
 ```
 
-Requirements shape durable system assets without becoming their containment hierarchy.
+Requirements shape durable system assets without becoming their containment hierarchy. A capability or behavior can remain relevant across requirement revisions and Changes; its own definition avoids treating every new request as a new asset. A Scenario supplies concrete use context without exhausting the Feature's meaning.
 
 ## Feature relationships
 
@@ -46,7 +46,7 @@ When an SR is primarily a quality or constraint obligation, confirm the Function
 
 ## Clear names and boundaries
 
-[Principle 16](../principles/README.md) requires understandable, distinguishable engineering definitions.
+[Clear engineering definitions](operational-support.md#clear-engineering-definitions) requires understandable, distinguishable engineering definitions.
 A Feature or Function name identifies its engineering purpose and subject, distinguishes neighboring assets, and agrees with its description and scope.
 Prefer an action and subject, adding a condition when it carries a meaningful distinction; an equally clear noun phrase is acceptable.
 

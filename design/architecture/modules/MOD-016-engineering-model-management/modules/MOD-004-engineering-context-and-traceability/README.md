@@ -35,7 +35,7 @@ The derived projection retains selected-state identity, source locators, exact a
 
 ## Technical model: browser components and contracts
 
-This model defines the intended architectural implementation of the browser. Its component-and-contract structure is a Logical reading perspective under [REM's technical-model definition](../../../../../../rem/models/architecture-design.md#technical-model). Node, Rust and D2 remain the selected technology choices; they do not establish new REM Modules, current command availability or implemented runtime behavior. The [architecture composition](../../../../README.md#customer-architecture-browser-composition) retains cross-owner accountability.
+This model defines the intended architectural implementation of the browser. Its component-and-contract structure is a Logical reading perspective under [REM's technical-model definition](../../../../../../rem/models/architecture-realization.md#technical-model). Node, Rust and D2 remain the selected technology choices; they do not establish new REM Modules, current command availability or implemented runtime behavior. The [architecture composition](../../../../README.md#customer-architecture-browser-composition) retains cross-owner accountability.
 
 | Component | Responsibility and authority | Architectural mapping |
 | --- | --- | --- |

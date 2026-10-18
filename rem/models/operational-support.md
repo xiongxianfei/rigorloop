@@ -6,7 +6,7 @@ Application production operations are a separate concern unless they are part of
 
 ## Metamodel and project representation
 
-The metamodel defines valid engineering-model structures.
+The metamodel defines valid engineering-model structures. Shared meanings for entity types and relationships give authors and validators a common basis for detecting incompatible interpretations; structural validity does not establish engineering adequacy.
 It SHOULD specify entity types, fields, relationship types, cardinalities, identity rules, and naming rules.
 It SHOULD also specify validation, lifecycle, authoring, retirement, migration, baseline, and change rules.
 
@@ -19,7 +19,7 @@ Those choices do not change what a Requirement, Function, Module, Module-contain
 Each project representation defines how stable identity, display name, and physical location are recorded and related.
 Keep one authoritative source for identity and name, and derive any repeated storage labels from those sources.
 Readable labels help people navigate the model without making the labels themselves entity identities.
-[Principle 16](../principles/README.md) governs the clarity of the engineering name and definition; the project representation governs how that name appears in storage.
+[Clear engineering definitions](#clear-engineering-definitions) governs the clarity of the engineering name and definition; the project representation governs how that name appears in storage.
 
 A filesystem representation may combine a stable identity and a normalized readable title in a directory or filename, such as an ID followed by a title slug.
 Such a representation defines title normalization, label consistency, and collision handling.
@@ -40,7 +40,7 @@ Keep current engineering knowledge distinguishable from the operational account 
 
 When a finding changes the design, reconcile the current engineering source while preserving the original finding and judgment in the operational account. A concise provenance reference may connect the design to that account; it does not transfer approval to later revisions or make a review dossier part of the current definition. Recording, rendering, or successfully validating a source does not establish engineering approval, implementation, or requirement satisfaction.
 
-This is a separation of information ownership, not a mandate for separate products or physical stores. The project selects storage, retention, recovery, and access mechanisms that preserve current understanding and the operational history required for reliance. REM does not require Git, SQLite, a particular directory, or a universal review cadence.
+This is a separation of information ownership, not a mandate for separate products or physical stores. The project selects storage, retention, recovery, and access mechanisms that preserve current understanding and the operational history required for reliance. REM does not require Git, SQLite, a particular directory, or a universal review cadence. A tool-independent method requires controlled, recoverable engineering history without prescribing a particular technology. A replacement mechanism must preserve those engineering semantics.
 
 ## Validation and maintenance
 
@@ -82,10 +82,19 @@ It MAY retain the last successful set with its original identity and an explicit
 The project defines the recovery mechanism and which checks are required before refreshed output can be relied on.
 
 The [Architecture Views method](../methods/architecture-views.md#generation-and-assessment-cycle) owns the procedure for producing and assessing architecture presentations.
-Its [correction ownership](../methods/architecture-views.md#correction-ownership) distinguishes model, projection, presentation, and maintenance findings.
+Its [correction ownership](../methods/view-presentation.md#correction-ownership) distinguishes model, projection, presentation, and maintenance findings.
 
 ## Method and application boundary
 
 REM methods define reusable analysis procedures such as 5W2H.
 Operational Support records how a project applies and represents their outputs.
 Using a method does not by itself prescribe a directory, mandatory JSON keys, command, agent, or service.
+
+## Clear engineering definitions
+
+A definition is useful to collaborators when they can distinguish its purpose and scope from neighboring definitions. A stable identifier can locate a record without explaining what it means. Meaningful names and precise boundaries reduce the interpretation needed to connect a definition to the engineering question it answers.
+
+Each definition has a meaningful name and a precise purpose and scope that readers can understand using current authoritative information. Its name identifies the engineering purpose and subject, distinguishes neighboring definitions, and agrees with the definition's actual scope.
+Present engineering meaning first. Stable identities support traceability; readers should not need to interpret identifiers to understand a responsibility or contract.
+
+The [System Design criteria](system-design.md#clear-names-and-boundaries) and [Module naming criteria](architecture-boundaries.md#module-names-and-identity) apply this shared rule. Representation conventions remain separate from semantic clarity.
