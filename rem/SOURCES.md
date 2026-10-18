@@ -23,5 +23,6 @@ Worked examples are authored illustrations and are identified as such, rather th
 
 ## Additional publication references
 
+- [KPS Core 11.0.0 at the inspected revision](references/kps-11-knowledge-practice-system.md): editorial input to the draft coverage outline; consultation does not change REM's declared KPS basis or establish validator compatibility.
 - [ISO/IEC/IEEE 42010:2022](references/iso-42010-2022.md#located-contributions): the public abstract distinguishes architecture from its description; full clauses and conformance are outside the inspected scope.
 - [GitHub Markdown documentation](references/github-undated-markdown-formatting.md#generated-section-links): documented heading and relative-link behavior informs navigation checks in the selected reading environment.

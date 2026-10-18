@@ -6,6 +6,9 @@ This supporting guide explains engineering reasoning alongside the five [operati
 It does not introduce another REM knowledge category and it does not redefine the linked material.
 The linked files remain authoritative for their own definitions, rules, structures, and procedures.
 
+Use the [draft body of knowledge outline](../../docs/body-of-knowledge-outline.md) for subject coverage, intended capabilities and gaps.
+This guide retains the explanations of how knowledge owners cooperate; the outline supplies the shared coverage navigation.
+
 ---
 
 

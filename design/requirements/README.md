@@ -36,6 +36,11 @@ Counts and navigation are derived from the JSON records; those records own ident
 Every requirement records all seven 5W2H answers, and SRs define observable acceptance criteria and attributable scope.
 The [Scenario index](scenarios/README.md), [Features](../system/features/README.md), and [Functions](../system/functions/README.md) expose the connected model.
 
+## REM knowledge refinement
+
+The [REM knowledge-refinement analysis](rem-knowledge-refinement.md) proposes reuse of existing authoring requirements for a draft coverage outline and requirements-analysis pilot criteria.
+It adds no IR/SR identities and does not claim requirement approval or executed reader outcomes.
+
 ## Local operational-history refinement
 
 The [local operational-history analysis](sources.md#src-local-operational-analysis) treats the proposal as RR input and refines IR-003 and IR-008 without adding an IR. It adds five draft Scenarios (SCN-070–074), five SRs (SR-074–078), FEAT-021 and four unallocated Functions (FUNC-074–077), and reconciles continuing records. Five materially revised Scenarios return to draft pending reassessment; earlier confirmation remains evidence only for their original subjects. SR-042–045 no longer use old allocation arguments as current coverage claims. Existing ARs and realization facets still require architectural reconciliation before adoption.
@@ -314,7 +319,7 @@ The AR shape retains the requirement fields described above: identity, title, dr
 Its `type` is `allocated-requirement`. It requires one scalar `allocated_to` Module ID and may include unique `constrains` Function IDs.
 An AR does not use SR's `confirms` field. An optional `open_questions` field contains exactly one consequential nonblank question when needed and is omitted otherwise.
 Create an AR when its accountable architectural boundary is known; do not invent a lower-level requirement to fill a tree level.
-The [Architecture Design method](../../rem/methods/architecture-design.md#derive-allocated-requirements) guides derivation and checks the composed AR obligations against the parent SR.
+The [Architecture Design method](../../rem/methods/architecture-design.md#derive-and-allocate-requirements-with-architectural-context) guides derivation and checks the composed AR obligations against the parent SR.
 
 Requirements should state observable acceptance criteria and eventually link to applicable verification definitions.
 Requirement text alone does not establish satisfaction or supply execution evidence.

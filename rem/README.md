@@ -17,6 +17,9 @@ Use [verification](methods/plan-and-assess-verification.md) for specified confor
 Select architecture presentations through [explicit view tailoring](methods/architecture-views.md#view-selection-and-tailoring).
 [Source references](SOURCES.md) identify external support and distinguish it from REM's selected rules.
 
+The [draft body of knowledge outline](docs/body-of-knowledge-outline.md) connects engineering subjects to intended reader capabilities, current explanations and specific coverage gaps.
+Its requirements-analysis slice proposes the depth to assess; it does not certify current coverage or change the method's rules.
+
 ## Status and use
 
 [Method metadata](metadata.md) declares REM’s own version and the exact KPS version it is based on. Maintained REM documents inherit that declaration; stable document identities and source publication/inspection provenance remain distinct. The based-on relationship does not assert assessed KPS conformance or publish a software release.

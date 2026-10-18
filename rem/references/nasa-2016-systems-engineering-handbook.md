@@ -20,6 +20,7 @@ This is one handbook evidence family, even though several NASA HTML chapters wer
 ## Current inspection and use limit
 
 The six mapped chapters retain the prior inspection dates and extents recorded below. Consolidation inspection on 2026-10-07 additionally checked selected official HTML text in §4.3, §6.5 and §6.8. This is one institutional handbook family, not a full handbook audit or several independent confirmations.
+The 2026-10-18 coverage-outline draft additionally inspected the chapter 4–6 subject structure, §4.1.1.2.1–4, §4.2.1.2.1–4 and §6.2.1.2.2–4; the added scope is identified below without replacing the earlier inspection accounts.
 
 ## Publication identity and inspected extent
 - Creator/publisher: National Aeronautics and Space Administration.
@@ -29,6 +30,16 @@ The six mapped chapters retain the prior inspection dates and extents recorded b
 - Independence: all chapters belong to the same institutional source family. Citations to several chapters are not several independent confirmations.
 
 ## Located contributions
+
+### Subject coverage and stakeholder expectations
+
+The official [System Design Processes](https://www.nasa.gov/reference/4-0-system-design-processes/), [Product Realization](https://www.nasa.gov/reference/5-0-product-realization/) and [Crosscutting Technical Management](https://www.nasa.gov/reference/6-0-crosscutting-technical-management/) chapter contents identify subject families for the proposed REM coverage outline.
+Their headings and chapter 4 introduction were inspected on 2026-10-18; this does not establish detailed inspection of every listed process.
+The outline's grouping and selected depth are REM-authored adaptations, not NASA's prescribed curriculum.
+
+Selected [Stakeholder Expectations Definition](https://www.nasa.gov/reference/4-1-stakeholder-expectations-definition/) text, §4.1.1.2.1–4, was inspected on 2026-10-18 for stakeholder identification, needs and constraints, decision authority and operating situations.
+These passages support considering affected parties and distinguishing the desired outcome from its proposed realization.
+They do not establish REM's RR/IR terminology or a universal elicitation questionnaire.
 
 ### Requirements definition
 
@@ -40,6 +51,8 @@ Supports distinct levels of need and obligation, rationale, and early checking. 
 
 **Retained inspection:** Primary source inspected on 2026-10-06. This note identifies limited supporting reasoning, not approval of REM or its implementation. REM links to the publication without redistributing its text or figures.
 
+**Additional inspection, 2026-10-18:** §4.2.1.2.1–4 was checked for constraints, requirement kinds, rationale, assumptions and requirements validation in the coverage-outline draft. This supports topic selection and scoped acceptance reasoning, not a claim that NASA validates REM's proposed pilot.
+
 ### Requirements management
 
 **Source mapping:** S03. [NASA — Requirements Management](https://www.nasa.gov/reference/6-2-requirements-management/).
@@ -49,6 +62,8 @@ Supports distinct levels of need and obligation, rationale, and early checking. 
 Supports hierarchical organization, bidirectional traceability and controlled requirement changes. NASA discusses cases beyond REM's selected tree; that discussion does not change REM's exact single-parent IR/SR/AR rules.
 
 **Retained inspection:** Primary source inspected on 2026-10-06. This note identifies limited supporting reasoning, not approval of REM or its implementation. REM links to the publication without redistributing its text or figures.
+
+**Additional inspection, 2026-10-18:** §6.2.1.2.2–4 was checked for traceability and evaluation of requirement changes. The pilot's exact reuse/refinement/creation cases remain REM-authored assessment fixtures.
 
 ### Product integration
 
