@@ -16,8 +16,8 @@ Shared published invocation contract: [Skill](../../../MOD-018-engineering-opera
 
 | ID | Required behavior |
 | --- | --- |
-| FOUND-SR-01 | Project Foundations MUST assign purpose/positioning to Vision, governing principles to project-selected instructions and observed orientation to Project Map without duplicating their detailed contracts. |
-| FOUND-SR-02 | Cross-child inconsistencies MUST be exposed and returned to the appropriate authority; an observed map MUST NOT silently redefine direction, governance or future architecture. |
+| FOUND-SR-01 | Project Foundations MUST assign purpose/positioning to Vision, governing principles to project-selected instructions and observed orientation to direct source inspection without duplicating their detailed contracts. |
+| FOUND-SR-02 | Cross-child inconsistencies MUST be exposed and returned to the appropriate authority; an observation MUST NOT silently redefine direction, governance or future architecture. |
 | FOUND-SR-03 | Each child invocation MUST retain its scoped write, evidence, retry and artifact-placement boundaries; composition MUST NOT create a mandatory sequence or new governance adoption. |
 
 ## Project governance
@@ -32,6 +32,18 @@ Maintain existing project-selected instructions through ordinary authorized work
 
 These clauses retain the former governance-authoring obligations; the dedicated Constitution capability and GOV-DEC-01 decomposition are retired. No new skill or approval stage replaces them.
 
+## Repository inspection
+
+Inspect relevant source as part of ordinary work. README and the architecture overview supply entry points, not a required map-maintenance stage. Existing customer orientation documents remain optional inputs and retain their selected authority.
+
+| Retained clause | Required behavior |
+| --- | --- |
+| MAP-SR-01 | Distinguish inspected structure, bounded inference and unknowns; intended architecture or filenames alone MUST NOT establish observed behavior. |
+| MAP-SR-02 | Inspection MUST preserve the requested scope and authority; read-only work MUST NOT repair artifacts or mutate unrelated state. |
+| MAP-SR-03 | Partial, stale or contradictory evidence MUST limit reliance; route actionable gaps to their responsible owner. |
+
+The dedicated map create/refresh/audit vocabulary, root/area registration, required skeleton, freshness ceremony and MAP-DEC-01 specialist decomposition are retired. These retained evidence and authority safeguards require no replacement skill or document.
+
 ## Architecture Overview
 
 ```mermaid
@@ -40,10 +52,10 @@ flowchart LR
     subgraph Owned["Project Foundations"]
         Vision["Vision"]
         Principles["Project instructions"]
-        Map["Project Map"]
+        Inspect["Inspect relevant source"]
         Select["Select and reconcile responsibility"] -->|"appropriate supporting task"| Vision
         Select["Select and reconcile responsibility"] -->|"appropriate supporting task"| Principles
-        Select["Select and reconcile responsibility"] -->|"appropriate supporting task"| Map
+        Select["Select and reconcile responsibility"] -->|"appropriate supporting task"| Inspect
     end
     Owned -->|"artifact, evidence and limits"| Consumer["Named decision or action owner"]
     Common["Skill shared contract"] -.->|"invocation and resource constraints"| Owned
@@ -64,13 +76,13 @@ The overview identifies the owned responsibility and external authority/evidence
 | --- | --- |
 | [Vision](vision.md) | Canonical purpose and positioning with derived README synchronization. |
 | Project-selected instructions | Reviewable governing principles, maintained through ordinary authorized edits; no dedicated skill or required filename. |
-| [Project Map](project-map.md) | Observed repository orientation and root/area consistency. |
+| Direct source inspection | Relevant current source, bounded inference and explicit unknowns; no required map artifact or dedicated skill. |
 
 ## Specialist contract
 
-Vision expresses intended identity and outcomes; project instructions express governing principles; Project Map expresses inspected current structure and bounded inference. These are complementary subjects, not interchangeable authority. Read only the activity contracts relevant to the requested change. A new vision does not prove that implementation already conforms; a map finding does not authorize changing either direction or governing rules.
+Vision expresses intended identity and outcomes; project instructions express governing principles; direct source inspection establishes current structure and bounded inference. These are complementary subjects, not interchangeable authority. Read only the activity contracts relevant to the requested change. A new vision does not prove that implementation already conforms; an inspection finding does not authorize changing either direction or governing rules.
 
-Changes reconcile affected references and assumptions through their existing owners. The decision owner settles material positioning and governance conflicts; actual design or implementation gaps return to Authoring or Implementation under Workflow. Composition introduces no required Vision → instructions → Map execution pipeline. Preserve existing artifact conventions and the common Skill source/resource boundary.
+Changes reconcile affected references and assumptions through their existing owners. The decision owner settles material positioning and governance conflicts; actual design or implementation gaps return to Authoring or Implementation under Workflow. Composition introduces no required Vision → instructions → inspection execution pipeline. Preserve existing artifact conventions and the common Skill source/resource boundary.
 
 ## Runtime view
 
@@ -93,7 +105,7 @@ The specialist contract determines the permitted action and retry, including rea
 | Input domain | FOUND-SR-01, FOUND-SR-02, FOUND-SR-03 | A request selects purpose, governing principles or observed orientation according to its intended output. |
 | State/lifecycle | FOUND-SR-01, FOUND-SR-02, FOUND-SR-03 | An orientation update does not mutate project direction or workflow progress. |
 | Identity/authority | FOUND-SR-01, FOUND-SR-02, FOUND-SR-03 | Changing principles or positioning requires the relevant owner’s authority. |
-| Composition/path | FOUND-SR-01, FOUND-SR-02, FOUND-SR-03 | An observed architecture inconsistency is routed to its Design owner instead of rewriting the map as future truth. |
+| Composition/path | FOUND-SR-01, FOUND-SR-02, FOUND-SR-03 | An observed architecture inconsistency is routed to its Design owner without presenting intended behavior as observed implementation. |
 | Temporal/retry | FOUND-SR-01, FOUND-SR-02, FOUND-SR-03 | A changed vision or governance basis triggers reassessment of affected consumers. |
 | Failure/recovery | FOUND-SR-01, FOUND-SR-02, FOUND-SR-03 | A partial child update reports exact effects without treating the entire foundation as synchronized. |
 | Compatibility/migration | FOUND-SR-01, FOUND-SR-02, FOUND-SR-03 | Existing artifact conventions and historical evidence retain their original authority. |

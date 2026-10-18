@@ -9,6 +9,18 @@ The [REM architecture model](../../rem/models/architecture-design.md) owns the r
 Each Module or Interface has a descriptive owner directory containing its logical JSON and optional `realization/` facets. Child Modules live in their parent's `modules/` collection; containment defines parentage once. The [4+1 views](views/README.md) derive Logical, Process, Development, Physical, and Scenario perspectives from those authoritative records.
 Existing [System and runtime contracts](composition.md) retain their authority. Draft logical Modules are distinguished from attributed implementation observations and proposed realization choices.
 
+## Implementation entry points
+
+Use these current source boundaries for orientation, then inspect the relevant implementation. The architecture definitions below distinguish proposed design from observed realization; navigation alone establishes no runtime or review result.
+
+| Area | Source and responsibility |
+| --- | --- |
+| Public executable | [CLI entry](../../packages/rigorloop/dist/bin/rigorloop.js) dispatches installation, operational and diagnostic commands. The tracked implementation is under `packages/rigorloop/dist/`; there is no separate source tree. |
+| State and installation | [Operational store](../../packages/rigorloop/dist/lib/operational-store.js) owns project-local SQLite access; [installer](../../packages/rigorloop/dist/lib/installer-replacement.js) owns bounded installation effects. Engineering definitions and stable plans remain files. |
+| Skills and routing | [Canonical skills](../../skills/) supply portable guidance. [Route](../../skills/route/SKILL.md) interprets authorized next work; the CLI supplies deterministic context and persistence. Skills do not write SQL. |
+| Validation and packaging | [Essential runner](../../scripts/ci.sh) invokes native tests; [Validation](../support/validation.md) owns current sources and coverage limits. [Adapter builder](../../scripts/build-adapters.py) produces skill archives from canonical resources. |
+| Release | [Release coordinator](../../scripts/release-coordinator.py) coordinates candidate qualification and separately authorized publication. [Release design](modules/MOD-019-product-delivery/modules/MOD-015-product-release-coordination/release.md) owns identity and public-observation requirements. |
+
 ## Scope and approach
 
 The responsibility map covers 69 of 73 Functions through 15 accountable child Modules within four broader parent Modules: 19 draft Modules overall. Parent summaries derive descendant allocations without assigning them again.

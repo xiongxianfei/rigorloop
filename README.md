@@ -76,7 +76,7 @@ For a new repository, use this order:
 2. Bootstrap standing repository guidance:
    - `vision` creates or updates `VISION.md` for project direction and fit checks.
    - Maintain governance in the project’s existing instructions; this repository uses `AGENTS.md`.
-   - `project-map` creates or updates `docs/project-map.md` when repository orientation is needed.
+   - Inspect relevant source directly; use the architecture overview to locate implementation entry points.
    - `route` uses `rigorloop change context --root . --change CHANGE` for deterministic project-local workflow information and retains semantic routing judgment.
    - `docs/plan.md` starts as the small active/blocked/recent-work index.
 3. Start the first real change with the per-change lifecycle described above.
@@ -91,7 +91,7 @@ Do not rewrite durable guides just for symmetry.
 | Understand project direction | [VISION.md](VISION.md) |
 | Understand governance and source-of-truth order | [Repository instructions](AGENTS.md) |
 | Find workflow stages and artifact paths | Run `rigorloop change context --root . --change CHANGE`; read [the workflow contract](design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md) for policy |
-| Orient to repository structure | [docs/project-map.md](docs/project-map.md) |
+| Orient to repository structure | [Architecture overview](design/architecture/README.md#implementation-entry-points) |
 | See active, blocked, and recent work | [docs/plan.md](docs/plan.md) |
 | Use one lifecycle stage | [skills/](skills/) |
 
@@ -275,7 +275,6 @@ Existing destination skills conflict even when identical. Use `--force` for comp
 RigorLoop recommends one standard workflow for complete AI-assisted delivery:
 
 - Standing artifacts: `VISION.md` and `AGENTS.md`
-- Living references: `docs/project-map.md` when repository shape is not obvious enough for safe reliance
 - Workflow infrastructure: Designs, CLI workflow context, affected root guidance, affected skills, and generated outputs
 - On-demand support: `explore` and `research`
 - Compact per-change chain: `requirement-analysis -> system-design / architecture-design -> plan -> implement -> code-review -> verify`. Requirement, integrated Design and Delivery Reviews are optional. One final independent whole-change review and distinct verification remain required. PR is an optional external handoff after lifecycle completion.
@@ -283,7 +282,7 @@ RigorLoop recommends one standard workflow for complete AI-assisted delivery:
 
 Explore (`explore`) expands a materially unclear decision space; Research (`research`) reduces bounded uncertainty about facts that can change a decision. Use both when the option comparison depends on unanswered research questions, and neither when direction and relevant facts are already clear. They are optional supporting skills: an explicit invocation writes a standalone artifact under `docs/explorations/` or `docs/research/`, and the owning stage must adopt any conclusion that affects its decision. Neither skill approves a direction or advances the lifecycle. `learn` is periodic or explicitly invoked, not a final stage for every change. `ci-maintenance` means updating hosted workflow automation or related CI infrastructure; validation execution belongs to `verify`.
 
-Do not rely on `docs/project-map.md` when it is absent, stale, contradicted, or missing the relied-on area; refresh it or record a no-map rationale first.
+Inspect actual source and configuration when deciding where to change behavior. Navigation is not proof of runtime behavior or approval.
 
 Users may manually invoke individual skills for focused output. A manual skill invocation is isolated by default and does not imply that the full workflow is complete.
 
@@ -293,8 +292,8 @@ The normative contract lives in [Workflow](design/architecture/modules/MOD-017-e
 
 - one recommended standard workflow for complete AI-assisted delivery
 - isolated manual skill invocation for focused skill output
-- standing artifacts, living references, on-demand support, a per-change chain, and periodic learning as distinct lifecycle categories
-- a repository orientation map at `docs/project-map.md`
+- standing artifacts, on-demand support, a per-change chain, and periodic learning as distinct lifecycle categories
+- implementation entry points in the [architecture overview](design/architecture/README.md#implementation-entry-points)
 - canonical engineering definitions in `design/`, reusable methods in `rem/`, and instructions/tooling in `skills/`, `schemas/` and `scripts/`
 - ignored local Codex runtime state in `.codex/skills/`
 - generated public adapter packages in `dist/adapters/`
@@ -344,7 +343,6 @@ The [system test design](design/support/test-design/system-test-design.md) descr
 │   ├── proposals/
 │   ├── releases/
 │   ├── plan.md
-│   └── project-map.md
 ├── packages/rigorloop/
 ├── dist/adapters/
 ├── scripts/

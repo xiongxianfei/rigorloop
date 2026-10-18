@@ -75,7 +75,6 @@ PUBLISHED_SKILL_INVOCATION_NAMES = (
     "learn",
     "plan",
     "pr",
-    "project-map",
     "requirement-analysis",
     "requirement-review",
     "research",

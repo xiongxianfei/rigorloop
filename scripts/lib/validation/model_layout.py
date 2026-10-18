@@ -10,7 +10,6 @@ PROJECT_MODEL_PATHS = {
     "plan": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/planning.md",
     "project-foundations": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/project-foundations.md",
     "vision": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/vision.md",
-    "project-map": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/project-map.md",
     "discovery": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/discovery.md",
     "explore": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/explore.md",
     "research": "design/architecture/modules/MOD-017-engineering-governance/modules/MOD-008-engineering-authoring-guidance/research.md",
