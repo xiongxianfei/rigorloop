@@ -1,5 +1,7 @@
 # Operational Support
 
+Test scenarios and expected observations are defined in the single [system test design](test-design/system-test-design.md#additional-integrated-scenarios).
+
 This directory defines RigorLoop's representation and validation of its engineering model.
 The reusable [REM Operational Support model](../../rem/models/operational-support.md) describes the responsibilities independently of storage format or tooling.
 
@@ -476,23 +478,6 @@ The activity must distinguish required conditions from automatic execution. Requ
 
 Corrections return to the responsible requirement, design or implementation owner. Whole-change correction and reassessment remain within one gate, with distinct truthful attempts and current subject applicability. Verify failures distinguish engineering changes requiring affected reassessment from evidence-only retries. Failed required checks and missing authority block affected work. Persistence success cannot satisfy any of these engineering predicates. These conditions are selected from Governance and Operations, not inferred from arrows or the latest record timestamp.
 
-### Verification intent and delivery boundary
-
-The shared projection and browser test owners remain the existing architecture view/browser suites. Extend their realistic private-root fixtures when implementing this profile; this document does not claim those cases already exist. Use independently specified expected relationships and meanings rather than deriving expectations from the projection under test.
-
-| Risk and representative condition | Required observation |
-| --- | --- |
-| Logical allocation or shared filenames mistaken for runtime topology | Only authored execution/participant/channel facts create topology; containment and actual Interface ownership remain visible. |
-| Proposed workflow mistaken for implemented execution | Observed CLI facts retain their qualification; proposed activity and participants carry distinct labels and source links throughout overview and detail. |
-| Invalid local name, endpoint, model kind or node kind | Specific rejection precedes consistency inference and generation leaves prior output unchanged. |
-| Source models reordered, two owners reuse a local name, or observed/proposed models share a name | Fully qualified topic selection reaches the same intended model and current pointer without collision; duplicate names within one qualified scope reject. |
-| Only topology exists | Overview remains useful and explicitly reports missing behavioral detail without manufacturing order or concurrency. |
-| Accepted requirements lack Function/AR allocation; a checked milestone lacks review | Activity permits the relevant authorized design/implementation continuation and makes no design-completeness or approval claim. |
-| Clean advisory review; whole-change corrections; changed subjects; evidence-only retry | Semantic walkthrough preserves one formal gate, applicable reassessment, independent judgment and distinct Verify, with no milestone gate or unnecessary review restart. |
-| Scenario navigation opens a runtime interaction | Selected Scenario meaning and source qualification remain unchanged; broader topic detail does not expand Scenario coverage. |
-
-Automated schema/projection checks protect admissibility, topology, references, qualification and generation preservation. An explicit semantic comparison against the owning handoff and gate contracts assesses activity meaning; rendered inspection checks legibility and navigation. Passing structural checks alone cannot establish either claim. Preserve existing publication/recovery regression coverage. Delivery must allocate source/schema changes, projection and navigation changes, generated output regeneration, and these observations together before implementation; this design does not change product CLI behavior, adopt SQLite or grant review approval.
-
 ## Repository engineering support
 
-[Ownership](ownership.md) defines canonical placement. [Development](development.md) governs repository engineering cooperation; [Validation](validation.md) owns check admission, execution and reporting. [Shared test-design rules](test-design/rules.md) and [coverage navigation](test-design/README.md) retain system-wide proof policy and owner-specific coverage. These supporting practices do not add product Modules.
+[Ownership](ownership.md) defines canonical placement. [Development](development.md) governs repository engineering cooperation; [Validation](validation.md) owns check admission, execution and reporting. [Shared test-design rules](test-design/rules.md) and [system test design](test-design/system-test-design.md) retain shared proof policy and one system-wide account of scenario conditions and expected observations. These supporting practices do not add product Modules.

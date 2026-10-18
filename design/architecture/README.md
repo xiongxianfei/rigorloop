@@ -242,7 +242,7 @@ MOD-012 consumes Governance's distinct IF-008 methods, IF-009 authority, IF-010 
 
 AR-029–042 remain beneath their sole owning SR and directly allocated to existing Modules. SR-079–083 source entries own criterion-level allocation arguments; parent coverage is derived. These arguments do not establish implementation satisfaction. The browser contribution panel remains scoped to CLI allocations; workflow arguments are available in SR details without relabeling them as CLI evidence.
 
-The [views guide](views/README.md#workflow-design-projections) locates the derived Logical, Process, Development, Physical and Scenario information. [Operations test design](modules/MOD-018-engineering-operations/test-design.md) and [Governance test design](modules/MOD-017-engineering-governance/test-design.md) own interaction proof intent. [The draft delivery plan](../../docs/plans/2026-09-29-requirement-first-workflow.md) owns migration sequencing, not current engineering meaning.
+The [views guide](views/README.md#workflow-design-projections) locates the derived Logical, Process, Development, Physical and Scenario information. [System test design](../support/test-design/system-test-design.md#additional-integrated-scenarios) owns interaction proof intent. [The draft delivery plan](../../docs/plans/2026-09-29-requirement-first-workflow.md) owns migration sequencing, not current engineering meaning.
 
 The subordinate contracts now specify [v4 records](modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/README.md), [v2 scoped commands](modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md), [package identity](modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/README.md), and [explicit installed-unit replacement](modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/README.md). The later requirement-first SQLite adoption implements the scoped v2/v4 commands, schemas and backend; the owning realization sources distinguish observed bindings from still-deferred behavior. Documentation alone does not establish qualification. SR-074–077 maintenance Design is composed below; runtime qualification and required adapter availability remain explicit rollout dependencies. SR-078 history lookup remains separately deferred. Historical skill and recording observations retain their original scope; current readers use the adopted owning contract. Review outcomes identify their exact subjects separately; the earlier requirement assessment retains its original hashes.
 
@@ -275,15 +275,17 @@ flowchart LR
 
 The [command owner](modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/README.md#browser-command-family) specifies generate/check/recover semantics and truthful outcomes. The [candidate owner](modules/MOD-019-product-delivery/modules/MOD-013-product-package-production/README.md#browser-candidate-contract) specifies bundled resources, declared compatibility and acquisition/update qualification. MOD-004 selects a thin Node CLI adapter and one Rust engine subprocess, bundled D2, immutable inputs and output versions with a single entry-file commit point. Current Python repository tooling is an observed prototype, not a second permanent customer contract. The [browser technical model](modules/MOD-016-engineering-model-management/modules/MOD-004-engineering-context-and-traceability/README.md#technical-model-browser-components-and-contracts) maps the composed components and contracts to those owners. Logical presents technical structure; Development presents source/build organization, with Process and Physical retaining execution and placement concerns.
 
-### Criterion contribution and integrated proof intent
+### Criterion contribution
 
-| SR criteria | Allocated contribution | Combined observation |
-| --- | --- | --- |
-| SR-084 1–5 | AR-043 capture; AR-044 interpretation; AR-045 composition | An independent sparse model produces all five entry points with exact identity; invalid or changed required input prevents publication, absent optional detail is visible. |
-| SR-085 1–6 | AR-046, MOD-004 | Navigate from overview to detail/source; ownership, qualification, missing explanation and Scenario meaning survive every perspective without invented order or approval. |
-| SR-086 1–5 | AR-047, MOD-004 | Copy complete output, remove source/generator and disable network; inspect required content, navigation and snapshot currency limits. |
-| SR-087 1–6 | AR-048, MOD-004, with captured input and prepared artifact | Independently inspect source, prior version, entry identity and unrelated content across hostile input, competing writers, precommit failure and postcommit response failure. |
-| SR-088 1–7 | AR-049 packaged qualification; AR-050 publication boundaries; AR-051 invocation compatibility | Run the actual acquired candidate and safe update in a clean prefix; unsupported dependencies reject before output writes, offline reading works, and publication evidence stays distinct. |
+The [system test design](../support/test-design/system-test-design.md#additional-integrated-scenarios) owns combined scenario conditions and expected observations for these allocations.
+
+| SR criteria | Allocated contribution |
+| --- | --- |
+| SR-084 1–5 | AR-043 capture; AR-044 interpretation; AR-045 composition |
+| SR-085 1–6 | AR-046, MOD-004 |
+| SR-086 1–5 | AR-047, MOD-004 |
+| SR-087 1–6 | AR-048, MOD-004, with captured input and prepared artifact |
+| SR-088 1–7 | AR-049 packaged qualification; AR-050 publication boundaries; AR-051 invocation compatibility |
 
 ### Scenario view: selected customer walkthroughs
 

@@ -82,13 +82,4 @@ The proposed local model engine reuses MOD-001 acquisition/custody, MOD-003 pure
 
 The participant-facing save/revision/rationale requests are the existing logical IF-001 inputs with explicit state and authority. A callable command or editor adapter requires separate compatibility and implementation qualification. The currently generated browser can display the Design and source references; it does not thereby implement these model-write services or full normalized rationale retrieval. Schema validity, Design review and actual runtime verification remain separate.
 
-| Scenario / allocation | Required Design observation |
-| --- | --- |
-| SCN-005 then SCN-001; SR-001 / AR-001–002 | Confirm exact checked retained bytes, end the caller session and retrieve the same identity/type/content in a later session. Selected state/profile and failures remain explicit. |
-| SR-002 / AR-003–004 | Check all required identity-bearing members; distinguish blank or duplicate identity, equal names with distinct IDs, complete absence, ambiguity and incomplete inspection. |
-| SCN-002; SR-003 / AR-005 | MOD-002 preserves identity across supported name/content/location edits; inspect the complete moved subtree and unchanged reference scope, reject target collision or changed base, and report uncertain publication truthfully. |
-| SCN-003/004; SR-004 / AR-006–007 | Read current content and required references without Changes or private memory; expose missing required context separately from optional unavailable history. |
-| SCN-006 then SCN-003/004; SR-005 / AR-008–009 | Retrieve all five recorded reasoning fields with their exact association; retain current reliance after Change cleanup and show missing or stale rationale without fabrication or automatic renewal. |
-| Interruption, competing writer or lost save response | Persist affected uncertainty across restart, withhold false coherent success and reconcile actual bytes/membership before retry. |
-
-The direct IR-001 outcome is a later participant who can identify the current obligation, capability, behavior or responsibility and inspect its applicable recorded reasoning without the original conversation. Walk both an intact current model and one with missing required context: understandable complete knowledge and an explicit bounded gap are distinct correct outcomes. Stable identity, selected-state fidelity and selective retention support this outcome; counts of files or allocated ARs do not establish it.
+The [System test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios) owns integrated scenario conditions and expected observations. [Validation](../../../../../support/validation.md#current-coverage-allocation) records current coverage and limits.

@@ -1,5 +1,7 @@
 # Unified system Requirements view
 
+Test scenarios and expected observations are defined in the single [system test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios).
+
 This architecture refines [MOD-004 Views and traceability](README.md) for one system-level expandable requirement tree containing linked Feature, Function and Module references.
 It is an isolated architecture design; it does not claim implementation or design-review approval.
 The existing requirement and relationship records remain authoritative.
@@ -297,35 +299,3 @@ Select a Module scope and observe its Summary with no Requirements tab, then ret
 Choose an HTML hierarchy with ordinary relationship links instead of a graph canvas: containment stays readable, shared targets retain their identities, and keyboard/offline reading uses the existing platform.
 A canvas, separate relationship datastore and precomputed all-path closure add no necessary capability for this scope.
 Revisit rendering scale only when measurements show the nested-list reader inadequate; initially render children on expansion and index direct edges once.
-
-## Verification intent
-
-These are intended observations for later implementation and review, not executed evidence.
-
-| Situation | Observable result and failure detected |
-| --- | --- |
-| RigorLoop presentation enables the optional view | Requirements appears after Scenarios only at the system root; selecting it retains system scope and the architecture tab row |
-| Disabled or absent flag; enabled but empty model | Disabled view exposes neither a tab nor valid Requirements routes; enabled empty view remains available with an honest empty state |
-| Invalid enablement type or invalid required model | Assembly rejects the candidate rather than coercing the flag or silently hiding required invalid content |
-| Module scope selection and unsupported Module-scoped URL | Explicit scope selection opens Module Summary; the unsupported URL reports unavailability rather than rendering a Module requirement slice |
-| Module reference selection, explicit architecture action and return | Reference selection stays in the system detail panel; the labeled architecture action changes scope; returning to system Requirements restores its tree state |
-| IR with two SRs, one with ARs, and a second IR | One system root contains every requirement under its exact parent; virtual groups and reference rows remain distinguishable from canonical containment |
-| Two SRs confirm one Function; one also constrains it | One target definition is shared; the dual-relation group row shows both labels, separate occurrences expand independently and incoming links reveal both SRs |
-| IR confirms a Feature whose Function lacks a direct IR link | The Feature expands to its realizing Function inside the same tree with the path visible; no invented direct confirmation |
-| AR with no assessment projection | AR row and details show Implementation: Unknown and Verification: Not assessed; definition lifecycle remains separately labeled, and no code/test/Change-completion inference is made |
-| Selected complete, partial, failed, stale or conflicting assessment accounts | Scope, criterion coverage, revision, actual authority and limitations remain visible; partial or stale support never produces a current positive complete-AR badge |
-| Selected export followed by ordinary generation/check and explicit clearing | Named frozen selection is reproducible without private records; clearing restores absence; invalid input preserves prior output before compiler invocation |
-| Unknown state/version/field, duplicate account/criterion/key, unsafe or symlink-escaping subject path | Strict rejection exposes the owning diagnostic, with no source or output mutation; no inferred positive result |
-| Changed material subjects or changed AR criterion count/order; unrelated edit | Claims downgrade independently where their selected basis changed; original criterion text and outcomes remain historical; unrelated edits preserve applicability |
-| AR with an allocated Module and cooperating architecture | Its tree branch shows exactly the accountable Module; selection displays responsibility in the same panel without claiming multiple owners |
-| Expand/collapse controls and a hidden selected occurrence | Local collapse preserves descendant state; global presets apply their declared scope; selection survives and Reveal in tree restores its path |
-| Inverse references form a graph cycle | Expand all terminates at the finite reference grammar and never duplicates a target definition or recurses through reverse links |
-| Empty links, absent optional analysis detail and an unallocated Function | Honest scoped absence is shown without satisfaction or ownership inference |
-| Missing parent, duplicate identity or wrong target type | Generation rejects the candidate and prior output remains readable |
-| Shared Function/Module search, occurrence deep link, linked detail and Back | Matching occurrences and their paths are visible in the same workspace; independent expansion, selection, filter, panel state, scroll and focus remain coherent; missing IDs and no matches are explicit |
-| Copied artifact with source checkout and network unavailable | Tree, definitions, direct/inverse links and Feature-to-Function traversal remain usable |
-| Keyboard-only and narrow viewport | Disclosures, relationship links, details and return navigation remain reachable and understandable |
-
-Reuse existing model-validation and offline browser walkthrough coverage, with a small independently specified fixture for shared links and parentage.
-Expected relationships come from the fixture contract, not from the renderer's own derived indexes.
-The integrated design-review subject is this refinement together with the affected existing browser reading contract; implementation remains a separate authorized scope.

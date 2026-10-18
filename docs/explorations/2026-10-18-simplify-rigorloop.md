@@ -6,7 +6,7 @@ Help the maintainer reduce the effort needed to understand, use and maintain Rig
 
 ## Inputs examined
 
-Current checkout at `486cb998`: [Vision](../../VISION.md), [Constitution](../../CONSTITUTION.md), [entry instructions](../../AGENTS.md), [composition](../../design/architecture/composition.md), [ownership](../../design/support/ownership.md), [workflow](../../design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md), [assessment](../../design/architecture/modules/MOD-017-engineering-governance/modules/MOD-007-engineering-verification-and-assurance/assessment.md), [plan navigation](../plan.md), and [guidance projector](../../scripts/project-operational-guidance.py). Counts below use tracked files and whitespace-separated Markdown words; they are inventory observations, not measurements of reader effort.
+Current checkout at `486cb998`: [Vision](../../VISION.md), [Constitution](https://github.com/xiongxianfei/rigorloop/blob/dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72/CONSTITUTION.md), [entry instructions](../../AGENTS.md), [composition](../../design/architecture/composition.md), [ownership](../../design/support/ownership.md), [workflow](../../design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md), [assessment](../../design/architecture/modules/MOD-017-engineering-governance/modules/MOD-007-engineering-verification-and-assurance/assessment.md), [plan navigation](../plan.md), and [guidance projector](../../scripts/project-operational-guidance.py). Counts below use tracked files and whitespace-separated Markdown words; they are inventory observations, not measurements of reader effort.
 
 ## Facts, assumptions, and unknowns
 

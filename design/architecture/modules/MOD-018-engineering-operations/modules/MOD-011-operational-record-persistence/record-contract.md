@@ -4,6 +4,8 @@ Owner: [MOD-011 Work record storage](module.json). This is supporting contract d
 
 Model validation contract: model-document-v1
 
+Test scenarios and expected observations are defined in the single [system test design](../../../../../support/test-design/system-test-design.md).
+
 [Work records (MOD-011)](README.md) owns the current `rigorloop-records-v4` model, SQLite realization, selective payloads and maintenance contract. [The v4 schema](../../../../../../schemas/rigorloop-records-v4.schema.json) defines record values. [CLI](../MOD-010-engineering-command-interface/command-contract.md) exposes engineering tasks; [Workflow](../../../MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/workflow.md) and [Review and Closeout](../../../MOD-017-engineering-governance/modules/MOD-007-engineering-verification-and-assurance/assessment.md) own decisions.
 
 ## Storage ownership
@@ -64,7 +66,3 @@ These stable local references reconcile the prior document contract with the cur
 | Failure/recovery | RF-SR-01 | Interrupted work exposes its actual outcome and an owned next step without erasing unresolved issues or inventing success. |
 | Compatibility/migration | RF-SR-01 | Retired procedures remain historical; successor behavior requires explicit applicable adoption/import and cannot relabel old approval. |
 | External/environment | RF-SR-01 | Local engineering results remain separate from installed, published or hosted outcomes; required observations must actually be made. |
-
-## Test design
-
-Inspect the current responsibilities and boundary scenarios against the owning REM model and Module contract. Structural checks establish format only; independent review judges semantic coverage. Runtime record behavior is exercised by the package’s operational store, update, reliance, review and maintenance tests; skill guidance is assessed in actual generated archives with the resource validator and independent scenario inspection. Required combined and negative proof is allocated in the adoption plan.

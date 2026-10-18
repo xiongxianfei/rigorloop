@@ -36,7 +36,7 @@
     "test_groups": [
       {
         "name": "Command admission and selected reading",
-        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md#test-design",
+        "contract": "design/support/test-design/system-test-design.md",
         "test_sources": [
           {
             "path": "packages/rigorloop/test/operational-store.test.js",
@@ -86,7 +86,7 @@
       },
       {
         "name": "Private diagnostics and result presentation",
-        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md#generic-commands-and-local-observability",
+        "contract": "design/support/test-design/system-test-design.md",
         "test_sources": [
           {
             "path": "packages/rigorloop/test/operational-store.test.js",
@@ -136,7 +136,7 @@
       },
       {
         "name": "Public recording interaction composition",
-        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md#test-design",
+        "contract": "design/support/test-design/system-test-design.md",
         "test_sources": [
           {
             "path": "packages/rigorloop/test/operational-review.test.js",

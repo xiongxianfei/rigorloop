@@ -85,17 +85,4 @@ Transient indexes and results may be reused only for exact model/state/profile/m
 
 SCN-009's ordinary path composes selected obligations, known owners and decisive rules into attributable findings. Its alternative of differing responsibility without a deciding rule yields Review needed; unfinished architecture yields Incomplete. SCN-010's ordinary path yields witnessed candidates; its bounded and missing-reference alternatives preserve traversal limits; absent/ambiguous changes or mismatched support reject. Neither Scenario is rewritten with internal design details.
 
-| Criterion | Design inspection case |
-| --- | --- |
-| SR-010 C1 | Active AR/Function missing required owner; permitted deferral; unknown activity or deferral eligibility. Confirm separate violation, deferral and incomplete/review outcomes. |
-| SR-010 C2 | An AR constrains a Function with different owners. Retain both exact paths and the selected deciding rule or its absence. |
-| SR-010 C3 | Equality rule makes different owners a violation; an explicitly allowed ancestry rule may admit different owners; no deciding predicate yields Review needed. |
-| SR-010 C4 | Missing architecture, hidden incoming constraint sources, interrupted membership and declared unfinished constraints prevent a complete consistency claim; known violations survive beside gaps. |
-| SR-010 C5 | Mechanically consistent declared facts remain distinct from complete architectural allocation, semantic adequacy and satisfaction. |
-| SR-011 C1 | Branching/cyclic multi-source graph yields each non-seed candidate once with an exact finite witness from a named changed subject, without all-causes attribution. |
-| SR-011 C2 | Alternating selected relationship types/directions are traversed in one eligible graph. Changed state, starts, influence or limits reject supplied support; unrelated nodes never become established impact. |
-| SR-011 C3 | Complete seed-only reachability yields qualified no-additional-impact; depth-zero or incomplete empty exploration does not. |
-| SR-011 C4 | Requested bounds, missing target, cancellation, resource exhaustion and witness-composition failure propagate their exact scope without a completeness upgrade. |
-| SR-011 C5 | Reached evidence/implementation remains potential impact for review and never changes applicability or outcome judgments automatically. |
-
-These observations guide independent Design assessment and later verification. They are not executed runtime tests or claims that the requirements are implemented.
+The [System test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios) owns integrated scenario conditions and expected observations. [Validation](../../../../../support/validation.md#current-coverage-allocation) records current coverage and limits.

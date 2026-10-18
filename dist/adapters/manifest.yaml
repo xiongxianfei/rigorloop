@@ -1,4 +1,4 @@
-version: v1.0.0
+version: v2.0.0
 skills:
   architecture-design:
     portable: true
@@ -10,9 +10,6 @@ skills:
     portable: true
     adapters: [codex, claude]
   code-review:
-    portable: true
-    adapters: [codex, claude]
-  constitution:
     portable: true
     adapters: [codex, claude]
   delivery-review:

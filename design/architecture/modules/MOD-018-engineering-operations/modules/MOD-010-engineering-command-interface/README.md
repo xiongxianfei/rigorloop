@@ -1,5 +1,7 @@
 # Command interface: current engineering handoff
 
+Integrated scenario conditions and expected observations belong to the [System test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios).
+
 This defines the `targeted-recording-v2` interface for [v4 current-state records](../MOD-011-operational-record-persistence/README.md), refining SR-006 and SR-040–045 under AR-040. The successor package implements the operational families under the [current CLI contract](command-contract.md); browser-family entries remain designed capabilities. Use the executing package’s capabilities to distinguish availability. This project has explicitly adopted selected operational work; installing the package does not activate customer policy or migrate other work.
 
 ## Public task surface
@@ -406,25 +408,6 @@ The earlier unimplemented v4 Candidate/Applicability/FindingUpdate chains and im
 
 SR-074–078 separately own backup, restoration, transfer, migration and bounded discovery of retained history. Normal recording does not have to retain all history to satisfy those selected-scope operations. Ordinary optional attachment ingestion is specified here and no longer depends on an unspecified import tool. The selected store maintenance tasks and node:sqlite binding must be qualified before runtime adoption. Ordinary transaction recovery is supplied by SQLite and does not add a public record-recovery task.
 
-## Walkthroughs and acceptance intent
-
-| Situation | Intended observation |
-| --- | --- |
-| Another agent resumes tomorrow | Seven-section context identifies the authorized next step, supporting facts, missing review and uncertainty without conversation history. |
-| Three development test runs | Only the latest relevant result need be recorded. Earlier failures remain only if they explain an unresolved issue or important decision. |
-| Smoke pass follows integration failure | The different scope cannot replace/hide the failure. The current handoff retains the issue. |
-| Reviewer reassesses a correction | Update current standing within one gate; an omitted open finding persists. Explicit resolution permits later compaction. |
-| Evidence changes after approval | Preserve assessed support and expose the affected reliance; actor judges impact rather than storage retargeting approval. |
-| A referenced Review is replaced after successful Verify | Persist needs-reassessment Verify support, even if the replacement Review is current; the verifier explicitly reassesses before closeout. |
-| Two actors update | The stale revision rejects without losing the winning update or requiring a permanent version history. |
-| Optional report retention | Copy the selected source through the supported task; a failed record commit leaves at most an identified orphan. |
-| Interrupted record write | Open SQLite and inspect coherent current context; reconcile against its revision without replay. Unavailable storage is explicit and may require qualified maintenance. |
-| Completion then later regression | Historical account stays unchanged without current-file comparison; new work links back through its request source. |
-| Compact completed work and retry closeout | Remove an explicit unused working set and obsolete selectors together; preserve surviving dependencies and compare the historical Verification ID without reopening repository checks. |
-
-A browser Change can therefore move from navigation incomplete to implemented/checks passed in one useful progress update after local iteration. Whole-change Review records its conclusion; Verify records distinct acceptance support; change complete retains a compact account and only selected attachments. External publication remains separately authorized. There is no requirement to keep three run summaries or every revised handoff.
-
-[Operations test design](../../test-design.md) owns integrated observations. Existing structural/projection/browser checks protect model and presentation consistency only. Parser, persistence, recovery, concurrency and authority behavior remain future implementation proof. No new runtime tests are added merely to stabilize this design.
 
 ## Browser command family
 
@@ -449,6 +432,6 @@ The exact machine serialization and platform-specific interruption mechanisms mu
 
 ## Supporting contracts
 
-These documents retain detailed clauses and proof under this Module; they are not additional REM entities.
+These documents retain detailed behavior clauses under this Module; they are not additional REM entities.
 
 - [Command interface](command-contract.md)

@@ -17,7 +17,7 @@ Mutable lifecycle state, current milestone state, review status, blockers, routi
 - Architecture: Skill's existing views and SKL-DEC-06/07/08; specialist owners linked in its inventory table retain detailed behavior.
 - Prior-contract test spec: none independently required for this initiative.
 - Governing review records: [proposal-review](../changes/2026-09-15-skill-simplification/reviews/proposal-review.json) and [design-review-ci](../changes/2026-09-15-skill-simplification/reviews/design-review-ci.json). Read their current applicability and exact subjects through the CLI before reliance; this plan does not copy mutable judgments.
-- Delivery and proof contracts: [Plan](../design/skill/authoring/plan.md), [Assessment](../design/skill/assessment.md), [Validation](../design/engineering/validation.md), [Packaging](../design/engineering/packaging.md) and the [Constitution](../../CONSTITUTION.md).
+- Delivery and proof contracts: [Plan](../design/skill/authoring/plan.md), [Assessment](../design/skill/assessment.md), [Validation](../design/engineering/validation.md), [Packaging](../design/engineering/packaging.md) and the [Constitution](https://github.com/xiongxianfei/rigorloop/blob/dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72/CONSTITUTION.md).
 
 ## Context and orientation
 

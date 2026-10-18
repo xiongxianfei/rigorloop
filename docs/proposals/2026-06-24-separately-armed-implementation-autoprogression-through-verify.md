@@ -6,7 +6,7 @@ accepted
 
 ## Relationship to prior work
 
-The accepted [Proposal-Gated Authoring Autoprogression Through Plan Review](2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md) profile defines the bounded authoring sequence:
+The accepted [Proposal-Gated Authoring Autoprogression Through Plan Review](https://github.com/xiongxianfei/rigorloop/blob/dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72/docs/proposals/2026-06-24-proposal-gated-authoring-autoprogression-through-plan-review.md) profile defines the bounded authoring sequence:
 
 ```text
 proposal gate

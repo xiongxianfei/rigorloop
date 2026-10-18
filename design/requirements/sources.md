@@ -134,7 +134,7 @@ Profile expansion is a later controlled change; excluded capacity, latency, and 
 The policy for model scope and capacity is owned by IR-001; IR-002 and SR-001 reference it.
 Retention, recovery, and historical interpretation have distinct answers and must not be conflated with current retrieval.
 
-Existing preservation, authority, and evidence principles come from the [Constitution](../../CONSTITUTION.md) and [Vision](../../VISION.md).
+Existing preservation, authority, and evidence principles come from the [Repository instructions](../../AGENTS.md) and [Vision](../../VISION.md).
 The selected profile boundaries, authoring scenarios, and assessment policies are new draft engineering decisions within that direction.
 Requirements remain `draft`. Question resolution is not requirement approval, implementation, capacity certification, observed usability, recovery evidence, or satisfaction.
 No performance measurements, recovery trials, authoring studies, or effectiveness observations are claimed by this section.
@@ -247,7 +247,7 @@ Durable lessons supplies IR-007's learning intent; resumption and human decision
 
 ## SRC-CONSTITUTION
 
-Source: [CONSTITUTION.md](../../CONSTITUTION.md), path `CONSTITUTION.md` at the repository revision above.
+Source: `CONSTITUTION.md` at commit `9b4fbc05b1c95e486bc0c24a35db6edf68e18a48`; recover from Git history. This source ID preserves the original attribution; current governance is in [AGENTS.md](../../AGENTS.md).
 
 Repository cleanup and historical retention supplies the existing preservation boundary relevant to IR-003.
 Current obligations must retain an owner; retained historical meaning must remain recoverable.
@@ -613,7 +613,7 @@ New SRs constrain existing capabilities without claiming completed Function or A
 
 ## SRC-WORKFLOW-REQUIREMENT-REVIEW
 
-Source: the user's authorization for document-based Requirement Review under the [Constitution exception](../../CONSTITUTION.md#workflow-and-review). The recorded assessment was performed by the same author, not an independent reviewer. It established the scoped requirement-analysis basis and confirmed SCN-075–082; this does not establish Function/AR completeness, implementation, workflow activation or SQLite migration.
+Source: the user's authorization for document-based Requirement Review under the [Repository instructions](../../AGENTS.md#workflow). The recorded assessment was performed by the same author, not an independent reviewer. It established the scoped requirement-analysis basis and confirmed SCN-075–082; this does not establish Function/AR completeness, implementation, workflow activation or SQLite migration.
 
 Applicable outcomes are incorporated in the current model: Requirement Review permits unfinished Function/AR design, SCN-081 permits assessment of a claimed but absent/inapplicable approval, and SR-083 limits active-work disposition to the selected adoption scope. Their owning definitions and the REM method explain those rules without needing the review dossier. Prior source conclusions retain their original scope.
 
@@ -657,7 +657,7 @@ AR-043–051 derive from SR-084–088 and allocate one accountable owner each. S
 
 Source: the user's clarification that local review should be proportionate, including whether approval can remain usable after subsequent file edits. The selected interpretation permits justified harmless edits to retain applicability and requires independent reassessment for material corrections; unknown impact remains unresolved. A changed file identity alone does not decide review validity.
 
-Reuse IR-004 and IR-009. Clarify existing SR-029, SR-082 and AR-036 and extend SCN-080 with harmless-change continuation and misleading impact labels; preserve their identities and the single whole-change gate. The Scenario refinement is author-assessed requirement-analysis knowledge under the Constitution's document-based exception. Earlier assessment sources retain their original scope; no independent approval, implemented runtime behavior or workflow adoption is inferred.
+Reuse IR-004 and IR-009. Clarify existing SR-029, SR-082 and AR-036 and extend SCN-080 with harmless-change continuation and misleading impact labels; preserve their identities and the single whole-change gate. The Scenario refinement is author-assessed requirement-analysis knowledge under the repository instructions’ document-based exception. Earlier assessment sources retain their original scope; no independent approval, implemented runtime behavior or workflow adoption is inferred.
 
 [Governance](../architecture/modules/MOD-017-engineering-governance/README.md#changes-after-approval) owns the impact rule. The successor CLI/Records contracts preserve original judgments and explicit current applicability while withdrawing universal source-copy retention as a review prerequisite. Evidence required to justify a finding, comparison or preservation obligation still needs adequate retention.
 
@@ -665,7 +665,7 @@ Reuse IR-004 and IR-009. Clarify existing SR-029, SR-082 and AR-036 and extend S
 
 Source: the user's explicit decision to maintain a current structured handoff rather than record all activity. Goal/scope/authority, governing basis, progress, open issues, relevant evidence, review standing and next action must support another participant without the originating conversation. Replace comparable working summaries, record at meaningful handoffs, retain supporting detail selectively, and preserve compact historical completion without continuous repository applicability tracking. Later regressions become linked new work.
 
-Refine IR-003/008 and existing SR-006/023/024/027–029/042/043/082/083; reuse the remaining stakeholder needs. Reconcile their existing Scenarios, Functions, AR-017–019/036/040 and affected Interfaces without new model identities. Earlier source judgments and allocation arguments retain their original scope; SRC-CLI-ALLOCATION-BEFORE-CURRENT-HANDOFF identifies superseded criterion mappings, not proof of the revised behavior. This is authorized design authorship and author assessment under the Constitution exception, not independent approval or runtime adoption.
+Refine IR-003/008 and existing SR-006/023/024/027–029/042/043/082/083; reuse the remaining stakeholder needs. Reconcile their existing Scenarios, Functions, AR-017–019/036/040 and affected Interfaces without new model identities. Earlier source judgments and allocation arguments retain their original scope; SRC-CLI-ALLOCATION-BEFORE-CURRENT-HANDOFF identifies superseded criterion mappings, not proof of the revised behavior. This is authorized design authorship and author assessment under the document-based exception, not independent approval or runtime adoption.
 
 [Workflow analysis](workflow-refactor.md#current-handoff-refinement) records disposition. [Governance](../architecture/modules/MOD-017-engineering-governance/README.md) owns meaning; [Operations](../architecture/modules/MOD-018-engineering-operations/README.md) owns composition; its CLI and Records children own inputs, representation and recovery. Current v1/v3 implementations and historical import obligations remain version-scoped.
 
@@ -725,7 +725,7 @@ User-authorized SR-078 Design extends existing command/storage responsibility th
 
 ## SRC-ADOPTION-DEPENDENCY-REFINEMENT
 
-User-approved refinement of IR-009, SR-083 and SCN-082 on 2026-10-06: adoption requires compatible recording for selected work; historical import is unnecessary when there are no earlier dependencies, while necessary unavailable migration blocks affected adoption. This narrows the earlier unconditional migration-independent promise to reconcile the [Constitution successor policy](../../CONSTITUTION.md#workflow-and-review). Preserve actual authority, work and historical judgments; authoring, review and portable invocation do not activate a workflow. Supporting allocation and design follow this refined obligation; review judgments and execution evidence remain operational records.
+User-approved refinement of IR-009, SR-083 and SCN-082 on 2026-10-06: adoption requires compatible recording for selected work; historical import is unnecessary when there are no earlier dependencies, while necessary unavailable migration blocks affected adoption. This narrows the earlier unconditional migration-independent promise to reconcile the [Repository instructions](../../AGENTS.md#workflow). Preserve actual authority, work and historical judgments; authoring, review and portable invocation do not activate a workflow. Supporting allocation and design follow this refined obligation; review judgments and execution evidence remain operational records.
 
 ## SRC-SIMPLIFIED-DESIGN-WORKFLOW
 

@@ -4,4 +4,4 @@
 
 Complete required implementation, corrections, fresh whole-change Code Review and distinct Verify before claiming governed completion. Readiness for the next gate is not completion, and merge is not a routine closeout trigger. A genuine external dependency retains its explicit owner and unresolved state.
 
-These lessons refine the historical [closeout misses](../sessions/2026-05-05-recurring-plan-closeout-misses.md) and [readiness versus completion](../sessions/2026-05-07-plan-readiness-vs-completion.md) sessions. Their plan-status and separate explain-change procedures are retired.
+These lessons refine the historical [closeout misses](https://github.com/xiongxianfei/rigorloop/blob/dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72/docs/learn/sessions/2026-05-05-recurring-plan-closeout-misses.md) and [readiness versus completion](https://github.com/xiongxianfei/rigorloop/blob/dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72/docs/learn/sessions/2026-05-07-plan-readiness-vs-completion.md) sessions. Their plan-status and separate explain-change procedures are retired.

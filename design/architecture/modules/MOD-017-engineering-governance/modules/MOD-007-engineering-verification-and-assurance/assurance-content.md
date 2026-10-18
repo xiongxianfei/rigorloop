@@ -86,13 +86,4 @@ The [responsibility and interaction diagrams](README.md#assurance-responsibiliti
 
 ## Criterion inspection cases
 
-These Design inspection cases identify concrete negative distinctions; they are not executed verification evidence.
-
-| Basis | Cases and required distinction |
-| --- | --- |
-| SR-025 C1–4 | Complete manual method; missing state/condition/criterion; changed expected observation; method-only file offered as proof. Inspect exact binding, visible incompleteness, old basis attribution and absence of invented results. |
-| SR-026 C1–5 | Identified occurrence; unperformed/interrupted check; failure to execute versus adverse criterion observation; later favorable result with relevant contrary evidence; inaccessible attachment. Inspect actual provenance, unassessed remainder, preserved contradiction and reliance limits. |
-| SR-027 C1–6 | Wrong revision/criterion/condition; missing comparison basis; attributable scoped applicability; stable ID/pass label alone; advisory offered as whole-change support; actor no-change report versus exact comparison. Inspect mismatch, unknown and scope/provenance distinctions. |
-| SR-028 C1–7 | Criterion-traceable judgment; missing support/contradiction; explicitly narrower conclusion; coverage table alone; exception offered as satisfaction/authority; requirement approval before AR completeness; progress edit offered as reviewer approval. Inspect accountable semantic reasoning and refuse unsupported promotion. |
-| SR-029 C1–7 | Changed state or criterion; repeated check merely planned; replacement judgment; missing dependency; correction with unaffected support; harmless edit or evidence retry; regression after completed Change. Inspect affected/reused/unassessed scope, retained meaning and historical-versus-current boundaries. |
-| IF-014 and retention | Well-formed incomplete candidate; ambiguous identity; changed revision between preparation and save; lost receipt; unavailable retained evidence; unsupported store contract. Inspect prepared-versus-saved distinction and truthful recovery without automatic replay. |
+The [System test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios) owns integrated scenario conditions and expected observations. [Validation](../../../../../support/validation.md#current-coverage-allocation) records current coverage and limits.

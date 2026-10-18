@@ -68,7 +68,7 @@
     "test_groups": [
       {
         "name": "Stored record invariants and preservation",
-        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-011-operational-record-persistence/record-contract.md#test-design",
+        "contract": "design/support/test-design/system-test-design.md",
         "test_sources": [
           {
             "path": "packages/rigorloop/test/operational-store.test.js",
@@ -118,7 +118,7 @@
       },
       {
         "name": "Guarded publication and exact recovery",
-        "contract": "design/architecture/modules/MOD-018-engineering-operations/modules/MOD-010-engineering-command-interface/command-contract.md#save-safety-and-recovery-boundary",
+        "contract": "design/support/test-design/system-test-design.md",
         "test_sources": [
           {
             "path": "packages/rigorloop/test/operational-store.test.js",

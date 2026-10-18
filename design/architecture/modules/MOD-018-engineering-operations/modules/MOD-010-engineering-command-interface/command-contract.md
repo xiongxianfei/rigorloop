@@ -4,6 +4,8 @@ Owner: [MOD-010 Command handling](module.json). This is supporting contract deta
 
 Model validation contract: model-document-v1
 
+Test scenarios and expected observations are defined in the single [system test design](../../../../../support/test-design/system-test-design.md).
+
 The current task interface is owned by [Command handling (MOD-010)](README.md). Its supported operational profile is `targeted-recording-v2` with `rigorloop-records-v4`. The installed executable's help and capabilities identify actual availability; target architecture does not advertise unimplemented commands.
 
 ## Subsystem design graph
@@ -159,7 +161,3 @@ These stable local references reconcile the prior document contract with the cur
 | Failure/recovery | CLI-SR-05, CLI-SR-06 | Interrupted work exposes its actual outcome and an owned next step without erasing unresolved issues or inventing success. |
 | Compatibility/migration | CLI-SR-10, CLI-SR-28 | Retired procedures remain historical; successor behavior requires explicit applicable adoption/import and cannot relabel old approval. |
 | External/environment | CLI-SR-23, CLI-SR-30 | Local engineering results remain separate from installed, published or hosted outcomes; required observations must actually be made. |
-
-## Test design
-
-Inspect the current responsibilities and boundary scenarios against the owning REM model and Module contract. Structural checks establish format only; independent review judges semantic coverage. Runtime record behavior is exercised by the package’s operational store, update, reliance, review and maintenance tests; skill guidance is assessed in actual generated archives with the resource validator and independent scenario inspection. Required combined and negative proof is allocated in the adoption plan.

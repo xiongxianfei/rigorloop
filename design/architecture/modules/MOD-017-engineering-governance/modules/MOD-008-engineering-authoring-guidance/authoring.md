@@ -4,11 +4,13 @@ Owner: [MOD-008 Authoring guidance](module.json). This is supporting contract de
 
 Model validation contract: model-document-v1
 
+Test scenarios and expected observations are defined in the single [system test design](../../../../../support/test-design/system-test-design.md).
+
 ## Introduction and Goals
 
 Authoring composes Requirement Analysis, System Design, Architecture Design and Plan into coherent engineering authorship. It owns their responsibility boundaries, requirement-refinement relationship and correction interfaces. Its activity contracts define detailed authoring methods; independent review, workflow state and implementation remain external.
 
-The [test design](test-design/test-design.md) and [case index](test-design/test-cases.json) make these composition obligations concrete. Requirement Analysis, System Design, Architecture Design and Plan retain their detailed methods and local coverage.
+The [system test design](../../../../../support/test-design/system-test-design.md#integrated-design-and-handoff-assessment) defines the integrated assessment of these obligations. Requirement Analysis, System Design, Architecture Design and Plan retain their detailed methods and behavior authority.
 
 ## Context and Scope
 
@@ -70,9 +72,9 @@ The default authoring flow is Requirement Analysis → iterative System and Arch
 
 ### Living coverage through authoring
 
-The approved Design package carries durable behavior groups, important targets, meaningful scenarios, independent observations, fixture strategy and current/proposed realization links under [Design DES-SR-25/26](design-authoring.md#proportionate-design-and-proof). Plan references that intent and adds sequencing, commands, prerequisites and evidence allocation. Moving coverage knowledge solely into a delivery plan loses the Design-owned responsibility. Feature/proof authoring is unsupported under Design DES-SR-14/23; source interpretation and explicitly authorized scoped adoption retain project authority and original identities. Plan allocates proof from current living Designs and does not recreate a companion test-spec stage.
+The central system test design carries durable behavior groups, important targets, meaningful scenarios, independent observations, representative conditions independent of executable mappings under [Design DES-SR-25/26](design-authoring.md#proportionate-design-and-proof). Plan references that intent and adds sequencing, commands, prerequisites and evidence allocation. Moving coverage knowledge solely into a delivery plan loses the central durable account. Feature/proof authoring is unsupported under Design DES-SR-14/23; source interpretation and explicitly authorized scoped adoption retain project authority and original identities. Plan allocates proof from the current system test design and does not recreate a companion test-spec stage.
 
-The parent observation is a leaf/parent model package passing into a delivery plan without mandatory intermediate approval, with optional integrated assessment: integrated coverage remains with its owning model and every affected obligation receives execution allocation. Inspect actual author outputs and handoffs using synthetic models and existing Plan assets; heading/resource checks alone cannot establish semantic correspondence. Design and Plan own their local methods, Assessment owns judgment, System owns shared test-quality rules and Validation owns execution. Their public guidance and consumer references must be reconciled together; no new authoring stage or artifact is introduced.
+The parent observation is a leaf/parent model package passing into a delivery plan without mandatory intermediate approval, with optional integrated assessment: integrated scenario intent remains in the system test design and every affected obligation receives execution allocation. Inspect actual author outputs and handoffs using synthetic models and existing Plan assets; heading/resource checks alone cannot establish semantic correspondence. Design and Plan own their local methods, Assessment owns judgment, System owns shared test-quality rules and Validation owns execution. Their public guidance and consumer references must be reconciled together; no new authoring stage or artifact is introduced.
 
 ## Context view
 
@@ -114,14 +116,6 @@ Observe the composition across sibling outputs and their external owners, includ
 | Failure/recovery | AUTH-SR-03, AUTH-SR-05 | A feasibility conflict returns to the direction owner while unrelated authored work is preserved. |
 | Compatibility/migration | AUTH-SR-04, AUTH-SR-05 | The declared directory move preserves model/requirement identities and historical record subjects; live consumers resolve current owners. |
 | External/environment | AUTH-SR-02, AUTH-SR-05 | Missing packaged resources or project authority stop dependent authorship; installation alone grants no governance adoption. |
-
-### Test design
-
-The [strategy](test-design/test-design.md) defines one synthetic artifact fixture and the boundaries between parent composition, child methods and external assessment. The [catalog](test-design/test-cases.json) owns thirteen concrete procedures in refinement, scope-handoff and correction-reconciliation groups, with stable case IDs, conditions, actions and independent expected outcomes. These are detail of model `authoring`; no model or requirement identity changes.
-
-The procedures inspect goal/requirement preservation, durable coverage ownership, adequate downstream allocation, exact review subjects and correction authority. Each compares concrete compliant and faulty artifact/decision packets; named variants preserve separate starting state and diagnostics. They remain proposed independent reviews, not passing executable tests. Existing wording and skeleton checks provide narrower structural evidence. Skill references this detailed parent composition instead of copying its scenarios. [Validation](../../../../../support/validation.md#model-owned-test-design-admission) defines the five-file admission boundary; actual assessment results remain in evidence.
-
-Apply [System's selection procedure](../../../../../support/test-design/rules.md#select-requirements-and-proof) to the five current requirements: AUTH-SR-01/03 govern refinement and correction ownership, AUTH-SR-02 governs invocation bounds and changing prerequisites, AUTH-SR-04 governs exact handoff and stable intent, and AUTH-SR-05 governs consumer/identity preservation. Each is accounted by the named catalog groups with concrete distinct violations. [Engineering authoring](design-authoring.md#proportionate-design-and-proof) and [Plan](../MOD-006-engineering-change-control/planning.md#test-design) now provide their local coverage; the parent retains the extra observation that a valid local artifact can still lose an approved goal, required proof or current subject across a sibling handoff. The existing overview and Context/Runtime views already own those transfers; no new deployment or assessment authority is introduced.
 
 ## Architecture Decisions
 

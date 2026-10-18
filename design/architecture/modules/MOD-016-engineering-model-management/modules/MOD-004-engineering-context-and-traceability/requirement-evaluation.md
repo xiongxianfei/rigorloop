@@ -117,21 +117,7 @@ The version 1 AR export must not silently gain new fields or admit IR/SR records
 
 ## Acceptance intent for the extension
 
-These are specified observations, not executed tests or satisfaction claims.
-
-| Situation | Required observation |
-| --- | --- |
-| Requirement has no selected assessment | All three absence states and their reason are visible; Draft remains separate |
-| SR has no AR and no allocation disposition | No AR declared / Review needed; no inferred failure or completion |
-| Direct SR proof exists without ARs | Attributed SR verification is readable; unresolved design/allocation remains separately visible |
-| SR has one AR but an uncovered necessary obligation | Reviewed design gap and owned AR follow-up remain visible |
-| All children passed, parent unassessed | Child counts show passes; parent remains Not assessed |
-| Relied-upon child has applicable adverse evidence | Parent's positive presentation is withheld with the conflict and required reassessment |
-| IR has no reviewed stakeholder-outcome basis | No fabricated criteria, zero-item success or inherited pass |
-| Definition, outcome basis, allocation or relied-upon child support changes | Affected positive claims are withheld; exact previous scope and historical explanation remain readable |
-| Search/filter hides some children or repeats shared references | Full distinct-child denominator is unchanged and visible subset is explicit |
-| Only a version 1 AR selection is supplied | Existing AR claims keep their original meaning; Design defaults to Not reviewed; IR/SR remain unassessed |
-| Copied artifact is read offline at narrow width or by keyboard | Labels, evidence limitations, filters and selected-node details remain usable |
+The [System test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios) owns integrated scenario conditions and expected observations. [Validation](../../../../../support/validation.md#current-coverage-allocation) records current coverage and limits.
 
 ## Realization and handoff
 

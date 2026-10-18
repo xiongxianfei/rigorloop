@@ -1,7 +1,4 @@
-<!-- Template: plan-skeleton-v4 -->
-<!-- Skill: plan -->
-<!-- Template status: normative -->
-<!-- Maintained alongside: skills/plan/SKILL.md -->
+<!-- Template: plan-skeleton-v4 --> <!-- Skill: plan --> <!-- Template status: normative --> <!-- Maintained alongside: skills/plan/SKILL.md -->
 
 # Repair plan-index navigation
 
@@ -20,7 +17,7 @@ Mutable progress, review judgments and actual results belong to that Change.
 - Requirement basis: IR-003 / SR-024, with FEAT-007 and SCN-025, limited to consumer reconciliation and truthful historical availability.
 - Logical behavior: FUNC-024, limited to preservation of original meaning and explicit incomplete outcomes.
 - Architecture: MOD-006, AR-075 and its [planning contract](../../design/architecture/modules/MOD-017-engineering-governance/modules/MOD-006-engineering-change-control/planning.md), particularly PLAN-SR-03/07.
-- Preservation policy: [Constitution](../../CONSTITUTION.md#repository-cleanup-and-historical-retention) and [ownership](../../design/support/ownership.md).
+- Preservation policy: [Constitution](https://github.com/xiongxianfei/rigorloop/blob/dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72/CONSTITUTION.md#repository-cleanup-and-historical-retention) and [ownership](../../design/support/ownership.md).
 - Prior-contract test spec: none applies to this bounded correction.
 
 ## Context and orientation

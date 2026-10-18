@@ -4,6 +4,8 @@ Owner: [MOD-006 Change control](module.json). This is supporting contract detail
 
 Model validation contract: model-document-v1
 
+Test scenarios and expected observations are defined in the single [system test design](../../../../../support/test-design/system-test-design.md).
+
 The current workflow is owned by [Change control (MOD-006)](README.md). Its requirement basis is [the requirement-first analysis](../../../../../requirements/workflow-refactor.md). This entry connects repository contributors to that model and the corresponding published skills; it does not define a second lifecycle.
 
 ## Progression and ownership
@@ -89,7 +91,3 @@ These stable local references reconcile the prior document contract with the cur
 | Failure/recovery | WF-SR-01 | Interrupted work exposes its actual outcome and an owned next step without erasing unresolved issues or inventing success. |
 | Compatibility/migration | WF-SR-01 | Retired procedures remain historical; successor behavior requires explicit applicable adoption/import and cannot relabel old approval. |
 | External/environment | WF-SR-01 | Local engineering results remain separate from installed, published or hosted outcomes; required observations must actually be made. |
-
-## Test design
-
-Inspect the current responsibilities and boundary scenarios against the owning REM model and Module contract. Structural checks establish format only; independent review judges semantic coverage. Runtime record behavior is exercised by the package’s operational store, update, reliance, review and maintenance tests; skill guidance is assessed in actual generated archives with the resource validator and independent scenario inspection. Required combined and negative proof is allocated in the adoption plan.

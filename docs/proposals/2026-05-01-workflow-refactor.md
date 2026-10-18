@@ -311,7 +311,7 @@ The approved spec settles the lower-level `ci-maintenance` path question by allo
 
 ## Next artifacts
 
-- `plan-review` for [Workflow Refactor Execution Plan](../plans/2026-05-03-workflow-refactor.md).
+- `plan-review` for [Workflow Refactor Execution Plan](https://github.com/xiongxianfei/rigorloop/blob/dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72/docs/plans/2026-05-03-workflow-refactor.md).
 - Matching update to `specs/rigorloop-workflow.test.md` after plan-review.
 - Follow-up proposal for project-map lifecycle and freshness markers.
 - Follow-up proposal for learn artifact model and learning-skill refactor.
@@ -319,7 +319,7 @@ The approved spec settles the lower-level `ci-maintenance` path question by allo
 ## Follow-on artifacts
 
 - `spec`: [RigorLoop Workflow](../../specs/rigorloop-workflow.md)
-- `plan`: [Workflow Refactor Execution Plan](../plans/2026-05-03-workflow-refactor.md)
+- `plan`: [Workflow Refactor Execution Plan](https://github.com/xiongxianfei/rigorloop/blob/dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72/docs/plans/2026-05-03-workflow-refactor.md)
 - Future focused `learn` refactor for per-session output, topic-organized durable lessons, and action routing into affected artifacts or ADRs.
 
 ## Readiness

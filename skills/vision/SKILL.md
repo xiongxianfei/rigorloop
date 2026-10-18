@@ -27,13 +27,13 @@ This upstream skill does not hand off automatically. Use it at project genesis o
 
 ## Inputs To Read
 
-Start with compact project inputs: `CONSTITUTION.md`, `AGENTS.md`, root `VISION.md`, README content between `<!-- vision:start -->` and `<!-- vision:end -->`, relevant proposals, and useful project-map evidence. Retired root `vision.md` is an ordinary file only when explicitly requested.
+Start with compact project inputs: `AGENTS.md`, root `VISION.md`, README content between `<!-- vision:start -->` and `<!-- vision:end -->`, relevant proposals, and useful project-map evidence. Retired root `vision.md` is an ordinary file only when explicitly requested.
 
 Use summary and stable-ID first reasoning with check IDs, requirement IDs, proposal IDs, section names, file paths, counts, and line citations. Expand only for insufficient or conflicting evidence.
 
 ## Edit Authorization
 
-`CONSTITUTION.md` outranks `VISION.md`; `VISION.md` is canonical; `VISION.md` outranks README front-matter. Root `VISION.md` is the only supported project-vision artifact. existing visions are not overwritten without clear update intent.
+Project-selected instructions govern `VISION.md`; `VISION.md` is canonical; `VISION.md` outranks README front-matter. Root `VISION.md` is the only supported project-vision artifact. existing visions are not overwritten without clear update intent.
 
 Do not ask users to choose `create`, `revise`, or `mirror` modes. Legacy words are intent hints only. Loading a reference or copying an asset never grants establishment, revision, insertion, skip, lifecycle, routing, review, or continuation authority.
 

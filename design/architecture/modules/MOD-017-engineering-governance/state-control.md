@@ -90,14 +90,4 @@ The proposed local Rust model engine supplies baseline descriptor orchestration 
 
 Physically, mutable current definitions, sealed retained bundles/catalog and isolated recovery output are distinct custody areas. Operational Change records remain in their separately selected store. Their transactions are not a whole-project transaction. Local process exclusion and durable markers handle supported model writes; unsupported platforms must expose their limitation. Storage destruction, unsaved work and unretained external material are outside the recovery guarantee.
 
-The responsibility and sequence views in [the composition README](README.md#baseline-state-responsibilities) show Logical and Process concerns. These realization paragraphs define Development and Physical choices. Governed SCN-019–022/025 retain their black-box meanings; the cases below inspect ordinary, alternative and failure paths rather than replace those Scenarios.
-
-| Basis | Design inspection and required outcome |
-| --- | --- |
-| SR-020 C1–4 | Establish a full baseline; include an assurance export; keep an external-only reference; change current rules afterward; lose a rule or catalog receipt. Inspect exact membership/original meaning and refuse unsupported coherence or retention. |
-| SR-021 C1–4 | Rename/move under one identity, new identity, changed allocation/rule, identical selected facts, ambiguous IDs and missing one side. Inspect attributable differences and bounded no-difference, never unknown-as-unchanged. |
-| SR-022 C1–5 | Recover an intact baseline with an old allocation; missing/corrupt rule; partial copy; external-only link; request active-work destination. Inspect exact original meaning, explicit unavailable scope and rejection of implicit overwrite. |
-| SR-023 C1–7 | Record an observed before/result transition; proposed/interrupted work; lost storage receipt; explicit historical correction; compact completion; unavailable history; favorable review without grant. Inspect actual provenance, incomplete versus established, independent current model and no fabricated authority. |
-| SR-024 C1–7 | Retire a recoverable definition; unretained required original; no-archive disposable log; still-relied-on failure for another scope; missing consumer; changed base/authority; partial removal; history-release request. Inspect withheld unsafe removal, preserved reliance and truthful completion/unavailability. |
-
-These cases supply Design acceptance intent. Later implementation must demonstrate durability, race/interruption behavior, exact recovery and conditional removal. Schema checks and browser badges do not establish those runtime outcomes.
+The [System test design](../../../support/test-design/system-test-design.md#additional-integrated-scenarios) owns integrated scenario conditions and expected observations. [Validation](../../../support/validation.md#current-coverage-allocation) records current coverage and limits.

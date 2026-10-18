@@ -1,5 +1,7 @@
 # Package production: workflow replacement identity
 
+Test scenarios and expected observations are defined in the single [system test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios).
+
 This proposed extension realizes AR-041 and supplies [Installation's bounded replacement contract](../MOD-014-verified-skill-installation/README.md). Existing [Packaging](packaging.md) retains archive acquisition, target descriptors, tree-hash algorithms, normalization and qualification ownership. No current package is relabeled or claimed qualified by this design.
 
 ## Exact package member
@@ -32,12 +34,9 @@ Canonical methods remain in `rem/`; authored entrypoints/resources remain in `sk
 
 Release qualifies the exact resulting candidate and CLI capability report together. This descriptor expresses required compatibility; it does not prove the installed CLI supplies it. Guidance must inspect actual capability availability and remain portable or explicitly unavailable for governed recording when no supported v4 backend exists. Installation validates identity and applies authorized units; Governance decides adoption against current policy, actual guidance and operational compatibility.
 
-## Verification intent
-
-Use real generated archives, independent archive/member counts and hashes, and installed smoke under both supported targets. Negative cases include each new unknown closed-vocabulary value, missing descriptor, duplicate/extra list entries, a retired skill alias, a missing transitive conditional reference, mismatched CLI capability identity and an unchanged source tree paired with stale generated output. Compare the actual archive and installed candidate, not two values produced by the same generation helper. These are new proof obligations; existing Packaging results do not automatically cover them.
+## Integrity and compatibility
 
 The archive checksum binds the new member without changing the established trusted metadata format or skill-root hash preimage. This avoids a second trust mechanism and preserves unrelated public packaging guarantees. No publication, install, workflow adoption or SQLite qualification is inferred from generation.
-
 
 ## Browser candidate contract
 

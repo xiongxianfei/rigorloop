@@ -4,6 +4,8 @@ Owner: [MOD-015 Release coordination](module.json). This is supporting contract 
 
 Model validation contract: model-document-v1
 
+Test scenarios and expected observations are defined in the single [system test design](../../../../../support/test-design/system-test-design.md).
+
 Related cooperating contract: [Engineering](../../../../../support/development.md#release).
 
 Release coordination owns publication of the skills and CLI: candidate qualification, authorization, public observations and recovery. It consumes Packaging and CLI Installation contracts and applies Skill Assessment behavior.
@@ -121,7 +123,7 @@ The amended direction selects bounded coordination of existing Release mechanism
 
 ## Architecture Constraints
 
-Constitution and explicit execution permissions govern. Routine publication starts from reviewed and merged source that introduces no unapproved engineering decision. The bounded, deterministic release-only preparation described below may produce a derived candidate commit; its exact allowed diff is disclosed in the candidate summary and bounded by the initiating policy, and no unreviewed product or executable change is admitted. Authentication, provenance, identity, release proof and immutable-publication recovery remain mandatory under their applicable contracts. This model transfers current authority; it does not reactivate old lifecycle writers, first-rollout authoring gates or retrospective benchmarks.
+Project instructions and explicit execution permissions govern. Routine publication starts from reviewed and merged source that introduces no unapproved engineering decision. The bounded, deterministic release-only preparation described below may produce a derived candidate commit; its exact allowed diff is disclosed in the candidate summary and bounded by the initiating policy, and no unreviewed product or executable change is admitted. Authentication, provenance, identity, release proof and immutable-publication recovery remain mandatory under their applicable contracts. This model transfers current authority; it does not reactivate old lifecycle writers, first-rollout authoring gates or retrospective benchmarks.
 
 Operational release profiles, generated metadata, templates, fixtures and recovery inputs are not superseded prose. Historical releases and recorded judgments keep their original subjects and meaning. Removing an explanatory source does not remove its tests or waive a real operation's checks. Current rules and necessary evidence remain understandable from the checkout.
 
@@ -332,16 +334,6 @@ Actual run identities, qualification, failures and outcomes belong to operationa
 | External/environment | REL-SR-06, REL-SR-09, REL-SR-13, REL-SR-18, REL-SR-21 | Offline preflight reports the missing remote fact; local fixture proof does not claim hosted/public success. Available GitHub-job, npm-job and public-smoke measurements remain distinct check observations under existing phases; an aggregate closeout duration cannot substitute for them. Absent timing does not block otherwise correct publication/closeout; malformed telemetry is reported separately and no measurements are invented. Missing credentials or unavailable evidence persistence produce explicit exceptions. Fixture orchestration proof neither runs real publication nor claims hosted success. |
 
 Material integrated hazards are a valid local archive with mismatched published metadata (REL-SR-08/12/13), delayed registry response after a successful immutable write (REL-SR-14/15), and lost durable reporting after public mutation (REL-SR-15/24). Observe the real identity, publication and persistence boundaries; helper-only parsing cannot establish those composed outcomes.
-
-### Test design
-
-Release owns the separate [Release test design](test-design/test-design.md). It derives profile/input, preparation, preflight, candidate identity, authority/recovery and evidence/closeout coverage from this model using risk analysis, input partitions, decision tables, state transitions, properties and controlled faults. It records important targets, independent observations, fixture strategy, current test locations and known gaps. Requirements and acceptance outcomes remain owned here; review the companion and this model together.
-
-The [Release JSON case catalog](test-design/test-cases.json) indexes outcome-driven scenarios in seven existing group files, with concrete conditions, independent observations, supporting test links and explicit gaps. A model-level scenario can be realized by several unit, command and integration tests. Native test discovery owns the executable inventory; adding a helper or field variation does not require a new catalog row. The index and its declared files are a draft for user review before shared schema adoption or CLI case operations. Review the complete catalog together with this owner and the companion.
-
-The [release suite entrypoint](../../../../../../tests/engineering/release/test-release-transaction.py) remains the normal discovery/filter boundary. Engineering and System own additional interactions across their children. The companion's [requirement accounting](test-design/test-design.md#requirement-accounting-and-proof-limits) covers every current Release requirement, distinguishing recurring scenarios from scoped source-consolidation acceptance. Apply [System's selection procedure](../../../../../support/test-design/rules.md#select-requirements-and-proof) alongside that package. Existing partial/proposed realization remains an implementation obligation; complete Design coverage does not certify every assertion, fixture or observed release.
-
-[Validation](../../../../../support/validation.md#execution-cost-reporting) owns per-case execution costs and complete native population accounting; REL-SR-18 retains its distinct operational duration semantics. Release cases use their existing native caller and private mutable fixtures, and the catalog remains descriptive. Missing test timing cannot become publication permission or a reason to fabricate an operational measurement. The current overview and supporting views remain applicable: this coverage reconciliation adds no publisher, approval boundary, release schema or deployed component.
 
 ### Release compatibility and proof
 

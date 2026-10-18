@@ -60,8 +60,6 @@ Current repository consumers migrate together; historical records retain their o
 
 ## Proof and limitations
 
-Check every retired principle's commitments, rationale and application details against surviving owners, including clear definitions and public-entry traceability. Check protected invariants, direct links and anchors, projection freshness and actual isolated adapter resources.
+The [System test design](../../../../../support/test-design/system-test-design.md#additional-integrated-scenarios) owns integrated scenario conditions and expected observations. [Validation](../../../../../support/validation.md#current-coverage-allocation) records current coverage and limits.
 Source notes distinguish inspected external support, REM-authored inference and illustrative examples; a citation or proposed-package review label does not establish approval or empirical effectiveness.
-Walk through one example with one parent IR per SR, one parent SR per AR, one owning IR and primary Feature per Scenario, relevant Functions and accountable Modules.
-Inspect negative cases: unrun/stale evidence, unsupported intended-use claims and view omission hiding a material concern.
 Independent review judges semantic preservation and usefulness; structural checks alone cannot demonstrate observed stakeholder effectiveness.

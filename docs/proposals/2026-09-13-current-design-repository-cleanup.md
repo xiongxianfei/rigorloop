@@ -4,7 +4,7 @@
 
 Current RigorLoop contracts coexist with superseded specifications, test specifications, architecture documents, ADRs, archive copies and reports. Some validation machinery still reads those sources. Contributors must distinguish current authority from historical evidence before they can safely change the product, and obsolete dependencies can perpetuate unnecessary checks and documents.
 
-The earlier [necessary-Design consolidation](2026-09-09-simplify-required-validation-and-design-retention.md) selected a bounded Validation-related source set. The requested cleanup now covers the repository's legacy documentation and unnecessary check scripts together. The user has already requested simpler governance and a [Git-history retention policy](../../CONSTITUTION.md#repository-cleanup-and-historical-retention); those edits are present on this branch and form the direction's basis, without establishing cleanup completion.
+The earlier [necessary-Design consolidation](2026-09-09-simplify-required-validation-and-design-retention.md) selected a bounded Validation-related source set. The requested cleanup now covers the repository's legacy documentation and unnecessary check scripts together. The user has already requested simpler governance and a [Git-history retention policy](https://github.com/xiongxianfei/rigorloop/blob/dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72/CONSTITUTION.md#repository-cleanup-and-historical-retention); those edits are present on this branch and form the direction's basis, without establishing cleanup completion.
 
 ## Goals
 

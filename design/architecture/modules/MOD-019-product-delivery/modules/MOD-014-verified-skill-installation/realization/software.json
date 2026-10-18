@@ -26,14 +26,14 @@
       },
       {
         "source": "SRC-PRODUCT-REALIZATION",
-        "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#destination-conflicts-and-explicit-replacement; design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#test-design; packages/rigorloop/test/cli.test.js; packages/rigorloop/test/installer-replacement.test.js; packages/rigorloop/package.json; scripts/ci.sh; scripts/select-validation.py; scripts/lib/validation/validation_selection.py; scripts/lib/validation/validation_execution.py; scripts/lib/validation/validation_node_adapter.mjs",
-        "basis": "Static inspection of retained test-design contracts, current test sources, fixture helpers and execution callers identifies these bounded test groups and dependencies. No mapped product suite or CI was executed, no skill instructions were read, and source organization is not coverage, passing evidence or a transfer of Verification/Evidence responsibility."
+        "locator": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#destination-conflicts-and-explicit-replacement; design/support/test-design/system-test-design.md; packages/rigorloop/test/installer-replacement.test.js; packages/rigorloop/package.json; scripts/ci.sh",
+        "basis": "Static inspection of retained test-design contracts, current test sources, fixture helpers and execution callers identifies these bounded test groups and dependencies. No mapped product suite or CI was executed, no skill instructions were read, and source organization is not coverage, passing evidence or a transfer of Verification/Evidence responsibility. Current test-design/source navigation is reconciled with the central system document; the prior locator is recoverable at dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72 at this file path. This update does not renew earlier execution evidence."
       }
     ],
     "test_groups": [
       {
         "name": "Bounded replacement and partial failure",
-        "contract": "design/architecture/modules/MOD-019-product-delivery/modules/MOD-014-verified-skill-installation/installation.md#destination-conflicts-and-explicit-replacement",
+        "contract": "design/support/test-design/system-test-design.md",
         "test_sources": [
           {
             "path": "packages/rigorloop/test/installer-replacement.test.js",

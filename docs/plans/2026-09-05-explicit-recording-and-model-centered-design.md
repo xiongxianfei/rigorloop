@@ -16,7 +16,7 @@ This plan does not create lifecycle authority. Before implementation, establish 
 - Specification and architecture, combined by user-authorized exception: [Workflow model](../design/workflow/workflow.md) and [CLI model](../design/cli/cli.md).
 - Design assessment: The former outside-change assessment was removed at the user’s direction. This plan reference supplies no Design Review authority; use the owning change’s registered review records.
 - Prior-contract test spec: None; this is not a manifest-bound v1 continuation.
-- Governing repository rules: [Constitution](../../CONSTITUTION.md) and [AGENTS.md](../../AGENTS.md), unchanged by this plan.
+- Governing repository rules: [Constitution](https://github.com/xiongxianfei/rigorloop/blob/dc55c7f7a565ff0e61735fcea6b8c2bef2ef5f72/CONSTITUTION.md) and [AGENTS.md](../../AGENTS.md), unchanged by this plan.
 
 ## Context and orientation
 

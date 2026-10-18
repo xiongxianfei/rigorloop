@@ -88,7 +88,7 @@ Read the full file when the whole file is the review target, the relevant sectio
 
 After the Frame phase begins, the primary output is `docs/learn/sessions/YYYY-MM-DD-<slug>.md`. Confirmed guidance may update `docs/learn/topics/<topic>.md`; create no templates, empty topics, or fixed taxonomy.
 
-topic files are curated guidance and must not override `CONSTITUTION.md`, approved specs, accepted ADRs, architecture, workflow docs, skills, proposals, active plans, or an action-owning artifact. Preserve traceability when topic entries are revised, superseded, absorbed, or removed.
+topic files are curated guidance and must not override project-selected instructions, approved specs, accepted ADRs, architecture, workflow docs, skills, proposals, active plans, or an action-owning artifact. Preserve traceability when topic entries are revised, superseded, absorbed, or removed.
 
 Behavior-changing work belongs to its action-owning artifact. `learn` records routes and owner-result identities; it cannot mutate destinations, bypass reviews, poll, or treat chat as completion. Historical sessions remain readable without implicit migration.
 
